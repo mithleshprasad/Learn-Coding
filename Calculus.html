@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculus Formulas</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 20px;
+            color: #333;
+        }
+        h1, h2 {
+            text-align: center;
+            color: #28a745;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        section {
+            margin-bottom: 20px;
+        }
+        .formula {
+            padding: 10px 15px;
+            background: #f9f9f9;
+            border-left: 4px solid #28a745;
+            margin: 10px 0;
+            font-family: "Courier New", monospace;
+        }
+        footer {
+            text-align: center;
+            margin-top: 30px;
+            color: #777;
+            font-size: 0.9em;
+        }
+    </style>
+</head>
+<body>
+    <h1>Calculus Formulas</h1>
+    <div class="container">
+        <!-- Limits -->
+        <section>
+            <h2>Limits</h2>
+            <div class="formula">Limit of a function: \\( \lim_{x \to a} f(x) = L \\)</div>
+            <p><strong>Example:</strong> Find the limit of f(x) = 2x + 3 as x approaches 1: \\( \lim_{x \to 1} (2x + 3) = 5 \\).</p>
+        </section>
+
+        <!-- Derivatives -->
+        <section>
+            <h2>Derivatives</h2>
+            <div class="formula">Derivative of xⁿ: \\( \frac{d}{dx} x^n = n x^{n-1} \\)</div>
+            <div class="formula">Derivative of sin(x): \\( \frac{d}{dx} \sin(x) = \cos(x) \\)</div>
+            <div class="formula">Derivative of cos(x): \\( \frac{d}{dx} \cos(x) = -\sin(x) \\)</div>
+            <div class="formula">Derivative of eˣ: \\( \frac{d}{dx} e^x = e^x \\)</div>
+            <div class="formula">Derivative of ln(x): \\( \frac{d}{dx} \ln(x) = \frac{1}{x} \\)</div>
+        </section>
+
+        <!-- Integration -->
+        <section>
+            <h2>Integrals</h2>
+            <div class="formula">Integral of xⁿ: \\( \int x^n \, dx = \frac{x^{n+1}}{n+1} + C \\)</div>
+            <div class="formula">Integral of sin(x): \\( \int \sin(x) \, dx = -\cos(x) + C \\)</div>
+            <div class="formula">Integral of cos(x): \\( \int \cos(x) \, dx = \sin(x) + C \\)</div>
+            <div class="formula">Integral of eˣ: \\( \int e^x \, dx = e^x + C \\)</div>
+            <div class="formula">Integral of 1/x: \\( \int \frac{1}{x} \, dx = \ln |x| + C \\)</div>
+        </section>
+
+        <!-- Chain Rule -->
+        <section>
+            <h2>Chain Rule</h2>
+            <div class="formula">\\( \frac{d}{dx} f(g(x)) = f'(g(x)) \cdot g'(x) \\)</div>
+            <p><strong>Example:</strong> Find the derivative of f(x) = sin(2x): \\( \frac{d}{dx} \sin(2x) = 2 \cos(2x) \\).</p>
+        </section>
+
+        <!-- Product Rule -->
+        <section>
+            <h2>Product Rule</h2>
+            <div class="formula">\\( \frac{d}{dx} [u(x) \cdot v(x)] = u'(x) \cdot v(x) + u(x) \cdot v'(x) \\)</div>
+            <p><strong>Example:</strong> Find the derivative of f(x) = x² * sin(x): \\( \frac{d}{dx} [x² \cdot \sin(x)] = 2x \cdot \sin(x) + x² \cdot \cos(x) \\).</p>
+        </section>
+
+        <!-- Quotient Rule -->
+        <section>
+            <h2>Quotient Rule</h2>
+            <div class="formula">\\( \frac{d}{dx} \left( \frac{u(x)}{v(x)} \right) = \frac{v(x) \cdot u'(x) - u(x) \cdot v'(x)}{v(x)²} \\)</div>
+            <p><strong>Example:</strong> Find the derivative of f(x) = (x²)/(cos(x)): \\( \frac{d}{dx} \left( \frac{x²}{\cos(x)} \right) = \frac{2x \cdot \cos(x) + x² \cdot \sin(x)}{\cos²(x)} \\).</p>
+        </section>
+
+        <!-- Fundamental Theorem of Calculus -->
+        <section>
+            <h2>Fundamental Theorem of Calculus</h2>
+            <div class="formula">\\( \int_{a}^{b} f(x) \, dx = F(b) - F(a) \\), where F'(x) = f(x)</div>
+            <p><strong>Example:</strong> Use the theorem to calculate the area under the curve of f(x) = x² from 0 to 2: \\( \int_0^2 x² \, dx = \left[ \frac{x³}{3} \right]_0^2 = \frac{8}{3} - 0 = \frac{8}{3} \\).</p>
+        </section>
+
+    </div>
+    <footer>
+        &copy; 2024 Calculus Guide. All Rights Reserved.
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+</body>
+</html>
