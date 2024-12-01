@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Statistics Formulas</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 20px;
+            color: #333;
+        }
+        h1, h2 {
+            text-align: center;
+            color: #007bff;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        section {
+            margin-bottom: 20px;
+        }
+        .formula {
+            padding: 10px 15px;
+            background: #f9f9f9;
+            border-left: 4px solid #007bff;
+            margin: 10px 0;
+            font-family: "Courier New", monospace;
+        }
+        footer {
+            text-align: center;
+            margin-top: 30px;
+            color: #777;
+            font-size: 0.9em;
+        }
+    </style>
+</head>
+<body>
+    <h1>Statistics Formulas</h1>
+    <div class="container">
+        <!-- Measures of Central Tendency -->
+        <section>
+            <h2>Measures of Central Tendency</h2>
+            <div class="formula">Mean (μ) = \\( \frac{\sum_{i=1}^{n} x_i}{n} \\)</div>
+            <div class="formula">Median: The middle value of a dataset (for an ordered set)</div>
+            <div class="formula">Mode: The most frequent value in a dataset</div>
+        </section>
+
+        <!-- Measures of Dispersion -->
+        <section>
+            <h2>Measures of Dispersion</h2>
+            <div class="formula">Variance (σ²) = \\( \frac{\sum_{i=1}^{n} (x_i - \mu)^2}{n} \\)</div>
+            <div class="formula">Standard Deviation (σ) = \\( \sqrt{\text{Variance}} \\)</div>
+            <div class="formula">Range = \\( \text{Max} - \text{Min} \\)</div>
+        </section>
+
+        <!-- Probability -->
+        <section>
+            <h2>Probability</h2>
+            <div class="formula">Probability of an event: \\( P(E) = \frac{\text{Number of favorable outcomes}}{\text{Total number of possible outcomes}} \\)</div>
+            <div class="formula">Complement Rule: \\( P(E') = 1 - P(E) \\)</div>
+            <div class="formula">Addition Rule: \\( P(A \cup B) = P(A) + P(B) - P(A \cap B) \\)</div>
+            <div class="formula">Multiplication Rule: \\( P(A \cap B) = P(A) \cdot P(B|A) \\)</div>
+        </section>
+
+        <!-- Probability Distributions -->
+        <section>
+            <h2>Probability Distributions</h2>
+            <div class="formula">Binomial Distribution: \\( P(X = k) = \binom{n}{k} p^k (1 - p)^{n - k} \\)</div>
+            <div class="formula">Normal Distribution: \\( P(X) = \frac{1}{\sigma \sqrt{2 \pi}} \cdot e^{-\frac{(X - \mu)^2}{2 \sigma^2}} \\)</div>
+        </section>
+
+        <!-- Hypothesis Testing -->
+        <section>
+            <h2>Hypothesis Testing</h2>
+            <div class="formula">Null Hypothesis (H₀): The hypothesis stating no effect or no difference.</div>
+            <div class="formula">Alternative Hypothesis (H₁): The hypothesis stating there is an effect or difference.</div>
+            <div class="formula">Test Statistic (z): \\( z = \frac{X - \mu}{\frac{\sigma}{\sqrt{n}}} \\)</div>
+            <div class="formula">p-value: The probability of observing a result at least as extreme as the result obtained, under the null hypothesis.</div>
+        </section>
+
+        <!-- Correlation and Regression -->
+        <section>
+            <h2>Correlation and Regression</h2>
+            <div class="formula">Pearson's Correlation Coefficient: \\( r = \frac{n \sum xy - \sum x \sum y}{\sqrt{(n \sum x^2 - (\sum x)^2)(n \sum y^2 - (\sum y)^2)}} \\)</div>
+            <div class="formula">Simple Linear Regression Equation: \\( Y = a + bX \\), where a = intercept, b = slope</div>
+        </section>
+
+        <!-- Confidence Interval -->
+        <section>
+            <h2>Confidence Interval</h2>
+            <div class="formula">Confidence Interval: \\( \mu \pm Z \cdot \frac{\sigma}{\sqrt{n}} \\)</div>
+            <div class="formula">where Z is the Z-score corresponding to the confidence level.</div>
+        </section>
+    </div>
+    <footer>
+        &copy; 2024 Statistics Guide. All Rights Reserved.
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+</body>
+</html>
