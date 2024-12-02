@@ -138,6 +138,7 @@
             <h2 class="section-title">API Endpoints</h2>
             <button onclick="fetchInfo()">Fetch Info</button>
             <button onclick="fetchArray()">Fetch Array</button>
+            <button onclick="fetchArraySum()">Fetch Sum Of Array</button>
         </section>
         <section class="output-container">
             <h2 class="section-title">API Response</h2>
@@ -234,7 +235,12 @@
         }
 
         async function fetchArray() {
-            const response = await fetch('https://dsa-07qz.onrender.com/array');
+            const response = await fetch('https://dsa-07qz.onrender.com/array/array');
+            const data = await response.json();
+            document.getElementById('output').textContent = JSON.stringify(data, null, 2);
+        }
+        async function fetchArraySum() {
+            const response = await fetch('https://dsa-07qz.onrender.com/array/arraySum');
             const data = await response.json();
             document.getElementById('output').textContent = JSON.stringify(data, null, 2);
         }
