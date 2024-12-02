@@ -1,4 +1,212 @@
-    <!DOCTYPE html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DSA Learning Hub</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f9f9f9;
+            color: #333;
+        }
+        header {
+            background-color: #4CAF50;
+            color: white;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        header h1 {
+            font-size: 2.5em;
+            margin: 0;
+        }
+        header p {
+            font-size: 1.2em;
+            margin: 10px 0;
+        }
+        main {
+            display: flex;
+        }
+        /* Sidebar Styling */
+        .sidebar {
+            width: 250px;
+            background-color: #333;
+            color: white;
+            padding: 20px;
+            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+            height: 100vh;
+        }
+        .sidebar h2 {
+            margin: 0;
+            font-size: 1.5em;
+            margin-bottom: 20px;
+        }
+        .menu-item {
+            margin-bottom: 15px;
+        }
+        .menu-item > button {
+            background: none;
+            border: none;
+            color: white;
+            text-align: left;
+            padding: 10px;
+            width: 100%;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        .menu-item button:hover {
+            background-color: #4CAF50;
+        }
+        .submenu {
+            margin-left: 15px;
+            display: none;
+        }
+        .submenu a {
+            display: block;
+            color: #f9f9f9;
+            text-decoration: none;
+            padding: 5px 0;
+        }
+        .submenu a:hover {
+            color: #4CAF50;
+        }
+        /* Main Content */
+        .content {
+            flex-grow: 1;
+            padding: 30px;
+        }
+        .output-container {
+            margin-top: 30px;
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        footer {
+            text-align: center;
+            padding: 15px 0;
+            background-color: #333;
+            color: white;
+        }
+        footer p {
+            margin: 0;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>DSA Learning Hub</h1>
+        <p>Master Data Structures and Algorithms Step by Step</p>
+    </header>
+    <main>
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <h2>Menu</h2>
+            <div id="sidebarMenu">
+                <!-- Dynamic Menu Items will be injected here -->
+            </div>
+        </div>
+        <!-- Content Section -->
+        <div class="content">
+            <section>
+                <h2>API Endpoints</h2>
+                <button onclick="fetchInfo()">Fetch Info</button>
+                <button onclick="fetchArray()">Fetch Array</button>
+                <button onclick="fetchArraySum()">Fetch Sum Of Array</button>
+            </section>
+            <section class="output-container">
+                <h2>API Response</h2>
+                <div id="output">Click a button to see the response</div>
+            </section>
+        </div>
+    </main>
+    <footer>
+        <p>&copy; 2024 DSA Learning Hub. All Rights Reserved.</p>
+    </footer>
+
+    <script>
+        const menuData = [
+            {
+                title: "DSA Topics",
+                subMenu: [
+                    { name: "Arrays", link: "#arrays" },
+                    { name: "Linked Lists", link: "#linkedLists" },
+                    { name: "Trees", link: "#trees" }
+                ]
+            },
+            {
+                title: "Basic Math",
+                subMenu: [
+                    { name: "Trigonometry", link: "#trigonometry" },
+                    { name: "Algebra", link: "#algebra" },
+                    { name: "Geometry", link: "#geometry" }
+                ]
+            },
+            {
+                title: "Advanced Topics",
+                subMenu: [
+                    { name: "Dynamic Programming", link: "#dynamicProgramming" },
+                    { name: "Graphs", link: "#graphs" },
+                    { name: "Sorting Algorithms", link: "#sorting" }
+                ]
+            }
+        ];
+
+        // Generate Sidebar
+        const sidebarMenu = document.getElementById("sidebarMenu");
+        menuData.forEach(menu => {
+            const menuItem = document.createElement("div");
+            menuItem.classList.add("menu-item");
+            const button = document.createElement("button");
+            button.textContent = menu.title;
+
+            const submenu = document.createElement("div");
+            submenu.classList.add("submenu");
+            menu.subMenu.forEach(sub => {
+                const link = document.createElement("a");
+                link.href = sub.link;
+                link.textContent = sub.name;
+                submenu.appendChild(link);
+            });
+
+            button.addEventListener("click", () => {
+                submenu.style.display = submenu.style.display === "none" || !submenu.style.display ? "block" : "none";
+            });
+
+            menuItem.appendChild(button);
+            menuItem.appendChild(submenu);
+            sidebarMenu.appendChild(menuItem);
+        });
+
+        // Fetch Functions
+        async function fetchInfo() {
+            const response = await fetch('https://dsa-07qz.onrender.com/info');
+            const data = await response.json();
+            document.getElementById('output').textContent = JSON.stringify(data, null, 2);
+        }
+
+        async function fetchArray() {
+            const response = await fetch('https://dsa-07qz.onrender.com/array/array');
+            const data = await response.json();
+            document.getElementById('output').textContent = JSON.stringify(data, null, 2);
+        }
+
+        async function fetchArraySum() {
+            const response = await fetch('https://dsa-07qz.onrender.com/array/arraySum');
+            const data = await response.json();
+            document.getElementById('output').textContent = JSON.stringify(data, null, 2);
+        }
+    </script>
+</body>
+</html>
+
+
+
+
+<!--     <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -247,3 +455,4 @@
     </script>
 </body>
 </html>
+ -->
