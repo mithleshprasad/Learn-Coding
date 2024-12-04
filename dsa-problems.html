@@ -83,6 +83,15 @@
         button:hover {
             background-color: #45a049;
         }
+        .select-lang, .time-complexity {
+            margin-top: 10px;
+        }
+        #output {
+            margin-top: 10px;
+            background: #f1f1f1;
+            padding: 10px;
+            border-radius: 5px;
+        }
     </style>
 </head>
 <body>
@@ -94,32 +103,89 @@
             <h2>Problem 1: Find the Maximum Subarray Sum</h2>
             <p>Write a function to find the maximum sum of a contiguous subarray.</p>
         </div>
+
         <div class="editor-container">
             <div class="editor-header">Code Editor</div>
-            <textarea id="codeEditor">// Write your code here</textarea>
+            
+            <label for="langSelect">Select Language:</label>
+            <select id="langSelect" class="select-lang">
+                <option value="javascript">JavaScript</option>
+                <option value="python">Python</option>
+                <option value="java">Java</option>
+            </select>
+
+            <label for="timeComplexity">Time Complexity:</label>
+            <input type="text" id="timeComplexity" class="time-complexity" placeholder="Enter Time Complexity">
+
+            <textarea id="codeEditor">// Example: Find the maximum subarray sum
+function maxSubarraySum(arr) {
+    let maxSum = arr[0];
+    let currentSum = arr[0];
+    for (let i = 1; i < arr.length; i++) {
+        currentSum = Math.max(arr[i], currentSum + arr[i]);
+        maxSum = Math.max(maxSum, currentSum);
+    }
+    return maxSum;
+}
+maxSubarraySum([1, 2, 3, -2, 5]);</textarea>
+            
             <button onclick="runCode()">Run Code</button>
-            <pre id="output" style="margin-top: 10px; background: #f1f1f1; padding: 10px; border-radius: 5px;"></pre>
+            <pre id="output"></pre>
         </div>
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/codemirror.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/mode/javascript/javascript.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/mode/python/python.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/mode/clike/clike.min.js"></script>
     <script>
         // Initialize CodeMirror editor
         const editor = CodeMirror.fromTextArea(document.getElementById("codeEditor"), {
             lineNumbers: true,
-            mode: "javascript",
+            mode: "javascript", // Default language mode
             theme: "default",
+        });
+
+        // Function to update editor mode based on selected language
+        document.getElementById("langSelect").addEventListener("change", function() {
+            const lang = this.value;
+            let mode = "javascript"; // Default mode
+            
+            if (lang === "python") {
+                mode = "python";
+            } else if (lang === "java") {
+                mode = "clike";
+            }
+
+            editor.setOption("mode", mode);
         });
 
         // Function to run the code
         function runCode() {
             const userCode = editor.getValue();
+            const lang = document.getElementById("langSelect").value;
+            let output = '';
+
+            // Evaluate the code based on the selected language
             try {
-                const output = eval(userCode);
+                if (lang === "javascript") {
+                    output = eval(userCode);
+                } else if (lang === "python") {
+                    // For Python, we'll simulate with a simple example (use actual Python eval on server side)
+                    output = "Python code execution is not supported in the browser.";
+                } else if (lang === "java") {
+                    // For Java, we would need a backend solution to execute Java code
+                    output = "Java code execution is not supported in the browser.";
+                }
                 document.getElementById("output").textContent = `Output: ${output}`;
             } catch (error) {
                 document.getElementById("output").textContent = `Error: ${error.message}`;
+            }
+
+            // Display Time Complexity
+            const timeComplexity = document.getElementById("timeComplexity").value;
+            if (timeComplexity) {
+                document.getElementById("output").textContent += `\nTime Complexity: ${timeComplexity}`;
             }
         }
     </script>
