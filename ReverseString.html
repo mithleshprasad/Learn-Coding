@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DSA Problems with Code Editor</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/codemirror.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f9f9f9;
+        }
+        header {
+            background-color: #4CAF50;
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+        header h1 {
+            margin: 0;
+            font-size: 2.5em;
+        }
+        .container {
+            padding: 20px;
+        }
+        .topic {
+            margin-bottom: 30px;
+        }
+        .topic h2 {
+            margin-bottom: 10px;
+            color: #4CAF50;
+            border-bottom: 2px solid #4CAF50;
+            display: inline-block;
+        }
+        .problems {
+            list-style-type: none;
+            padding: 0;
+        }
+        .problems li {
+            margin: 5px 0;
+            padding: 10px;
+            background: white;
+            border-radius: 5px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            cursor: pointer;
+        }
+        .problems li a {
+            text-decoration: none;
+            color: #333;
+            font-weight: bold;
+        }
+        .problems li a:hover {
+            color: #4CAF50;
+        }
+        .editor-container {
+            margin-top: 20px;
+            background: #ffffff;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .editor-header {
+            margin-bottom: 10px;
+            font-size: 1.2em;
+            color: #4CAF50;
+        }
+        #codeEditor {
+            border: 1px solid #ddd;
+            height: 300px;
+        }
+        button {
+            margin-top: 10px;
+            padding: 10px 15px;
+            font-size: 1em;
+            color: white;
+            background-color: #4CAF50;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>DSA Problems with Code Editor</h1>
+    </header>
+    <div class="container">
+        <div class="topic">
+            <h2>Problem 1: Reverse a String</h2>
+            <p>Write a function that reverses a string without using the built-in reverse function.</p>
+        </div>
+        <div class="editor-container">
+            <div class="editor-header">Code Editor</div>
+            <textarea id="codeEditor">// Example Template: Reverse a String
+
+function reverseString(str) {
+    let reversed = '';
+    for (let i = str.length - 1; i >= 0; i--) {
+        reversed += str[i];
+    }
+    return reversed;
+}
+
+// Example usage:
+const exampleString = "Hello, World!";
+console.log(reverseString(exampleString)); // Expected output: "!dlroW ,olleH"
+</textarea>
+            <button onclick="runCode()">Run Code</button>
+            <pre id="output" style="margin-top: 10px; background: #f1f1f1; padding: 10px; border-radius: 5px;"></pre>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/codemirror.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/mode/javascript/javascript.min.js"></script>
+    <script>
+        // Initialize CodeMirror editor
+        const editor = CodeMirror.fromTextArea(document.getElementById("codeEditor"), {
+            lineNumbers: true,
+            mode: "javascript",
+            theme: "default",
+        });
+
+        // Function to run the code
+        function runCode() {
+            const userCode = editor.getValue();
+            try {
+                const output = eval(userCode);
+                document.getElementById("output").textContent = `Output: ${output}`;
+            } catch (error) {
+                document.getElementById("output").textContent = `Error: ${error.message}`;
+            }
+        }
+    </script>
+</body>
+</html>
