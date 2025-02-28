@@ -71,8 +71,26 @@ const topics = [
     ["Drunk Dial Prevention (Confirm)", 'if (!confirm("Are you sure you want to send this drunk text?")) Swal.fire("Phew! Saved from embarrassment!");'],
     ["Online Dating Score (Object)", 'let user = { looks: 8, humor: 10, intelligence: 6 };\nSwal.fire(`💘 Your Dating Score: ${(user.looks + user.humor + user.intelligence) / 3}`);'],
     ["Thirst Meter (Switch Case)", 'let thirstLevel = 3;\nlet message = "";\nswitch (thirstLevel) {\n  case 1: message = "🥤 Hydrated"; break;\n  case 2: message = "🍺 Thirsty"; break;\n  case 3: message = "🔥 Desperate"; break;\n  default: message = "💀 Dehydrated";\n}\nSwal.fire(message);'],
-    ["OnlyFans Calculator (Map)", 'let earnings = [50, 100, 200, 500];\nlet doubled = earnings.map(e => e * 2);\nSwal.fire(`💸 Your OnlyFans earnings doubled: $${doubled}`);']
+    ["OnlyFans Calculator (Map)", 'let earnings = [50, 100, 200, 500];\nlet doubled = earnings.map(e => e * 2);\nSwal.fire(`💸 Your OnlyFans earnings doubled: $${doubled}`);'],
+       ["Pick-Up Line Generator 💘", 'let lines = ["Are you a magician? Because whenever I look at you, everyone else disappears!", "Do you believe in love at first sight, or should I walk by again?", "Is your name Google? Because you have everything I’ve been searching for."]; Swal.fire(lines[Math.floor(Math.random() * lines.length)]);'],
     
+    ["Meme Magic 🖼️", 'let memes = ["https://i.imgflip.com/30b1gx.jpg", "https://i.imgflip.com/4/1otk96.jpg", "https://i.imgflip.com/1bh8.jpg"]; Swal.fire({ imageUrl: memes[Math.floor(Math.random() * memes.length)], imageWidth: 400, imageHeight: 300, });'],
+
+    ["Truth or Dare Game 🎭", 'let tod = ["Truth: What’s your weirdest habit?", "Dare: Send a romantic message to your crush!", "Truth: Have you ever stalked someone online?", "Dare: Dance like crazy for 30 seconds!"]; Swal.fire(tod[Math.floor(Math.random() * tod.length)]);'],
+    
+    ["Fake Virus Prank 💀", 'setTimeout(() => Swal.fire("⚠️ System Error: Your computer is hacked!"), 2000); setTimeout(() => Swal.fire("😂 Just kidding!"), 5000);'],
+    
+    ["Girlfriend/Boyfriend Name Picker 😏", 'let names = ["Sophia", "Emma", "Olivia", "Liam", "Noah", "Ethan"]; Swal.fire("Your partner’s name is: " + names[Math.floor(Math.random() * names.length)]);'],
+    
+    ["Love Calculator ❤️", 'let love = Math.floor(Math.random() * 100) + 1; Swal.fire("Your love compatibility is: " + love + "% ❤️");'],
+    
+    ["Random Roast Generator 🔥", 'let roasts = ["You bring everyone so much joy… when you leave the room!", "You have something on your chin… no, the third one down!", "You bring everyone together... when they all agree they don’t like you!"]; Swal.fire(roasts[Math.floor(Math.random() * roasts.length)]);'],
+    
+    ["Drunk Typing Effect 🍻", 'let drunk = "I’m noot drunjk, you arre!".split("").map((c, i) => i % 2 ? c.toUpperCase() : c.toLowerCase()).join(""); Swal.fire(drunk);'],
+    
+    ["Who's Your Daddy? 👀", 'let daddy = ["Elon Musk", "Bill Gates", "Jeff Bezos", "Tony Stark", "Your Wallet"]; Swal.fire("Your daddy is: " + daddy[Math.floor(Math.random() * daddy.length)]);'],
+    
+    ["Strip Game (for fun 🤭)", 'let items = ["Shirt", "Pants", "Socks", "Jacket", "Hat"]; Swal.fire("You lost! Take off your " + items[Math.floor(Math.random() * items.length)] + "! 😈");']
 ];
 
 
