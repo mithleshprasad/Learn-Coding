@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Node.js Tutorial</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            padding: 20px;
+            transition: background 0.3s, color 0.3s;
+        }
+        h1 {
+            text-align: center;
+        }
+        .section {
+            background: #333;
+            color: #fff;
+            padding: 10px;
+            margin-top: 10px;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background 0.3s;
+        }
+        .section:hover {
+            background: #555;
+        }
+        .content {
+            display: none;
+            padding: 10px;
+            background: #fff;
+            border-left: 5px solid #333;
+            border-radius: 5px;
+            margin-top: 5px;
+        }
+        .copy-btn {
+            background: #008CBA;
+            color: white;
+            border: none;
+            padding: 5px;
+            cursor: pointer;
+            transition: background 0.3s;
+            border-radius: 3px;
+        }
+        .copy-btn:hover {
+            background: #005f73;
+        }
+        .dark-mode {
+            background-color: #222;
+            color: #fff;
+        }
+        .dark-mode .content {
+            background: #333;
+            color: #ddd;
+        }
+        .dark-mode .section {
+            background: #444;
+        }
+        .button-container {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        .button-container button {
+            padding: 8px 12px;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background 0.3s;
+        }
+        .toggle-mode {
+            background: #ff9800;
+            color: white;
+        }
+        .expand-all {
+            background: #4CAF50;
+            color: white;
+        }
+        .collapse-all {
+            background: #f44336;
+            color: white;
+        }
+        .fade {
+            animation: fadeIn 0.3s;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+
+<h1>📌 Node.js Tutorial - Questions & Answers</h1>
+
+<div class="button-container">
+    <button class="toggle-mode" onclick="toggleMode()">🌙 Dark Mode</button>
+    <button class="expand-all" onclick="expandAll()">📖 Expand All</button>
+    <button class="collapse-all" onclick="collapseAll()">❌ Collapse All</button>
+</div>
+
+<input type="text" id="search" placeholder="🔍 Search questions..." onkeyup="searchQuestions()" style="width: 100%; padding: 10px; margin-bottom: 10px;">
+
+<div id="faq-container">
+    <div class="section" onclick="toggleContent('q1')">
+        <h2>1️⃣ What is Node.js?</h2>
+    </div>
+    <div id="q1" class="content">
+        <p>Node.js is an **open-source, cross-platform runtime** that allows JavaScript to run on the server-side.</p>
+        <ul>
+            <li>Built on Google Chrome’s V8 JavaScript Engine.</li>
+            <li>Used for building fast and scalable applications.</li>
+            <li>Supports asynchronous programming.</li>
+        </ul>
+    </div>
+
+    <div class="section" onclick="toggleContent('q2')">
+        <h2>2️⃣ How to install Node.js?</h2>
+    </div>
+    <div id="q2" class="content">
+        <p>To install Node.js:</p>
+        <ol>
+            <li>Go to <a href="https://nodejs.org/" target="_blank">Node.js Official Website</a>.</li>
+            <li>Download the latest stable version.</li>
+            <li>Follow the installation process.</li>
+            <li>Verify installation by running:</li>
+            <pre><code>node -v</code></pre>
+        </ol>
+    </div>
+
+    <div class="section" onclick="toggleContent('q3')">
+        <h2>3️⃣ What is npm in Node.js?</h2>
+    </div>
+    <div id="q3" class="content">
+        <p>npm (Node Package Manager) is used to manage JavaScript packages.</p>
+        <pre>
+            <button class="copy-btn" onclick="copyToClipboard('code3')">Copy</button>
+            <code id="code3">
+npm init -y
+npm install express
+            </code>
+        </pre>
+    </div>
+
+    <div class="section" onclick="toggleContent('q4')">
+        <h2>4️⃣ How to create a basic server in Node.js?</h2>
+    </div>
+    <div id="q4" class="content">
+        <p>Use the **http module** to create a simple server.</p>
+        <pre>
+            <button class="copy-btn" onclick="copyToClipboard('code4')">Copy</button>
+            <code id="code4">
+const http = require('http');
+const server = http.createServer((req, res) => {
+    res.writeHead(200, { 'Content-Type': 'text/plain' });
+    res.end('Hello, Node.js!');
+});
+server.listen(3000, () => {
+    console.log('Server running on port 3000');
+});
+            </code>
+        </pre>
+    </div>
+</div>
+<!-- Question 5 -->
+<div class="section" onclick="toggleContent('q5')">
+    <h2>5️⃣ What is Express.js?</h2>
+</div>
+<div id="q5" class="content">
+    <p>Express.js is a **fast and minimal web framework** for Node.js. It simplifies routing and middleware management.</p>
+    <pre>
+        <button class="copy-btn" onclick="copyToClipboard('code5')">Copy</button>
+        <code id="code5">
+const express = require('express');
+const app = express();
+
+app.get('/', (req, res) => {
+    res.send('Hello, Express!');
+});
+
+app.listen(3000, () => {
+    console.log('Server running on port 3000');
+});
+        </code>
+    </pre>
+</div>
+
+<!-- Question 6 -->
+<div class="section" onclick="toggleContent('q6')">
+    <h2>6️⃣ What is Middleware in Express?</h2>
+</div>
+<div id="q6" class="content">
+    <p>Middleware functions **process requests** before sending a response. Middleware can be used for logging, authentication, and more.</p>
+    <pre>
+        <button class="copy-btn" onclick="copyToClipboard('code6')">Copy</button>
+        <code id="code6">
+app.use((req, res, next) => {
+    console.log('Middleware triggered');
+    next();
+});
+        </code>
+    </pre>
+</div>
+
+<!-- Question 7 -->
+<div class="section" onclick="toggleContent('q7')">
+    <h2>7️⃣ How to handle JSON data in Node.js?</h2>
+</div>
+<div id="q7" class="content">
+    <p>Use <code>express.json()</code> to parse JSON requests in Express.</p>
+    <pre>
+        <button class="copy-btn" onclick="copyToClipboard('code7')">Copy</button>
+        <code id="code7">
+app.use(express.json());
+
+app.post('/data', (req, res) => {
+    console.log(req.body);
+    res.send('Data received');
+});
+        </code>
+    </pre>
+</div>
+
+<!-- Question 8 -->
+<div class="section" onclick="toggleContent('q8')">
+    <h2>8️⃣ How to connect Node.js with MongoDB?</h2>
+</div>
+<div id="q8" class="content">
+    <p>Use **Mongoose** to connect with MongoDB. It provides schema-based modeling.</p>
+    <pre>
+        <button class="copy-btn" onclick="copyToClipboard('code8')">Copy</button>
+        <code id="code8">
+const mongoose = require('mongoose');
+
+mongoose.connect('mongodb://localhost:27017/mydb', {
+    useNewUrlParser: true, 
+    useUnifiedTopology: true
+})
+.then(() => console.log('MongoDB Connected'))
+.catch(err => console.log(err));
+        </code>
+    </pre>
+</div>
+
+<!-- Question 9 -->
+<div class="section" onclick="toggleContent('q9')">
+    <h2>9️⃣ How to create a REST API in Node.js?</h2>
+</div>
+<div id="q9" class="content">
+    <p>Use **Express.js** to create a REST API endpoint.</p>
+    <pre>
+        <button class="copy-btn" onclick="copyToClipboard('code9')">Copy</button>
+        <code id="code9">
+app.get('/api/users', (req, res) => {
+    res.json([{ id: 1, name: "John Doe" }]);
+});
+        </code>
+    </pre>
+</div>
+
+<!-- Question 10 -->
+<div class="section" onclick="toggleContent('q10')">
+    <h2>🔟 How to use Environment Variables in Node.js?</h2>
+</div>
+<div id="q10" class="content">
+    <p>Use **dotenv** package to manage environment variables safely.</p>
+    <pre>
+        <button class="copy-btn" onclick="copyToClipboard('code10')">Copy</button>
+        <code id="code10">
+require('dotenv').config();
+console.log(process.env.API_KEY);
+        </code>
+    </pre>
+</div>
+<!-- Question 11 -->
+<div class="section" onclick="toggleContent('q11')">
+    <h2>1️⃣1️⃣ What is Asynchronous Programming in Node.js?</h2>
+</div>
+<div id="q11" class="content">
+    <p>Node.js uses an event-driven, non-blocking I/O model, allowing async operations.</p>
+    <pre>
+        <button class="copy-btn" onclick="copyToClipboard('code11')">Copy</button>
+        <code id="code11">
+setTimeout(() => {
+    console.log("Executed after 2 seconds");
+}, 2000);
+        </code>
+    </pre>
+</div>
+
+<!-- Question 12 -->
+<div class="section" onclick="toggleContent('q12')">
+    <h2>1️⃣2️⃣ How to use Async/Await in Node.js?</h2>
+</div>
+<div id="q12" class="content">
+    <p>Async/Await simplifies asynchronous code handling.</p>
+    <pre>
+        <button class="copy-btn" onclick="copyToClipboard('code12')">Copy</button>
+        <code id="code12">
+async function fetchData() {
+    let response = await fetch('https://api.example.com/data');
+    let data = await response.json();
+    console.log(data);
+}
+fetchData();
+        </code>
+    </pre>
+</div>
+
+<!-- Question 13 -->
+<div class="section" onclick="toggleContent('q13')">
+    <h2>1️⃣3️⃣ What is WebSocket in Node.js?</h2>
+</div>
+<div id="q13" class="content">
+    <p>WebSockets provide real-time, bi-directional communication between client & server.</p>
+    <pre>
+        <button class="copy-btn" onclick="copyToClipboard('code13')">Copy</button>
+        <code id="code13">
+const WebSocket = require('ws');
+const server = new WebSocket.Server({ port: 8080 });
+
+server.on('connection', ws => {
+    ws.send('Hello Client!');
+    ws.on('message', message => console.log(`Received: ${message}`));
+});
+        </code>
+    </pre>
+</div>
+
+<!-- Question 14 -->
+<div class="section" onclick="toggleContent('q14')">
+    <h2>1️⃣4️⃣ How to use JWT for Authentication?</h2>
+</div>
+<div id="q14" class="content">
+    <p>JSON Web Token (JWT) is used for secure authentication.</p>
+    <pre>
+        <button class="copy-btn" onclick="copyToClipboard('code14')">Copy</button>
+        <code id="code14">
+const jwt = require('jsonwebtoken');
+
+const token = jwt.sign({ user: 'John' }, 'secretKey', { expiresIn: '1h' });
+console.log(token);
+        </code>
+    </pre>
+</div>
+
+<!-- Question 15 -->
+<div class="section" onclick="toggleContent('q15')">
+    <h2>1️⃣5️⃣ What is Redis and How to Use it in Node.js?</h2>
+</div>
+<div id="q15" class="content">
+    <p>Redis is an in-memory data store, often used for caching.</p>
+    <pre>
+        <button class="copy-btn" onclick="copyToClipboard('code15')">Copy</button>
+        <code id="code15">
+const redis = require('redis');
+const client = redis.createClient();
+
+client.set('key', 'value', redis.print);
+client.get('key', (err, reply) => console.log(reply));
+        </code>
+    </pre>
+</div>
+
+<!-- Question 16 -->
+<div class="section" onclick="toggleContent('q16')">
+    <h2>1️⃣6️⃣ What is Event Emitter in Node.js?</h2>
+</div>
+<div id="q16" class="content">
+    <p>EventEmitter allows event-driven programming in Node.js.</p>
+    <pre>
+        <button class="copy-btn" onclick="copyToClipboard('code16')">Copy</button>
+        <code id="code16">
+const EventEmitter = require('events');
+const emitter = new EventEmitter();
+
+emitter.on('event', () => console.log('Event triggered!'));
+emitter.emit('event');
+        </code>
+    </pre>
+</div>
+
+<!-- Question 17 -->
+<div class="section" onclick="toggleContent('q17')">
+    <h2>1️⃣7️⃣ How to Handle Errors in Node.js?</h2>
+</div>
+<div id="q17" class="content">
+    <p>Use try-catch or error handlers for better error management.</p>
+    <pre>
+        <button class="copy-btn" onclick="copyToClipboard('code17')">Copy</button>
+        <code id="code17">
+try {
+    let result = JSON.parse("invalid json");
+} catch (error) {
+    console.error("Error caught:", error.message);
+}
+        </code>
+    </pre>
+</div>
+
+<!-- Question 18 -->
+<div class="section" onclick="toggleContent('q18')">
+    <h2>1️⃣8️⃣ What is Nodemon and Why Use It?</h2>
+</div>
+<div id="q18" class="content">
+    <p>Nodemon auto-restarts the server when code changes.</p>
+    <pre>
+        <button class="copy-btn" onclick="copyToClipboard('code18')">Copy</button>
+        <code id="code18">
+npm install -g nodemon
+nodemon app.js
+        </code>
+    </pre>
+</div>
+
+<!-- Question 19 -->
+<div class="section" onclick="toggleContent('q19')">
+    <h2>1️⃣9️⃣ What is the Difference Between Process.nextTick() and setImmediate()?</h2>
+</div>
+<div id="q19" class="content">
+    <p>Process.nextTick() runs before the next event loop phase, while setImmediate() executes in the next cycle.</p>
+</div>
+
+<!-- Question 20 -->
+<div class="section" onclick="toggleContent('q20')">
+    <h2>2️⃣0️⃣ How to Deploy a Node.js App?</h2>
+</div>
+<div id="q20" class="content">
+    <p>Use **PM2** for process management & **Nginx** for load balancing.</p>
+</div>
+<!-- Question 21 -->
+<div class="section" onclick="toggleContent('q21')">
+    <h2>2️⃣1️⃣ What is a Middleware in Node.js?</h2>
+</div>
+<div id="q21" class="content">
+    <p>Middleware functions modify request/response objects and execute code before reaching the final handler.</p>
+    <pre>
+        <button class="copy-btn" onclick="copyToClipboard('code21')">Copy</button>
+        <code id="code21">
+app.use((req, res, next) => {
+    console.log('Middleware executed');
+    next();
+});
+        </code>
+    </pre>
+</div>
+
+<!-- Question 22 -->
+<div class="section" onclick="toggleContent('q22')">
+    <h2>2️⃣2️⃣ How to Secure a Node.js App?</h2>
+</div>
+<div id="q22" class="content">
+    <p>Use Helmet, CORS, rate limiting, and input validation to enhance security.</p>
+</div>
+
+<!-- Question 23 -->
+<div class="section" onclick="toggleContent('q23')">
+    <h2>2️⃣3️⃣ What is Cluster Module in Node.js?</h2>
+</div>
+<div id="q23" class="content">
+    <p>Cluster module allows Node.js to use multiple CPU cores for better performance.</p>
+    <pre>
+        <button class="copy-btn" onclick="copyToClipboard('code23')">Copy</button>
+        <code id="code23">
+const cluster = require('cluster');
+const http = require('http');
+
+if (cluster.isMaster) {
+    cluster.fork(); // Create worker process
+} else {
+    http.createServer((req, res) => res.end("Hello!")).listen(3000);
+}
+        </code>
+    </pre>
+</div>
+
+<!-- Question 24 -->
+<div class="section" onclick="toggleContent('q24')">
+    <h2>2️⃣4️⃣ How to Handle File Uploads in Node.js?</h2>
+</div>
+<div id="q24" class="content">
+    <p>Use Multer package for handling file uploads.</p>
+    <pre>
+        <button class="copy-btn" onclick="copyToClipboard('code24')">Copy</button>
+        <code id="code24">
+const multer = require('multer');
+const upload = multer({ dest: 'uploads/' });
+
+app.post('/upload', upload.single('file'), (req, res) => {
+    res.send('File uploaded!');
+});
+        </code>
+    </pre>
+</div>
+
+<!-- Question 25 -->
+<div class="section" onclick="toggleContent('q25')">
+    <h2>2️⃣5️⃣ What is Streams in Node.js?</h2>
+</div>
+<div id="q25" class="content">
+    <p>Streams allow handling large amounts of data efficiently.</p>
+    <pre>
+        <button class="copy-btn" onclick="copyToClipboard('code25')">Copy</button>
+        <code id="code25">
+const fs = require('fs');
+
+const readStream = fs.createReadStream('file.txt');
+readStream.on('data', chunk => console.log(chunk.toString()));
+        </code>
+    </pre>
+</div>
+
+<!-- Question 26 -->
+<div class="section" onclick="toggleContent('q26')">
+    <h2>2️⃣6️⃣ How to Implement Web Scraping in Node.js?</h2>
+</div>
+<div id="q26" class="content">
+    <p>Use Axios and Cheerio for web scraping.</p>
+    <pre>
+        <button class="copy-btn" onclick="copyToClipboard('code26')">Copy</button>
+        <code id="code26">
+const axios = require('axios');
+const cheerio = require('cheerio');
+
+axios.get('https://example.com').then(response => {
+    const $ = cheerio.load(response.data);
+    console.log($('h1').text());
+});
+        </code>
+    </pre>
+</div>
+
+<!-- Question 27 -->
+<div class="section" onclick="toggleContent('q27')">
+    <h2>2️⃣7️⃣ How to Use WebSockets in Node.js?</h2>
+</div>
+<div id="q27" class="content">
+    <p>WebSockets enable real-time communication between server and client.</p>
+</div>
+
+<!-- Question 28 -->
+<div class="section" onclick="toggleContent('q28')">
+    <h2>2️⃣8️⃣ What is the Difference Between Synchronous and Asynchronous Code?</h2>
+</div>
+<div id="q28" class="content">
+    <p>Synchronous code runs sequentially, while asynchronous code allows non-blocking execution.</p>
+</div>
+
+<!-- Question 29 -->
+<div class="section" onclick="toggleContent('q29')">
+    <h2>2️⃣9️⃣ How to Use OAuth Authentication in Node.js?</h2>
+</div>
+<div id="q29" class="content">
+    <p>OAuth is a secure authorization method using tokens.</p>
+</div>
+
+<!-- Question 30 -->
+<div class="section" onclick="toggleContent('q30')">
+    <h2>3️⃣0️⃣ What is Load Balancing in Node.js?</h2>
+</div>
+<div id="q30" class="content">
+    <p>Load balancing distributes traffic across multiple servers.</p>
+</div>
+<script>
+function toggleContent(id) {
+    var content = document.getElementById(id);
+    content.classList.toggle('fade');
+    content.style.display = content.style.display === "block" ? "none" : "block";
+}
+
+function copyToClipboard(codeId) {
+    var codeElement = document.getElementById(codeId);
+    var textArea = document.createElement("textarea");
+    textArea.value = codeElement.innerText;
+    document.body.appendChild(textArea);
+    textArea.select();
+    document.execCommand("copy");
+    document.body.removeChild(textArea);
+    alert("✅ Code copied!");
+}
+
+function toggleMode() {
+    document.body.classList.toggle("dark-mode");
+}
+
+function expandAll() {
+    document.querySelectorAll(".content").forEach(content => {
+        content.style.display = "block";
+    });
+}
+
+function collapseAll() {
+    document.querySelectorAll(".content").forEach(content => {
+        content.style.display = "none";
+    });
+}
+
+function searchQuestions() {
+    let input = document.getElementById('search').value.toLowerCase();
+    let sections = document.querySelectorAll(".section");
+
+    sections.forEach(section => {
+        let text = section.innerText.toLowerCase();
+        let content = section.nextElementSibling;
+        if (text.includes(input)) {
+            section.style.display = "block";
+            content.style.display = "block";
+        } else {
+            section.style.display = "none";
+            content.style.display = "none";
+        }
+    });
+}
+</script>
+
+</body>
+</html>
