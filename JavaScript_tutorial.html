@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JavaScript Fundamentals</title>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <style>
+        body { font-family: Arial, sans-serif; background: #f4f4f4; padding: 20px; transition: 0.3s; }
+        .dark-mode { background: #222; color: #fff; }
+        .header { display: flex; justify-content: space-between; align-items: center; }
+        .search-box { padding: 5px; width: 250px; }
+        .toggle-btn { background: #008CBA; color: white; padding: 8px; border: none; cursor: pointer; }
+        .section { background: #333; color: #fff; padding: 10px; margin-top: 10px; cursor: pointer; }
+        .content { display: none; padding: 10px; background: #fff; border-left: 5px solid #333; color: black; }
+        .dark-mode .content { background: #444; color: white; border-left: 5px solid #008CBA; }
+        .copy-btn, .run-btn { background: #008CBA; color: white; padding: 5px; border: none; cursor: pointer; margin-right: 5px; }
+        .copy-btn:hover, .run-btn:hover { background: #005f73; }
+        textarea { width: 100%; height: 80px; font-family: monospace; margin-top: 10px; }
+    </style>
+</head>
+<body>
+
+<div class="header">
+    <h1>📌 JavaScript Tutorial</h1>
+    <input type="text" id="search" class="search-box" placeholder="🔍 Search topics..." onkeyup="searchTopics()">
+    <button class="toggle-btn" onclick="toggleDarkMode()">🌙 Dark Mode</button>
+</div>
+
+<div class="section" onclick="toggleContent('q1')">1️⃣ Print in JavaScript</div>
+<div id="q1" class="content">
+    <textarea id="code1">Swal.fire("Hello, JavaScript!");</textarea><br>
+    <button class="run-btn" onclick="runCode('code1')">Run</button>
+    <button class="copy-btn" onclick="copyToClipboard('code1')">Copy</button>
+</div>
+
+<div class="section" onclick="toggleContent('q2')">2️⃣ Variables</div>
+<div id="q2" class="content">
+    <textarea id="code2">let name = "John"; Swal.fire("Your name is: " + name);</textarea><br>
+    <button class="run-btn" onclick="runCode('code2')">Run</button>
+    <button class="copy-btn" onclick="copyToClipboard('code2')">Copy</button>
+</div>
+
+<div class="section" onclick="toggleContent('q3')">3️⃣ Functions</div>
+<div id="q3" class="content">
+    <textarea id="code3">
+function greet() { Swal.fire("Hello, World!"); }
+greet();
+    </textarea><br>
+    <button class="run-btn" onclick="runCode('code3')">Run</button>
+    <button class="copy-btn" onclick="copyToClipboard('code3')">Copy</button>
+</div>
+
+<div class="section" onclick="toggleContent('q4')">4️⃣ Arrays</div>
+<div id="q4" class="content">
+    <textarea id="code4">
+let fruits = ["Apple", "Banana", "Cherry"];
+Swal.fire("Fruits: " + fruits.join(", "));
+    </textarea><br>
+    <button class="run-btn" onclick="runCode('code4')">Run</button>
+    <button class="copy-btn" onclick="copyToClipboard('code4')">Copy</button>
+</div>
+
+<div class="section" onclick="toggleContent('q5')">5️⃣ Objects</div>
+<div id="q5" class="content">
+    <textarea id="code5">
+let person = { name: "Alice", age: 25 };
+Swal.fire(person.name + " is " + person.age + " years old.");
+    </textarea><br>
+    <button class="run-btn" onclick="runCode('code5')">Run</button>
+    <button class="copy-btn" onclick="copyToClipboard('code5')">Copy</button>
+</div>
+
+<div class="section" onclick="toggleContent('q6')">6️⃣ If-Else Conditions</div>
+<div id="q6" class="content">
+    <textarea id="code6">
+let age = 18;
+if (age >= 18) Swal.fire("You are an adult.");
+else Swal.fire("You are a minor.");
+    </textarea><br>
+    <button class="run-btn" onclick="runCode('code6')">Run</button>
+    <button class="copy-btn" onclick="copyToClipboard('code6')">Copy</button>
+</div>
+
+<div class="section" onclick="toggleContent('q7')">7️⃣ Loops</div>
+<div id="q7" class="content">
+    <textarea id="code7">
+let result = "";
+for (let i = 1; i <= 5; i++) result += i + " ";
+Swal.fire("Numbers: " + result);
+    </textarea><br>
+    <button class="run-btn" onclick="runCode('code7')">Run</button>
+    <button class="copy-btn" onclick="copyToClipboard('code7')">Copy</button>
+</div>
+
+<div class="section" onclick="toggleContent('q8')">8️⃣ Events</div>
+<div id="q8" class="content">
+    <textarea id="code8">
+document.body.onclick = function() { Swal.fire("You clicked on the page!"); };
+    </textarea><br>
+    <button class="run-btn" onclick="runCode('code8')">Run</button>
+    <button class="copy-btn" onclick="copyToClipboard('code8')">Copy</button>
+</div>
+
+<script>
+function toggleContent(id) {
+    let content = document.getElementById(id);
+    content.style.display = (content.style.display === "none" || content.style.display === "") ? "block" : "none";
+}
+
+function copyToClipboard(codeId) {
+    let codeElement = document.getElementById(codeId);
+    codeElement.select();
+    document.execCommand("copy");
+    Swal.fire("✅ Code copied!");
+}
+
+function runCode(codeId) {
+    let code = document.getElementById(codeId).value;
+    try { eval(code); } 
+    catch (error) { Swal.fire("❌ Error: " + error.message); }
+}
+
+function toggleDarkMode() {
+    document.body.classList.toggle("dark-mode");
+    Swal.fire("🌙 Dark mode " + (document.body.classList.contains("dark-mode") ? "enabled" : "disabled"));
+}
+
+function searchTopics() {
+    let input = document.getElementById("search").value.toLowerCase();
+    let sections = document.getElementsByClassName("section");
+    for (let section of sections) {
+        if (section.textContent.toLowerCase().includes(input)) section.style.display = "";
+        else section.style.display = "none";
+    }
+}
+</script>
+
+</body>
+</html>
