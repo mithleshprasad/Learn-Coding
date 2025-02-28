@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>React.js Interview Questions</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f4f4;
+            transition: background 0.3s, color 0.3s;
+        }
+        .container {
+            max-width: 900px;
+            margin: auto;
+            padding: 20px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        h1 {
+            text-align: center;
+            color: #007bff;
+        }
+        .toggle-dark-mode {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            cursor: pointer;
+            font-size: 1.5em;
+            background: none;
+            border: none;
+            color: #333;
+        }
+        .toggle-dark-mode:hover {
+            color: #007bff;
+        }
+        .dark-mode {
+            background: #222;
+            color: #fff;
+        }
+        .dark-mode .container {
+            background: #333;
+            box-shadow: 0 4px 8px rgba(255, 255, 255, 0.2);
+        }
+        .section {
+            margin-bottom: 15px;
+            background: #f9f9f9;
+            padding: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            border-left: 5px solid #007bff;
+            transition: background 0.3s;
+        }
+        .section:hover {
+            background: #e9ecef;
+        }
+        .content {
+            display: none;
+            padding: 10px;
+        }
+        .show {
+            display: block;
+        }
+        pre {
+            background: black;
+            color: lime;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+            position: relative;
+        }
+        .copy-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+        .copy-btn:hover {
+            background: #0056b3;
+        }
+        a {
+            display: block;
+            text-align: center;
+            margin-top: 20px;
+            padding: 10px;
+            background: #007bff;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+        a:hover {
+            background: #0056b3;
+        }
+    </style>
+</head>
+<body>
+
+    <button class="toggle-dark-mode" onclick="toggleDarkMode()">
+        <i class="fas fa-moon"></i>
+    </button>
+
+    <div class="container">
+        <h1>Top 10 React.js Interview Questions</h1>
+
+        <div class="section" onclick="toggleContent('q1')">
+            <h2>1️⃣ What is React?</h2>
+        </div>
+        <div id="q1" class="content">
+            <p>React.js is a JavaScript library for building fast and interactive user interfaces. It is maintained by Facebook.</p>
+        </div>
+
+        <div class="section" onclick="toggleContent('q2')">
+            <h2>2️⃣ What are Components in React?</h2>
+        </div>
+        <div id="q2" class="content">
+            <p>Components are reusable UI elements in React. They can be **class-based** or **functional**.</p>
+            <pre>
+                <button class="copy-btn" onclick="copyToClipboard('code1')">Copy</button>
+&lt;function Hello() {
+    return &lt;h1&gt;Hello, World!&lt;/h1&gt;;
+}&gt;
+            </pre>
+        </div>
+
+        <div class="section" onclick="toggleContent('q3')">
+            <h2>3️⃣ What is JSX?</h2>
+        </div>
+        <div id="q3" class="content">
+            <p>JSX (JavaScript XML) allows you to write HTML inside JavaScript.</p>
+            <pre>
+                <button class="copy-btn" onclick="copyToClipboard('code2')">Copy</button>
+const element = &lt;h1&gt;Hello JSX!&lt;/h1&gt;;
+            </pre>
+        </div>
+
+        <div class="section" onclick="toggleContent('q4')">
+            <h2>4️⃣ What is State in React?</h2>
+        </div>
+        <div id="q4" class="content">
+            <p>State allows React components to **manage dynamic data**.</p>
+            <pre>
+                <button class="copy-btn" onclick="copyToClipboard('code3')">Copy</button>
+import { useState } from 'react';
+
+function Counter() {
+    const [count, setCount] = useState(0);
+    return (
+        &lt;div&gt;
+            &lt;p&gt;Count: {count}&lt;/p&gt;
+            &lt;button onClick={() =&gt; setCount(count + 1)}&gt;Increment&lt;/button&gt;
+        &lt;/div&gt;
+    );
+}
+            </pre>
+        </div>
+
+        <div class="section" onclick="toggleContent('q5')">
+            <h2>5️⃣ What are Props?</h2>
+        </div>
+        <div id="q5" class="content">
+            <p>Props (short for properties) are used to **pass data** between components.</p>
+            <pre>
+                <button class="copy-btn" onclick="copyToClipboard('code4')">Copy</button>
+function Greet(props) {
+    return &lt;h1&gt;Hello, {props.name}!&lt;/h1&gt;;
+}
+            </pre>
+        </div>
+
+        <div class="section" onclick="toggleContent('q6')">
+            <h2>6️⃣ What is the Virtual DOM?</h2>
+        </div>
+        <div id="q6" class="content">
+            <p>The Virtual DOM is a **lightweight copy** of the actual DOM that React updates efficiently.</p>
+        </div>
+
+        <div class="section" onclick="toggleContent('q7')">
+            <h2>7️⃣ What is useEffect?</h2>
+        </div>
+        <div id="q7" class="content">
+            <p>useEffect is a **React Hook** for handling side effects like fetching data.</p>
+            <pre>
+                <button class="copy-btn" onclick="copyToClipboard('code5')">Copy</button>
+import { useEffect } from 'react';
+
+useEffect(() => {
+    console.log("Component Mounted!");
+}, []);
+            </pre>
+        </div>
+
+        <a href="index.html">⬅️ Back to Home</a>
+    </div>
+
+    <script>
+        function toggleContent(id) {
+            let content = document.getElementById(id);
+            content.classList.toggle("show");
+        }
+
+        function toggleDarkMode() {
+            document.body.classList.toggle("dark-mode");
+        }
+
+        function copyToClipboard(elementId) {
+            let textArea = document.createElement("textarea");
+            textArea.value = document.getElementById(elementId).innerText;
+            document.body.appendChild(textArea);
+            textArea.select();
+            document.execCommand("copy");
+            document.body.removeChild(textArea);
+            alert("Code copied!");
+        }
+    </script>
+
+</body>
+</html>
