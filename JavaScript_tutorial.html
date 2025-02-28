@@ -61,7 +61,18 @@ const topics = [
     ["Error Handling", 'try { throw new Error("Your ex is calling! Abort! 🚨"); } catch (e) { Swal.fire(e.message); }'],
     ["Spread & Rest Operators", 'let drinks = ["Beer", "Wine", "Whiskey"];\nlet allDrinks = [...drinks, "Tequila", "Gin"];\nSwal.fire("Tonight’s menu: " + allDrinks);'],
     ["Map & Filter", 'let numbers = [10, 20, 30, 40, 50];\nlet filtered = numbers.filter(n => n > 25);\nSwal.fire("Big money bets: " + filtered);'],
-    ["Classes", 'class Playboy { constructor(name) { this.name = name; } flirt() { return this.name + " is smooth AF! 😉"; } }\nlet player = new Playboy("James");\nSwal.fire(player.flirt());']
+    ["Classes", 'class Playboy { constructor(name) { this.name = name; } flirt() { return this.name + " is smooth AF! 😉"; } }\nlet player = new Playboy("James");\nSwal.fire(player.flirt());'],
+    ["Drunk Mode (toLowerCase)", 'let text = "I LOVE JAVASCRIPT!"; Swal.fire(text.toLowerCase());'],
+    ["Horny Filter (includes)", 'let chat = "Hey, wanna grab some coffee?";\nif (chat.includes("coffee")) Swal.fire("☕ Flirt detected!");'],
+    ["Love Calculator (Math.random)", 'let love = Math.floor(Math.random() * 100) + 1;\nSwal.fire(`❤️ Love Score: ${love}%`);'],
+    ["Naughty Confession (Prompt)", 'let confession = prompt("Tell me your darkest secret...");\nSwal.fire(`😏 I know your secret: ${confession}`);'],
+    ["Date Picker (Date object)", 'let date = new Date();\nSwal.fire(`📅 Today is ${date.toDateString()}`);'],
+    ["Flirty Message (Ternary Operator)", 'let hotness = Math.random() > 0.5 ? "🔥 You’re sexy!" : "🥶 Try harder!";\nSwal.fire(hotness);'],
+    ["Drunk Dial Prevention (Confirm)", 'if (!confirm("Are you sure you want to send this drunk text?")) Swal.fire("Phew! Saved from embarrassment!");'],
+    ["Online Dating Score (Object)", 'let user = { looks: 8, humor: 10, intelligence: 6 };\nSwal.fire(`💘 Your Dating Score: ${(user.looks + user.humor + user.intelligence) / 3}`);'],
+    ["Thirst Meter (Switch Case)", 'let thirstLevel = 3;\nlet message = "";\nswitch (thirstLevel) {\n  case 1: message = "🥤 Hydrated"; break;\n  case 2: message = "🍺 Thirsty"; break;\n  case 3: message = "🔥 Desperate"; break;\n  default: message = "💀 Dehydrated";\n}\nSwal.fire(message);'],
+    ["OnlyFans Calculator (Map)", 'let earnings = [50, 100, 200, 500];\nlet doubled = earnings.map(e => e * 2);\nSwal.fire(`💸 Your OnlyFans earnings doubled: $${doubled}`);']
+    
 ];
 
 
