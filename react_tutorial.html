@@ -109,7 +109,7 @@
     </button>
 
     <div class="container">
-        <h1>Top 20 React.js Interview Questions</h1>
+        <h1>Top 30 React.js Interview Questions</h1>
 
         <div class="section" onclick="toggleContent('q1')">
             <h2>1️⃣ What is React?</h2>
@@ -477,6 +477,208 @@ function App() {
         </code>
     </pre>
 </div>
+       <div class="section" onclick="toggleContent('q21')">
+    <h2>2️⃣1️⃣ What is React Context API?</h2>
+</div>
+<div id="q21" class="content">
+    <p>Context API is used to manage global state without prop drilling.</p>
+    <pre>
+        <button class="copy-btn" onclick="copyToClipboard('code21')">Copy</button>
+        <code id="code21">
+import React, { createContext, useContext } from 'react';
+
+const ThemeContext = createContext('light');
+
+function ThemeComponent() {
+    const theme = useContext(ThemeContext);
+    return <p>Current Theme: {theme}</p>;
+}
+
+function App() {
+    return (
+        <ThemeContext.Provider value="dark">
+            <ThemeComponent />
+        </ThemeContext.Provider>
+    );
+}
+        </code>
+    </pre>
+</div>
+
+<div class="section" onclick="toggleContent('q22')">
+    <h2>2️⃣2️⃣ What is React Router?</h2>
+</div>
+<div id="q22" class="content">
+    <p>React Router helps in **navigation between pages** in a React app.</p>
+    <pre>
+        <button class="copy-btn" onclick="copyToClipboard('code22')">Copy</button>
+        <code id="code22">
+import { BrowserRouter, Route, Routes, Link } from 'react-router-dom';
+
+function Home() {
+    return <h1>Home Page</h1>;
+}
+
+function About() {
+    return <h1>About Page</h1>;
+}
+
+function App() {
+    return (
+        <BrowserRouter>
+            <nav>
+                <Link to="/">Home</Link> | <Link to="/about">About</Link>
+            </nav>
+            <Routes>
+                <Route path="/" element={<Home />} />
+                <Route path="/about" element={<About />} />
+            </Routes>
+        </BrowserRouter>
+    );
+}
+        </code>
+    </pre>
+</div>
+
+<div class="section" onclick="toggleContent('q23')">
+    <h2>2️⃣3️⃣ What is Prop Drilling?</h2>
+</div>
+<div id="q23" class="content">
+    <p>Prop drilling occurs when props are passed **multiple levels down** unnecessarily.</p>
+    <pre>
+        <button class="copy-btn" onclick="copyToClipboard('code23')">Copy</button>
+        <code id="code23">
+function ChildComponent({ message }) {
+    return <p>{message}</p>;
+}
+
+function ParentComponent() {
+    return <ChildComponent message="Hello from Parent!" />;
+}
+        </code>
+    </pre>
+</div>
+
+<div class="section" onclick="toggleContent('q25')">
+    <h2>2️⃣5️⃣ What are Controlled vs Uncontrolled Components?</h2>
+</div>
+<div id="q25" class="content">
+    <p>Controlled components are managed by React state, while uncontrolled components rely on the DOM.</p>
+    <pre>
+        <button class="copy-btn" onclick="copyToClipboard('code25')">Copy</button>
+        <code id="code25">
+function ControlledInput() {
+    const [value, setValue] = useState("");
+    return <input value={value} onChange={(e) => setValue(e.target.value)} />;
+}
+
+function UncontrolledInput() {
+    return <input ref={inputRef} />;
+}
+        </code>
+    </pre>
+</div>
+
+<div class="section" onclick="toggleContent('q26')">
+    <h2>2️⃣6️⃣ What is React Portals?</h2>
+</div>
+<div id="q26" class="content">
+    <p>React Portals allow rendering elements outside their parent DOM hierarchy.</p>
+    <pre>
+        <button class="copy-btn" onclick="copyToClipboard('code26')">Copy</button>
+        <code id="code26">
+import ReactDOM from 'react-dom';
+
+function Modal({ children }) {
+    return ReactDOM.createPortal(
+        <div className="modal">{children}</div>,
+        document.getElementById("modal-root")
+    );
+}
+        </code>
+    </pre>
+</div>
+
+<div class="section" onclick="toggleContent('q27')">
+    <h2>2️⃣7️⃣ What is the difference between useEffect and useLayoutEffect?</h2>
+</div>
+<div id="q27" class="content">
+    <p><strong>useEffect</strong> runs after rendering, while <strong>useLayoutEffect</strong> runs before painting the screen.</p>
+    <pre>
+        <button class="copy-btn" onclick="copyToClipboard('code27')">Copy</button>
+        <code id="code27">
+import { useEffect, useLayoutEffect } from 'react';
+
+useLayoutEffect(() => {
+    console.log("Before paint");
+});
+
+useEffect(() => {
+    console.log("After paint");
+});
+        </code>
+    </pre>
+</div>
+
+<div class="section" onclick="toggleContent('q28')">
+    <h2>2️⃣8️⃣ What is React.lazy?</h2>
+</div>
+<div id="q28" class="content">
+    <p>React.lazy allows **lazy loading** components to improve performance.</p>
+    <pre>
+        <button class="copy-btn" onclick="copyToClipboard('code28')">Copy</button>
+        <code id="code28">
+import { lazy, Suspense } from 'react';
+
+const LazyComponent = lazy(() => import('./LazyComponent'));
+
+function App() {
+    return (
+        <Suspense fallback={<p>Loading...</p>}>
+            <LazyComponent />
+        </Suspense>
+    );
+}
+        </code>
+    </pre>
+</div>
+
+<div class="section" onclick="toggleContent('q29')">
+    <h2>2️⃣9️⃣ What is React.Fragment?</h2>
+</div>
+<div id="q29" class="content">
+    <p>React.Fragment allows grouping multiple elements without adding extra DOM nodes.</p>
+    <pre>
+        <button class="copy-btn" onclick="copyToClipboard('code29')">Copy</button>
+        <code id="code29">
+function App() {
+    return (
+        <React.Fragment>
+            <h1>Title</h1>
+            <p>Description</p>
+        </React.Fragment>
+    );
+}
+        </code>
+    </pre>
+</div>
+
+<div class="section" onclick="toggleContent('q30')">
+    <h2>3️⃣0️⃣ What is Concurrent Mode in React?</h2>
+</div>
+<div id="q30" class="content">
+    <p>Concurrent Mode makes React apps more responsive by **prioritizing updates efficiently**.</p>
+    <pre>
+        <button class="copy-btn" onclick="copyToClipboard('code30')">Copy</button>
+        <code id="code30">
+import { createRoot } from 'react-dom';
+
+const root = createRoot(document.getElementById("root"));
+root.render(<App />);
+        </code>
+    </pre>
+</div> 
+        
         <a href="index.html">⬅️ Back to Home</a>
     </div>
 
