@@ -22,85 +22,53 @@
 <body>
 
 <div class="header">
-    <h1>📌 JavaScript Tutorial</h1><br></br>
-<!--     <input type="text" id="search" class="search-box" placeholder="🔍 Search topics..." onkeyup="searchTopics()"> -->
-    <button class="toggle-btn" onclick="toggleDarkMode()">🌙 </button>
+    <h3>📌 JavaScript Tutorial</h3>
+    <hr/>
+    <input type="text" id="search" class="search-box" placeholder="🔍 Search topics..." onkeyup="searchTopics()">
+        <br/>
+    <button class="toggle-btn" onclick="toggleDarkMode()">🌙</button>
 </div>
 
-<div class="section" onclick="toggleContent('q1')">1️⃣ Print in JavaScript</div>
-<div id="q1" class="content">
-    <textarea id="code1">Swal.fire("Hello, JavaScript!");</textarea><br>
-    <button class="run-btn" onclick="runCode('code1')">Run</button>
-    <button class="copy-btn" onclick="copyToClipboard('code1')">Copy</button>
-</div>
+<script>
+function createSection(number, title, code) {
+    document.write(`
+        <div class="section" onclick="toggleContent('q${number}')">${number}️⃣ ${title}</div>
+        <div id="q${number}" class="content">
+            <textarea id="code${number}">${code}</textarea><br>
+            <button class="run-btn" onclick="runCode('code${number}')">Run</button>
+            <button class="copy-btn" onclick="copyToClipboard('code${number}')">Copy</button>
+        </div>
+    `);
+}
 
-<div class="section" onclick="toggleContent('q2')">2️⃣ Variables</div>
-<div id="q2" class="content">
-    <textarea id="code2">let name = "John"; Swal.fire("Your name is: " + name);</textarea><br>
-    <button class="run-btn" onclick="runCode('code2')">Run</button>
-    <button class="copy-btn" onclick="copyToClipboard('code2')">Copy</button>
-</div>
+const topics = [
+    ["Print in JavaScript", 'Swal.fire("Hello, JavaScript! Now get back to work!");'],
+    ["Variables", 'let drink = "Whiskey"; Swal.fire("Tonight, we are drinking: " + drink);'],
+    ["Functions", 'function flirt() { Swal.fire("Hey there! Are you a JavaScript function? Because you just returned my heart."); } flirt();'],
+    ["Arrays", 'let exes = ["Emily", "Sophie", "Jessica"]; Swal.fire("My list of exes: " + exes.join(", "));'],
+    ["Objects", 'let sugarDaddy = { name: "Mr. Rich", balance: "Unlimited 💸" }; Swal.fire(sugarDaddy.name + " has " + sugarDaddy.balance + " in his bank!");'],
+    ["If-Else Conditions", 'let age = 21;\nif (age >= 18) Swal.fire("You can drink! Cheers! 🍻");\nelse Swal.fire("Sorry kid, stick to juice.");'],
+    ["Loops", 'let tequilaShots = "";\nfor (let i = 1; i <= 5; i++) tequilaShots += "🥃 ";\nSwal.fire("Tequila rounds: " + tequilaShots);'],
+    ["Events", 'document.body.onclick = function() { Swal.fire("Oops! You clicked too much, go touch some grass! 🌿"); };'],
+    ["DOM Manipulation", 'document.body.style.background = "pink"; Swal.fire("We made it spicy! 🌶️");'],
+    ["Template Literals", 'let lover = "Jessica"; Swal.fire(`Dear ${lover}, you still owe me dinner! 😏`);'],
+    ["Arrow Functions", 'const party = (vibe) => Swal.fire(`Tonight’s party mood: ${vibe} 🔥`);\nparty("wild");'],
+    ["SetTimeout & SetInterval", 'setTimeout(() => Swal.fire("Reminder: Flirt responsibly! 😘"), 3000);'],
+    ["Local Storage", 'localStorage.setItem("crush", "Samantha"); Swal.fire("Saved your crush’s name in local storage! 😉");'],
+    ["JSON Handling", 'let secret = { crush: "Samantha", age: 24 };\nSwal.fire("Your secret: " + JSON.stringify(secret));'],
+    ["Async/Await", 'async function dateRequest() {\nSwal.fire("Texting crush... 📲");\nawait new Promise(r => setTimeout(r, 2000));\nSwal.fire("Reply received: Maybe. 😏");\n}\ndateRequest();'],
+    ["Promises", 'new Promise((resolve) => setTimeout(() => resolve("Netflix and chill? 🍿"), 2000)).then(msg => Swal.fire(msg));'],
+    ["Error Handling", 'try { throw new Error("Your ex is calling! Abort! 🚨"); } catch (e) { Swal.fire(e.message); }'],
+    ["Spread & Rest Operators", 'let drinks = ["Beer", "Wine", "Whiskey"];\nlet allDrinks = [...drinks, "Tequila", "Gin"];\nSwal.fire("Tonight’s menu: " + allDrinks);'],
+    ["Map & Filter", 'let numbers = [10, 20, 30, 40, 50];\nlet filtered = numbers.filter(n => n > 25);\nSwal.fire("Big money bets: " + filtered);'],
+    ["Classes", 'class Playboy { constructor(name) { this.name = name; } flirt() { return this.name + " is smooth AF! 😉"; } }\nlet player = new Playboy("James");\nSwal.fire(player.flirt());']
+];
 
-<div class="section" onclick="toggleContent('q3')">3️⃣ Functions</div>
-<div id="q3" class="content">
-    <textarea id="code3">
-function greet() { Swal.fire("Hello, World!"); }
-greet();
-    </textarea><br>
-    <button class="run-btn" onclick="runCode('code3')">Run</button>
-    <button class="copy-btn" onclick="copyToClipboard('code3')">Copy</button>
-</div>
 
-<div class="section" onclick="toggleContent('q4')">4️⃣ Arrays</div>
-<div id="q4" class="content">
-    <textarea id="code4">
-let fruits = ["Apple", "Banana", "Cherry"];
-Swal.fire("Fruits: " + fruits.join(", "));
-    </textarea><br>
-    <button class="run-btn" onclick="runCode('code4')">Run</button>
-    <button class="copy-btn" onclick="copyToClipboard('code4')">Copy</button>
-</div>
 
-<div class="section" onclick="toggleContent('q5')">5️⃣ Objects</div>
-<div id="q5" class="content">
-    <textarea id="code5">
-let person = { name: "Alice", age: 25 };
-Swal.fire(person.name + " is " + person.age + " years old.");
-    </textarea><br>
-    <button class="run-btn" onclick="runCode('code5')">Run</button>
-    <button class="copy-btn" onclick="copyToClipboard('code5')">Copy</button>
-</div>
+topics.forEach((topic, index) => createSection(index + 1, topic[0], topic[1]));
 
-<div class="section" onclick="toggleContent('q6')">6️⃣ If-Else Conditions</div>
-<div id="q6" class="content">
-    <textarea id="code6">
-let age = 18;
-if (age >= 18) Swal.fire("You are an adult.");
-else Swal.fire("You are a minor.");
-    </textarea><br>
-    <button class="run-btn" onclick="runCode('code6')">Run</button>
-    <button class="copy-btn" onclick="copyToClipboard('code6')">Copy</button>
-</div>
-
-<div class="section" onclick="toggleContent('q7')">7️⃣ Loops</div>
-<div id="q7" class="content">
-    <textarea id="code7">
-let result = "";
-for (let i = 1; i <= 5; i++) result += i + " ";
-Swal.fire("Numbers: " + result);
-    </textarea><br>
-    <button class="run-btn" onclick="runCode('code7')">Run</button>
-    <button class="copy-btn" onclick="copyToClipboard('code7')">Copy</button>
-</div>
-
-<div class="section" onclick="toggleContent('q8')">8️⃣ Events</div>
-<div id="q8" class="content">
-    <textarea id="code8">
-document.body.onclick = function() { Swal.fire("You clicked on the page!"); };
-    </textarea><br>
-    <button class="run-btn" onclick="runCode('code8')">Run</button>
-    <button class="copy-btn" onclick="copyToClipboard('code8')">Copy</button>
-</div>
+</script>
 
 <script>
 function toggleContent(id) {
