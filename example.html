@@ -5,12 +5,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>DSA Problems with Code Editor</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/codemirror.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/theme/dracula.min.css">
     <style>
         body {
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
             background-color: #f9f9f9;
+            transition: background 0.3s, color 0.3s;
+        }
+        .dark-mode {
+            background-color: #222;
+            color: #fff;
         }
         header {
             background-color: #4CAF50;
@@ -18,51 +24,24 @@
             padding: 20px;
             text-align: center;
         }
-        header h1 {
-            margin: 0;
-            font-size: 2.5em;
-        }
         .container {
             padding: 20px;
         }
-        .topic {
-            margin-bottom: 30px;
-        }
-        .topic h2 {
-            margin-bottom: 10px;
-            color: #4CAF50;
-            border-bottom: 2px solid #4CAF50;
-            display: inline-block;
-        }
-        .problems {
-            list-style-type: none;
-            padding: 0;
-        }
-        .problems li {
-            margin: 5px 0;
-            padding: 10px;
-            background: white;
-            border-radius: 5px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            cursor: pointer;
-        }
-        .problems li a {
-            text-decoration: none;
-            color: #333;
-            font-weight: bold;
-        }
-        .problems li a:hover {
-            color: #4CAF50;
+        select, button, input[type="file"] {
+            padding: 8px;
+            margin: 5px;
+            font-size: 1em;
         }
         .editor-container {
-            margin-top: 20px;
             background: #ffffff;
             padding: 20px;
             border-radius: 5px;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
+        .dark-mode .editor-container {
+            background: #333;
+        }
         .editor-header {
-            margin-bottom: 10px;
             font-size: 1.2em;
             color: #4CAF50;
         }
@@ -70,18 +49,25 @@
             border: 1px solid #ddd;
             height: 300px;
         }
+        .dark-mode #codeEditor {
+            border: 1px solid #555;
+        }
         button {
-            margin-top: 10px;
-            padding: 10px 15px;
-            font-size: 1em;
-            color: white;
             background-color: #4CAF50;
+            color: white;
             border: none;
-            border-radius: 5px;
             cursor: pointer;
         }
         button:hover {
             background-color: #45a049;
+        }
+        pre {
+            background: #f1f1f1;
+            padding: 10px;
+            border-radius: 5px;
+        }
+        .dark-mode pre {
+            background: #444;
         }
     </style>
 </head>
@@ -89,80 +75,147 @@
     <header>
         <h1>DSA Problems with Code Editor</h1>
     </header>
+
     <div class="container">
-        <div class="topic">
-            <h2>Problem 1: Reverse a Linked List</h2>
-            <p>Write a function to reverse a singly linked list.</p>
-        </div>
+        <!-- Problem Selection -->
+        <label for="problemSelect">Choose a Problem:</label>
+        <select id="problemSelect" onchange="loadProblem()">
+            <option value="reverseLinkedList">Reverse a Linked List</option>
+            <option value="fibonacci">Find Fibonacci Number</option>
+            <option value="factorial">Find Factorial</option>
+        </select>
+
+        <!-- Language Selection -->
+        <label for="languageSelect">Choose Language:</label>
+        <select id="languageSelect" onchange="changeLanguage()">
+            <option value="javascript">JavaScript</option>
+            <option value="python">Python</option>
+            <option value="cpp">C++</option>
+        </select>
+
+        <button onclick="toggleDarkMode()">Toggle Dark Mode</button>
+
         <div class="editor-container">
             <div class="editor-header">Code Editor</div>
-            <textarea id="codeEditor">// Example Code
-// Function to reverse a singly linked list
+            <textarea id="codeEditor"></textarea>
+            <button onclick="runCode()">Run Code</button>
+            <button onclick="downloadCode()">Download Code</button>
+            <input type="file" id="uploadFile" onchange="uploadCode()" />
+            <pre id="output"></pre>
+        </div>
+    </div>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/codemirror.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/mode/javascript/javascript.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/mode/python/python.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/mode/clike/clike.min.js"></script>
+
+    <script>
+        const editor = CodeMirror.fromTextArea(document.getElementById("codeEditor"), {
+            lineNumbers: true,
+            mode: "javascript",
+            theme: "dracula",
+        });
+
+        const problems = {
+            reverseLinkedList: {
+                javascript: `// Function to reverse a singly linked list
 function ListNode(val) {
     this.val = val;
     this.next = null;
 }
 
 function reverseLinkedList(head) {
-    let prev = null;
-    let current = head;
-    let next = null;
-
-    while (current !== null) {
-        next = current.next; // Store next node
-        current.next = prev; // Reverse the link
-        prev = current;      // Move prev and current one step forward
+    let prev = null, current = head;
+    while (current) {
+        let next = current.next;
+        current.next = prev;
+        prev = current;
         current = next;
     }
-
     return prev;
-}
+}`,
+                python: `# Function to reverse a singly linked list
+class ListNode:
+    def __init__(self, val=0, next=None):
+        self.val = val
+        self.next = next
 
-// Example usage:
-// Create a linked list: 1 -> 2 -> 3 -> 4 -> 5
-let head = new ListNode(1);
-head.next = new ListNode(2);
-head.next.next = new ListNode(3);
-head.next.next.next = new ListNode(4);
-head.next.next.next.next = new ListNode(5);
+def reverse_linked_list(head):
+    prev, current = None, head
+    while current:
+        next = current.next
+        current.next = prev
+        prev = current
+        current = next
+    return prev`,
+                cpp: `// Function to reverse a singly linked list
+struct ListNode {
+    int val;
+    ListNode* next;
+    ListNode(int x) : val(x), next(nullptr) {}
+};
 
-// Reverse the list
-let reversedHead = reverseLinkedList(head);
+ListNode* reverseLinkedList(ListNode* head) {
+    ListNode* prev = nullptr, *current = head;
+    while (current) {
+        ListNode* next = current->next;
+        current->next = prev;
+        prev = current;
+        current = next;
+    }
+    return prev;
+}`
+            }
+        };
 
-// Print reversed list
-let current = reversedHead;
-while (current !== null) {
-    console.log(current.val);
-    current = current.next;
-}
-// Expected Output: 5 4 3 2 1
-</textarea>
-            <button onclick="runCode()">Run Code</button>
-            <pre id="output" style="margin-top: 10px; background: #f1f1f1; padding: 10px; border-radius: 5px;"></pre>
-        </div>
-    </div>
+        function loadProblem() {
+            const problem = document.getElementById("problemSelect").value;
+            const language = document.getElementById("languageSelect").value;
+            editor.setValue(problems[problem][language]);
+        }
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/codemirror.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/mode/javascript/javascript.min.js"></script>
-    <script>
-        // Initialize CodeMirror editor
-        const editor = CodeMirror.fromTextArea(document.getElementById("codeEditor"), {
-            lineNumbers: true,
-            mode: "javascript",
-            theme: "default",
-        });
+        function changeLanguage() {
+            const language = document.getElementById("languageSelect").value;
+            editor.setOption("mode", language === "cpp" ? "text/x-c++src" : language);
+            loadProblem();
+        }
 
-        // Function to run the code
         function runCode() {
-            const userCode = editor.getValue();
             try {
+                const userCode = editor.getValue();
                 const output = eval(userCode);
                 document.getElementById("output").textContent = `Output: ${output}`;
             } catch (error) {
                 document.getElementById("output").textContent = `Error: ${error.message}`;
             }
         }
+
+        function downloadCode() {
+            const code = editor.getValue();
+            const blob = new Blob([code], { type: "text/plain" });
+            const link = document.createElement("a");
+            link.href = URL.createObjectURL(blob);
+            link.download = "code.txt";
+            link.click();
+        }
+
+        function uploadCode() {
+            const file = document.getElementById("uploadFile").files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                editor.setValue(e.target.result);
+            };
+            reader.readAsText(file);
+        }
+
+        function toggleDarkMode() {
+            document.body.classList.toggle("dark-mode");
+            editor.setOption("theme", document.body.classList.contains("dark-mode") ? "dracula" : "default");
+        }
+
+        loadProblem();
     </script>
 </body>
 </html>
