@@ -109,7 +109,7 @@
     </button>
 
     <div class="container">
-        <h1>Top 10 React.js Interview Questions</h1>
+        <h1>Top 20 React.js Interview Questions</h1>
 
         <div class="section" onclick="toggleContent('q1')">
             <h2>1️⃣ What is React?</h2>
@@ -197,7 +197,286 @@ useEffect(() => {
 }, []);
             </pre>
         </div>
+        <div class="section" onclick="toggleContent('q8')">
+    <h2>8️⃣ What is React Router?</h2>
+</div>
+<div id="q8" class="content">
+    <p>React Router enables **navigation** in React applications.</p>
+    <pre>
+        <button class="copy-btn" onclick="copyToClipboard('code8')">Copy</button>
+        <code id="code8">
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
 
+function App() {
+    return (
+        <BrowserRouter>
+            <Routes>
+                <Route path="/" element={<Home />} />
+                <Route path="/about" element={<About />} />
+            </Routes>
+        </BrowserRouter>
+    );
+}
+        </code>
+    </pre>
+</div>
+
+<div class="section" onclick="toggleContent('q9')">
+    <h2>9️⃣ What are React Hooks?</h2>
+</div>
+<div id="q9" class="content">
+    <p>React Hooks let you **use state and lifecycle methods** inside functional components.</p>
+    <pre>
+        <button class="copy-btn" onclick="copyToClipboard('code9')">Copy</button>
+        <code id="code9">
+import { useState } from 'react';
+
+function Counter() {
+    const [count, setCount] = useState(0);
+    return <button onClick={() => setCount(count + 1)}>Count: {count}</button>;
+}
+        </code>
+    </pre>
+</div>
+
+<div class="section" onclick="toggleContent('q10')">
+    <h2>🔟 What is useRef?</h2>
+</div>
+<div id="q10" class="content">
+    <p>useRef allows referencing **DOM elements** without re-rendering.</p>
+    <pre>
+        <button class="copy-btn" onclick="copyToClipboard('code10')">Copy</button>
+        <code id="code10">
+import { useRef } from 'react';
+
+function FocusInput() {
+    const inputRef = useRef(null);
+    return <input ref={inputRef} />;
+}
+        </code>
+    </pre>
+</div>
+
+<div class="section" onclick="toggleContent('q11')">
+    <h2>1️⃣1️⃣ What is Context API?</h2>
+</div>
+<div id="q11" class="content">
+    <p>The **Context API** avoids prop drilling by sharing data globally.</p>
+    <pre>
+        <button class="copy-btn" onclick="copyToClipboard('code11')">Copy</button>
+        <code id="code11">
+const ThemeContext = React.createContext();
+
+function App() {
+    return (
+        <ThemeContext.Provider value="dark">
+            <ChildComponent />
+        </ThemeContext.Provider>
+    );
+}
+        </code>
+    </pre>
+</div>
+
+<div class="section" onclick="toggleContent('q12')">
+    <h2>1️⃣2️⃣ What is memoization in React?</h2>
+</div>
+<div id="q12" class="content">
+    <p>Memoization optimizes performance by **caching results** of expensive computations.</p>
+    <pre>
+        <button class="copy-btn" onclick="copyToClipboard('code12')">Copy</button>
+        <code id="code12">
+import React, { useMemo } from 'react';
+
+function ExpensiveComponent({ num }) {
+    const result = useMemo(() => num * 10, [num]);
+    return <p>Computed Value: {result}</p>;
+}
+        </code>
+    </pre>
+</div>
+
+<div class="section" onclick="toggleContent('q13')">
+    <h2>1️⃣3️⃣ What are controlled and uncontrolled components?</h2>
+</div>
+<div id="q13" class="content">
+    <p>A controlled component manages its **own state**, while an uncontrolled component relies on the DOM.</p>
+    <pre>
+        <button class="copy-btn" onclick="copyToClipboard('code13')">Copy</button>
+        <code id="code13">
+// Controlled Component
+function ControlledInput() {
+    const [value, setValue] = useState('');
+    return <input value={value} onChange={(e) => setValue(e.target.value)} />;
+}
+        </code>
+    </pre>
+</div>
+
+<div class="section" onclick="toggleContent('q14')">
+    <h2>1️⃣4️⃣ What is lazy loading in React?</h2>
+</div>
+<div id="q14" class="content">
+    <p>Lazy loading loads components **only when needed**, improving performance.</p>
+    <pre>
+        <button class="copy-btn" onclick="copyToClipboard('code14')">Copy</button>
+        <code id="code14">
+import React, { lazy, Suspense } from 'react';
+
+const LazyComponent = lazy(() => import('./LazyComponent'));
+
+function App() {
+    return (
+        <Suspense fallback={<p>Loading...</p>}>
+            <LazyComponent />
+        </Suspense>
+    );
+}
+        </code>
+    </pre>
+</div>
+
+<div class="section" onclick="toggleContent('q15')">
+    <h2>1️⃣5️⃣ How to implement dark mode in React?</h2>
+</div>
+<div id="q15" class="content">
+    <p>Dark mode changes the background and text color based on user selection.</p>
+    <pre>
+        <button class="copy-btn" onclick="copyToClipboard('code15')">Copy</button>
+        <code id="code15">
+import { useState } from 'react';
+
+function App() {
+    const [dark, setDark] = useState(false);
+    return (
+        <div style={{ background: dark ? '#222' : '#fff', color: dark ? '#fff' : '#000' }}>
+            <button onClick={() => setDark(!dark)}>Toggle Dark Mode</button>
+        </div>
+    );
+}
+        </code>
+    </pre>
+</div>
+<div class="section" onclick="toggleContent('q16')">
+    <h2>1️⃣6️⃣ What is Redux and why is it used?</h2>
+</div>
+<div id="q16" class="content">
+    <p>Redux is a **state management library** that helps manage global state in large applications.</p>
+    <pre>
+        <button class="copy-btn" onclick="copyToClipboard('code16')">Copy</button>
+        <code id="code16">
+import { createStore } from 'redux';
+
+const initialState = { count: 0 };
+const reducer = (state = initialState, action) => {
+    return action.type === "INCREMENT" ? { count: state.count + 1 } : state;
+};
+
+const store = createStore(reducer);
+store.dispatch({ type: "INCREMENT" });
+console.log(store.getState());  // Output: { count: 1 }
+        </code>
+    </pre>
+</div>
+
+<div class="section" onclick="toggleContent('q17')">
+    <h2>1️⃣7️⃣ What is React.memo?</h2>
+</div>
+<div id="q17" class="content">
+    <p>React.memo is used to **optimize functional components** by preventing unnecessary re-renders.</p>
+    <pre>
+        <button class="copy-btn" onclick="copyToClipboard('code17')">Copy</button>
+        <code id="code17">
+import React, { useState } from 'react';
+
+const MemoComponent = React.memo(({ name }) => {
+    console.log("Rendered");
+    return <p>Hello, {name}!</p>;
+});
+
+function App() {
+    const [count, setCount] = useState(0);
+    return (
+        <div>
+            <MemoComponent name="John" />
+            <button onClick={() => setCount(count + 1)}>Increment</button>
+        </div>
+    );
+}
+        </code>
+    </pre>
+</div>
+
+<div class="section" onclick="toggleContent('q18')">
+    <h2>1️⃣8️⃣ What is useCallback and useMemo?</h2>
+</div>
+<div id="q18" class="content">
+    <p>Both useCallback and useMemo optimize performance by **memoizing values and functions**.</p>
+    <pre>
+        <button class="copy-btn" onclick="copyToClipboard('code18')">Copy</button>
+        <code id="code18">
+import { useCallback, useMemo, useState } from 'react';
+
+function ExpensiveComponent({ number }) {
+    const square = useMemo(() => number * number, [number]);
+
+    const logMessage = useCallback(() => {
+        console.log("Square calculated!");
+    }, [number]);
+
+    return <p>Square: {square}</p>;
+}
+        </code>
+    </pre>
+</div>
+
+<div class="section" onclick="toggleContent('q19')">
+    <h2>1️⃣9️⃣ What is Server-Side Rendering (SSR) in React?</h2>
+</div>
+<div id="q19" class="content">
+    <p>Server-Side Rendering (SSR) generates pages **on the server** instead of the client.</p>
+    <pre>
+        <button class="copy-btn" onclick="copyToClipboard('code19')">Copy</button>
+        <code id="code19">
+import express from 'express';
+import React from 'react';
+import ReactDOMServer from 'react-dom/server';
+
+const app = express();
+const App = () => <h1>Hello from SSR</h1>;
+
+app.get('/', (req, res) => {
+    const html = ReactDOMServer.renderToString(<App />);
+    res.send(html);
+});
+
+app.listen(3000, () => console.log('Server running'));
+        </code>
+    </pre>
+</div>
+
+<div class="section" onclick="toggleContent('q20')">
+    <h2>2️⃣0️⃣ What is Suspense in React?</h2>
+</div>
+<div id="q20" class="content">
+    <p>Suspense **handles lazy loading** and asynchronous data fetching.</p>
+    <pre>
+        <button class="copy-btn" onclick="copyToClipboard('code20')">Copy</button>
+        <code id="code20">
+import React, { lazy, Suspense } from 'react';
+
+const LazyComponent = lazy(() => import('./LazyComponent'));
+
+function App() {
+    return (
+        <Suspense fallback={<h2>Loading...</h2>}>
+            <LazyComponent />
+        </Suspense>
+    );
+}
+        </code>
+    </pre>
+</div>
         <a href="index.html">⬅️ Back to Home</a>
     </div>
 
