@@ -3,276 +3,463 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DSA Learning Hub</title>
+    <title>Learn Coding</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.12/codemirror.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.12/codemirror.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.12/mode/javascript/javascript.min.js"></script>
     <style>
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #f9f9f9;
-            color: #333;
-        }
-        header {
-            background-color: #4CAF50;
-            color: white;
-            padding: 20px;
-            /* text-align: center; */
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
-        header h1 {
-            font-size: 2.5em;
-            margin: 0;
-            margin-left: 20px;
-        }
-        header p {
-            font-size: 1.2em;
-            margin: 10px 0;
-        }
-        main {
-            display: flex;
-        }
-        /* Sidebar Styling */
-        .sidebar {
-            width: 250px;
-            background-color: #333;
-            color: white;
-            padding: 20px;
-            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
-            height: 100vh;
-        }
-        .sidebar h2 {
-            margin: 0;
-            font-size: 1.5em;
-            margin-bottom: 20px;
-        }
-        .menu-item {
-            margin-bottom: 15px;
-        }
-        .menu-item > button {
-            background: none;
-            border: none;
-            color: white;
-            text-align: left;
-            padding: 10px;
-            width: 100%;
-            font-size: 16px;
-            cursor: pointer;
-        }
-        .menu-item button:hover {
-            background-color: #4CAF50;
-        }
-        .submenu {
-            margin-left: 15px;
-            display: none;
-        }
-        .submenu a {
-            display: block;
-            color: #f9f9f9;
-            text-decoration: none;
-            padding: 5px 0;
-        }
-        .submenu a:hover {
-            color: #4CAF50;
-        }
-        /* Main Content */
-        .content {
-            flex-grow: 1;
-            padding: 30px;
-        }
-        .output-container {
-            margin-top: 30px;
-            background: white;
-            border-radius: 8px;
-            padding: 20px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        }
-        .CodeMirror {
-            border: 1px solid #ddd;
-            height: 200px;
-            font-size: 16px;
-        }
-        #codeOutput {
-            margin-top: 20px;
-            background: #f4f4f4;
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            font-family: monospace;
-        }
-        footer {
-            text-align: center;
-            padding: 15px 0;
-            background-color: #333;
-            color: white;
-        }
-        footer p {
-            margin: 0;
-        }
-        .headerTitle{
-            justify-content: space-between;
-        }
+    font-family: 'Arial', sans-serif;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    line-height: 1.6;
+    color: #333;
+    background: #f9f9f9;
+}
+
+header {
+    background: #2c3e50;
+    color: #fff;
+    padding: 10px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.logo {
+    font-size: 24px;
+    font-weight: bold;
+    color: #fff;
+}
+
+nav ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    align-items: center;
+}
+
+nav ul li {
+    margin-left: 25px;
+}
+
+nav ul li a {
+    color: #fff;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 16px;
+    transition: color 0.3s ease;
+}
+
+nav ul li a:hover {
+    color: #ff6f61;
+}
+
+.hamburger {
+    display: none;
+    font-size: 24px;
+    cursor: pointer;
+}
+
+.hamburger {
+    display: none;
+    font-size: 24px;
+    cursor: pointer;
+}
+
+/* Hero Section */
+.hero {
+    background: linear-gradient(rgba(44, 62, 80, 0.8), rgba(44, 62, 80, 0.8)), url('assets/images/hero-bg.jpg');
+    background-size: cover;
+    background-position: center;
+    color: #fff;
+    text-align: center;
+    padding: 100px 20px;
+}
+
+.hero-content h1 {
+    font-size: 48px;
+    margin-bottom: 20px;
+}
+
+.hero-content p {
+    font-size: 20px;
+    margin-bottom: 30px;
+}
+
+.cta-button {
+    background: #ff6f61;
+    color: #fff;
+    padding: 10px 20px;
+    text-decoration: none;
+    border-radius: 5px;
+    font-size: 18px;
+    transition: background 0.3s ease;
+}
+
+.cta-button:hover {
+    background: #e65a50;
+}
+
+/* Featured Tutorials Section */
+.featured-tutorials {
+    padding: 50px 20px;
+    text-align: center;
+    background: #fff;
+}
+
+.tutorial-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+    margin-top: 30px;
+}
+
+.tutorial-card {
+    background: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    transition: transform 0.3s ease;
+}
+
+.tutorial-card:hover {
+    transform: translateY(-10px);
+}
+
+.tutorial-card img {
+    width: 100%;
+    border-radius: 10px;
+}
+
+.tutorial-card h3 {
+    margin: 15px 0;
+    color: #2c3e50;
+}
+
+.tutorial-card p {
+    font-size: 14px;
+    color: #666;
+}
+
+.btn {
+    background: #2c3e50;
+    color: #fff;
+    padding: 10px 20px;
+    text-decoration: none;
+    border-radius: 5px;
+    display: inline-block;
+    margin-top: 10px;
+    transition: background 0.3s ease;
+}
+
+.btn:hover {
+    background: #1a252f;
+}
+
+/* Popular Topics Section */
+.popular-topics {
+    padding: 50px 20px;
+    background: #f4f4f4;
+    text-align: center;
+}
+
+.topics-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+    margin-top: 30px;
+}
+
+.topic-card {
+    background: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    transition: transform 0.3s ease;
+}
+
+.topic-card:hover {
+    transform: translateY(-10px);
+}
+
+.topic-card h3 {
+    margin-bottom: 10px;
+    color: #2c3e50;
+}
+
+.topic-card p {
+    font-size: 14px;
+    color: #666;
+}
+
+/* Testimonials Section */
+.testimonials {
+    padding: 50px 20px;
+    text-align: center;
+    background: #fff;
+}
+
+.testimonial-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+    margin-top: 30px;
+}
+
+.testimonial-card {
+    background: #f4f4f4;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    transition: transform 0.3s ease;
+}
+
+.testimonial-card:hover {
+    transform: translateY(-10px);
+}
+
+.testimonial-card p {
+    font-style: italic;
+    color: #333;
+}
+
+.testimonial-card span {
+    display: block;
+    margin-top: 10px;
+    font-weight: bold;
+    color: #2c3e50;
+}
+
+/* Call-to-Action Section */
+.cta {
+    background: #2c3e50;
+    color: #fff;
+    text-align: center;
+    padding: 50px 20px;
+}
+
+.cta h2 {
+    margin-bottom: 20px;
+}
+
+.cta p {
+    margin-bottom: 30px;
+}
+
+/* Footer */
+footer {
+    background: #1a252f;
+    color: #fff;
+    text-align: center;
+    padding: 20px;
+}
+
+/* Mobile Responsive Styles */
+@media (max-width: 768px) {
+    .hamburger {
+        display: block;
+    }
+
+    nav ul {
+        display: none;
+        flex-direction: column;
+        width: 100%;
+        background: #2c3e50;
+        position: absolute;
+        top: 60px;
+        left: 0;
+    }
+
+    nav ul.active {
+        display: flex;
+    }
+
+    nav ul li {
+        margin: 10px 0;
+        text-align: center;
+    }
+
+    .hero-content h1 {
+        font-size: 36px;
+    }
+
+    .hero-content p {
+        font-size: 18px;
+    }
+
+    .tutorial-grid, .topics-grid, .testimonial-grid {
+        grid-template-columns: 1fr;
+    }
+}
     </style>
 </head>
 <body>
-    <header>
-        <div class="headerTitle">
+ <header>
+    <div class="logo">Learn Coding</div>
+    <nav>
+        <ul class="menu">
+            <li><a href="#home">Home</a></li>
+            <li><a href="#tutorials">Tutorials</a></li>
+            <li><a href="#topics">Topics</a></li>
+            <li><a href="#testimonials">Testimonials</a></li>
+            <li><a href="#contact">Contact</a></li>
+        </ul>
+        <div class="hamburger" onclick="toggleMenu()">&#9776;</div>
+    </nav>
+</header>
 
-            <h1>DSA Learning Hub</h1>
-            <p>Master Data Structures and Algorithms Step by Step</p>
+    <!-- Hero Section -->
+    <section class="hero" id="home">
+        <div class="hero-content">
+            <h1>Master Coding with Ease</h1>
+            <p>Learn, practice, and excel in programming with our interactive tutorials and quizzes.</p>
+            <a href="#tutorials" class="cta-button">Get Started</a>
         </div>
-    </header>
-    <main>
-        <!-- Sidebar -->
-        <div class="sidebar">
-            <!-- <h2>Menu</h2> -->
-            <div id="sidebarMenu">
-                
-                <!-- Dynamic Menu Items will be injected here -->
+    </section>
+
+    <!-- Featured Tutorials Section -->
+    <section class="featured-tutorials" id="tutorials">
+        <h2>Featured Tutorials</h2>
+        <div class="tutorial-grid">
+            <div class="tutorial-card">
+                <img src="assets/images/react.png" alt="React.js Tutorial">
+                <h3>React.js Tutorial</h3>
+                <p>Learn React.js from scratch and build modern web applications.</p>
+                <a href="react_tutorial.html" class="btn">Start Learning</a>
+            </div>
+            <div class="tutorial-card">
+                <img src="assets/images/nodejs.png" alt="Node.js Tutorial">
+                <h3>Node.js Tutorial</h3>
+                <p>Master backend development with Node.js and Express.</p>
+                <a href="node_tutorial.html" class="btn">Start Learning</a>
+            </div>
+            <div class="tutorial-card">
+                <img src="assets/images/javascript.png" alt="JavaScript Tutorial">
+                <h3>JavaScript Tutorial</h3>
+                <p>Learn JavaScript fundamentals and advanced concepts.</p>
+                <a href="JavaScript_tutorial.html" class="btn">Start Learning</a>
             </div>
         </div>
-        <!-- Content Section -->
-        <div class="content">
-            <section>
-                <h2>API Endpoints</h2>
-                <button onclick="fetchInfo()">Fetch Info</button>
-                <button onclick="fetchArray()">Fetch Array</button>
-                <button onclick="fetchArraySum()">Fetch Sum Of Array</button>
-            </section>
-            <section class="output-container">
-                <h2>API Response</h2>
-                <div id="output">Click a button to see the response</div>
-            </section>
-            <section class="output-container">
-                <h2>Code Editor</h2>
-                <textarea id="codeEditor">// Write your code here...</textarea>
-                <button onclick="runCode()">Run Code</button>
-                <div id="codeOutput">Output will appear here...</div>
-            </section>
+    </section>
+
+    <!-- Popular Topics Section -->
+    <section class="popular-topics" id="topics">
+        <h2>Popular Topics</h2>
+        <div class="topics-grid">
+            <div class="topic-card">
+                <h3>Data Structures</h3>
+                <p>Learn arrays, linked lists, trees, and more.</p>
+            </div>
+            <div class="topic-card">
+                <h3>Algorithms</h3>
+                <p>Master sorting, searching, and dynamic programming.</p>
+            </div>
+            <div class="topic-card">
+                <h3>Web Development</h3>
+                <p>Build websites with HTML, CSS, and JavaScript.</p>
+            </div>
+            <div class="topic-card">
+                <h3>Machine Learning</h3>
+                <p>Explore AI and ML concepts with Python.</p>
+            </div>
         </div>
-    </main>
+    </section>
+
+    <!-- Testimonials Section -->
+    <section class="testimonials" id="testimonials">
+        <h2>What Our Learners Say</h2>
+        <div class="testimonial-grid">
+            <div class="testimonial-card">
+                <p>"This platform helped me land my dream job as a software engineer!"</p>
+                <span>- John Doe</span>
+            </div>
+            <div class="testimonial-card">
+                <p>"The tutorials are easy to follow and very practical."</p>
+                <span>- Jane Smith</span>
+            </div>
+            <div class="testimonial-card">
+                <p>"I love the quizzes and coding challenges!"</p>
+                <span>- Alex Johnson</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- Call-to-Action Section -->
+    <section class="cta">
+        <h2>Ready to Start Your Coding Journey?</h2>
+        <p>Join thousands of learners and master coding today.</p>
+        <a href="#tutorials" class="cta-button">Get Started</a>
+    </section>
     <footer>
         <p>&copy; 2024 DSA Learning Hub. All Rights Reserved.</p>
     </footer>
 
     <script>
-        const menuData = [
-            {
-                title: "DSA Topics",
-                subMenu: [
-                    { name: "Arrays", link: "dsa-problems" },
-                    { name: "Linked Lists", link: "#linkedLists" },
-                    { name: "Trees", link: "#trees" }
-                ]
-            },
-            {
-                title: "Basic Math",
-                subMenu: [
-                    { name: "Trigonometry", link: "Trigonometry" },
-                    { name: "Algebra", link: "Algebra" },
-                    { name: "Geometry", link: "Geometry" },
-                    { name: "Calculus", link: "Calculus" },
-                    { name: "Statistics", link: "Statistics" },
-                    { name: "Competitive Exams", link: "CompetitiveExams" },
-                ]
-            },
-            {
-                title: "Advanced Topics",
-                subMenu: [
-                    { name: "Dynamic Programming", link: "#dynamicProgramming" },
-                    { name: "Graphs", link: "#graphs" },
-                    { name: "Sorting Algorithms", link: "#sorting" }
-                ]
-            },
-            {
-                title: "Examples",
-                subMenu: [
-                    { name: "Reverse a Linked List", link: "example" },
-                    { name: "Reverse a String", link: "ReverseString" },
-                    // { name: "Graphs", link: "#graphs" },
-                    // { name: "Sorting Algorithms", link: "#sorting" }
-                ]
-            },
+      const menuData = [
+   
+    {
+        title: "Basic Math",
+        subMenu: [
+            { name: "Trigonometry", link: "Trigonometry" },
+            { name: "Algebra", link: "Algebra" },
+            { name: "Geometry", link: "Geometry" },
+        
+        ]
+    },
+    
+    
+    {
+        title: "Tutorial",
+        subMenu: [
+            { name: "React.js Tutorial", link: "react_tutorial" },
+            { name: "Node.js Tutorial", link: "node_tutorial" },
+            { name: "JavaScript Tutorial", link: "JavaScript_tutorial" }
+        ]
+    }
+];
 
-            {
-                title: "Tutorial",
-                subMenu: [
-                    { name: "React.js Tutorial", link: "react_tutorial" },
-                    { name: "Node.js Tutorial", link: "node_tutorial" },
-                    { name: "JavaScript Tutorial", link: "JavaScript_tutorial" }
-                 
-                ]
-            }
-        ];
+// Generate Menu
+const menuContainer = document.querySelector('.menu');
+menuData.forEach(menuItem => {
+    const li = document.createElement('li');
+    const subMenu = document.createElement('ul');
+    subMenu.classList.add('sub-menu');
+    menuItem.subMenu.forEach(subItem => {
+        subMenu.innerHTML += `<li><a href="${subItem.link}">${subItem.name}</a></li>`;
+    });
+    li.appendChild(subMenu);
+    menuContainer.appendChild(li);
+});
 
-        // Generate Sidebar
-        const sidebarMenu = document.getElementById("sidebarMenu");
-        menuData.forEach(menu => {
-            const menuItem = document.createElement("div");
-            menuItem.classList.add("menu-item");
-            const button = document.createElement("button");
-            button.textContent = menu.title;
+// Toggle Mobile Menu
+function toggleMenu() {
+    const menu = document.querySelector('.menu');
+    menu.classList.toggle('active');
+}
 
-            const submenu = document.createElement("div");
-            submenu.classList.add("submenu");
-            menu.subMenu.forEach(sub => {
-                const link = document.createElement("a");
-                link.href = sub.link;
-                link.textContent = sub.name;
-                submenu.appendChild(link);
-            });
-
-            button.addEventListener("click", () => {
-                submenu.style.display = submenu.style.display === "none" || !submenu.style.display ? "block" : "none";
-            });
-
-            menuItem.appendChild(button);
-            menuItem.appendChild(submenu);
-            sidebarMenu.appendChild(menuItem);
-        });
-
-        // Fetch Functions
-        async function fetchInfo() {
-            const response = await fetch('https://dsa-07qz.onrender.com/info');
-            const data = await response.json();
-            document.getElementById('output').textContent = JSON.stringify(data, null, 2);
-        }
-
-        async function fetchArray() {
-            const response = await fetch('https://dsa-07qz.onrender.com/array/array');
-            const data = await response.json();
-            document.getElementById('output').textContent = JSON.stringify(data, null, 2);
-        }
-
-        async function fetchArraySum() {
-            const response = await fetch('https://dsa-07qz.onrender.com/array/arraySum');
-            const data = await response.json();
-            document.getElementById('output').textContent = JSON.stringify(data, null, 2);
-        }
-
-        // Initialize CodeMirror
-        document.addEventListener("DOMContentLoaded", () => {
-            const editor = CodeMirror.fromTextArea(document.getElementById("codeEditor"), {
-                mode: "javascript",
-                theme: "default",
-                lineNumbers: true,
-                matchBrackets: true,
-                autoCloseBrackets: true,
-                tabSize: 4,
-            });
-
-            window.runCode = () => {
-                const userCode = editor.getValue();
-                try {
-                    const result = eval(userCode); // Use eval cautiously
-                    document.getElementById("codeOutput").textContent = result;
-                } catch (error) {
-                    document.getElementById("codeOutput").textContent = `Error: ${error.message}`;
-                }
-            };
-        });
+// Simple Code Execution
+function runCode() {
+    const code = document.getElementById('code-editor').value;
+    const output = document.getElementById('output');
+    try {
+        output.textContent = eval(code);
+    } catch (error) {
+        output.textContent = error.message;
+    }
+}
     </script>
+    <footer id="contact">
+        <p>&copy; 2023 Learn Coding. All rights reserved.</p>
+    </footer>
 </body>
 </html>
