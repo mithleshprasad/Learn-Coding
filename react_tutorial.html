@@ -4,75 +4,162 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>React.js Interview Questions</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
+        /* General Styles */
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Arial', sans-serif;
+            background: #f4f4f4;
             margin: 0;
-            padding: 20px;
-            background-color: #f4f4f4;
-            transition: background 0.3s, color 0.3s;
+            padding: 0;
+            transition: 0.3s;
         }
-        .container {
-            max-width: 900px;
-            margin: auto;
-            padding: 20px;
-            background: white;
-            border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-        }
-        h1 {
-            text-align: center;
-            color: #007bff;
-        }
-        .toggle-dark-mode {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            cursor: pointer;
-            font-size: 1.5em;
-            background: none;
-            border: none;
-            color: #333;
-        }
-        .toggle-dark-mode:hover {
-            color: #007bff;
-        }
+
         .dark-mode {
             background: #222;
             color: #fff;
         }
+
+        /* Header */
+        header {
+            background: #2c3e50;
+            color: #fff;
+            padding: 10px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: #fff;
+        }
+
+        nav ul {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            align-items: center;
+        }
+
+        nav ul li {
+            margin-left: 25px;
+        }
+
+        nav ul li a {
+            color: #fff;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 16px;
+            transition: color 0.3s ease;
+        }
+
+        nav ul li a:hover {
+            color: #ff6f61;
+        }
+
+        .hamburger {
+            display: none;
+            font-size: 24px;
+            cursor: pointer;
+        }
+
+        /* Main Content */
+        .container {
+            max-width: 900px;
+            margin: 20px auto;
+            padding: 20px;
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
         .dark-mode .container {
             background: #333;
             box-shadow: 0 4px 8px rgba(255, 255, 255, 0.2);
         }
-        .section {
-            margin-bottom: 15px;
-            background: #f9f9f9;
+
+        h1 {
+            text-align: center;
+            color: #007bff;
+        }
+
+        .search-box {
             padding: 10px;
+            width: 80%;
+            max-width: 400px;
+            border: 1px solid #ccc;
             border-radius: 5px;
-            cursor: pointer;
-            border-left: 5px solid #007bff;
-            transition: background 0.3s;
-        }
-        .section:hover {
-            background: #e9ecef;
-        }
-        .content {
-            display: none;
-            padding: 10px;
-        }
-        .show {
+            font-size: 16px;
+            margin: 20px auto;
             display: block;
         }
+
+        .toggle-btn {
+            background: #008CBA;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 10px auto;
+            display: block;
+            transition: background 0.3s ease;
+        }
+
+        .toggle-btn:hover {
+            background: #005f73;
+        }
+
+        /* Sections */
+        .section {
+            background: #f9f9f9;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 10px;
+            cursor: pointer;
+            border-left: 5px solid #007bff;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .section:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        }
+
+        .content {
+            display: none;
+            padding: 15px;
+            background: #fff;
+            border-left: 5px solid #007bff;
+            color: black;
+            margin: 10px 0;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .dark-mode .content {
+            background: #444;
+            color: white;
+            border-left: 5px solid #008CBA;
+        }
+
         pre {
-            background: black;
+            background: #1e1e1e;
             color: lime;
             padding: 15px;
             border-radius: 5px;
             overflow-x: auto;
             position: relative;
         }
+
         .copy-btn {
             position: absolute;
             top: 10px;
@@ -83,625 +170,259 @@
             padding: 5px 10px;
             border-radius: 3px;
             cursor: pointer;
+            transition: background 0.3s ease;
         }
+
         .copy-btn:hover {
             background: #0056b3;
         }
+
+        textarea {
+            width: 100%;
+            height: 100px;
+            font-family: monospace;
+            margin-top: 10px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+
+        .run-btn {
+            color: white;
+            padding: 8px 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-right: 10px;
+            transition: background 0.3s ease;
+        }
+
+        .run-btn:hover {
+            background: #218838;
+        }
+
         a {
             display: block;
             text-align: center;
             margin-top: 20px;
-            padding: 10px;
-            background: #007bff;
             color: white;
             text-decoration: none;
             border-radius: 5px;
+            transition: background 0.3s ease;
         }
+
         a:hover {
             background: #0056b3;
+        }
+
+        /* Footer */
+        footer {
+            background: #1a252f;
+            color: #fff;
+            text-align: center;
+            padding: 20px;
+            margin-top: 20px;
+        }
+
+        footer p {
+            margin: 0;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .hamburger {
+                display: block;
+            }
+
+            nav ul {
+                display: none;
+                flex-direction: column;
+                width: 100%;
+                background: #2c3e50;
+                position: absolute;
+                top: 60px;
+                left: 0;
+            }
+
+            nav ul.active {
+                display: flex;
+            }
+
+            nav ul li {
+                margin: 10px 0;
+                text-align: center;
+            }
+
+            .header h3 {
+                font-size: 24px;
+            }
+
+            .search-box {
+                width: 90%;
+            }
+            .run-btn{
+            background:#000
+            }
         }
     </style>
 </head>
 <body>
+    <!-- Header -->
+    <header>
+    <div class="logo">Learn Coding</div>
+    <nav>
+        <ul class="menu">
+            <li><a href="#home">Home</a></li>
+            <li><a href="#tutorials">Tutorials</a></li>
+            <li><a href="#topics">Topics</a></li>
+            <li><a href="#testimonials">Testimonials</a></li>
+            <li><a href="#contact">Contact</a></li>
+        </ul>
+        <div class="hamburger" onclick="toggleMenu()">&#9776;</div>
+    </nav>
+</header>
 
-    <button class="toggle-dark-mode" onclick="toggleDarkMode()">
-        <i class="fas fa-moon"></i>
-    </button>
-
+    <!-- Main Content -->
     <div class="container">
         <h1>Top 30 React.js Interview Questions</h1>
+        <input type="text" id="search" class="search-box" placeholder="🔍 Search topics..." onkeyup="searchTopics()">
+        <button class="toggle-btn" onclick="toggleDarkMode()">🌙 Toggle Dark Mode</button>
 
-        <div class="section" onclick="toggleContent('q1')">
-            <h2>1️⃣ What is React?</h2>
-        </div>
-        <div id="q1" class="content">
-            <p>React.js is a JavaScript library for building fast and interactive user interfaces. It is maintained by Facebook.</p>
-        </div>
-
-        <div class="section" onclick="toggleContent('q2')">
-            <h2>2️⃣ What are Components in React?</h2>
-        </div>
-        <div id="q2" class="content">
-            <p>Components are reusable UI elements in React. They can be **class-based** or **functional**.</p>
-            <pre>
-                <button class="copy-btn" onclick="copyToClipboard('code1')">Copy</button>
-&lt;function Hello() {
-    return &lt;h1&gt;Hello, World!&lt;/h1&gt;;
-}&gt;
-            </pre>
+        <!-- Sections -->
+        <div id="topics-container">
+            <!-- Questions will be dynamically added here -->
         </div>
 
-        <div class="section" onclick="toggleContent('q3')">
-            <h2>3️⃣ What is JSX?</h2>
-        </div>
-        <div id="q3" class="content">
-            <p>JSX (JavaScript XML) allows you to write HTML inside JavaScript.</p>
-            <pre>
-                <button class="copy-btn" onclick="copyToClipboard('code2')">Copy</button>
-const element = &lt;h1&gt;Hello JSX!&lt;/h1&gt;;
-            </pre>
-        </div>
-
-        <div class="section" onclick="toggleContent('q4')">
-            <h2>4️⃣ What is State in React?</h2>
-        </div>
-        <div id="q4" class="content">
-            <p>State allows React components to **manage dynamic data**.</p>
-            <pre>
-                <button class="copy-btn" onclick="copyToClipboard('code3')">Copy</button>
-import { useState } from 'react';
-
-function Counter() {
-    const [count, setCount] = useState(0);
-    return (
-        &lt;div&gt;
-            &lt;p&gt;Count: {count}&lt;/p&gt;
-            &lt;button onClick={() =&gt; setCount(count + 1)}&gt;Increment&lt;/button&gt;
-        &lt;/div&gt;
-    );
-}
-            </pre>
-        </div>
-
-        <div class="section" onclick="toggleContent('q5')">
-            <h2>5️⃣ What are Props?</h2>
-        </div>
-        <div id="q5" class="content">
-            <p>Props (short for properties) are used to **pass data** between components.</p>
-            <pre>
-                <button class="copy-btn" onclick="copyToClipboard('code4')">Copy</button>
-function Greet(props) {
-    return &lt;h1&gt;Hello, {props.name}!&lt;/h1&gt;;
-}
-            </pre>
-        </div>
-
-        <div class="section" onclick="toggleContent('q6')">
-            <h2>6️⃣ What is the Virtual DOM?</h2>
-        </div>
-        <div id="q6" class="content">
-            <p>The Virtual DOM is a **lightweight copy** of the actual DOM that React updates efficiently.</p>
-        </div>
-
-        <div class="section" onclick="toggleContent('q7')">
-            <h2>7️⃣ What is useEffect?</h2>
-        </div>
-        <div id="q7" class="content">
-            <p>useEffect is a **React Hook** for handling side effects like fetching data.</p>
-            <pre>
-                <button class="copy-btn" onclick="copyToClipboard('code5')">Copy</button>
-import { useEffect } from 'react';
-
-useEffect(() => {
-    console.log("Component Mounted!");
-}, []);
-            </pre>
-        </div>
-        <div class="section" onclick="toggleContent('q8')">
-    <h2>8️⃣ What is React Router?</h2>
-</div>
-<div id="q8" class="content">
-    <p>React Router enables **navigation** in React applications.</p>
-    <pre>
-        <button class="copy-btn" onclick="copyToClipboard('code8')">Copy</button>
-        <code id="code8">
-import { BrowserRouter, Route, Routes } from 'react-router-dom';
-
-function App() {
-    return (
-        <BrowserRouter>
-            <Routes>
-                <Route path="/" element={<Home />} />
-                <Route path="/about" element={<About />} />
-            </Routes>
-        </BrowserRouter>
-    );
-}
-        </code>
-    </pre>
-</div>
-
-<div class="section" onclick="toggleContent('q9')">
-    <h2>9️⃣ What are React Hooks?</h2>
-</div>
-<div id="q9" class="content">
-    <p>React Hooks let you **use state and lifecycle methods** inside functional components.</p>
-    <pre>
-        <button class="copy-btn" onclick="copyToClipboard('code9')">Copy</button>
-        <code id="code9">
-import { useState } from 'react';
-
-function Counter() {
-    const [count, setCount] = useState(0);
-    return <button onClick={() => setCount(count + 1)}>Count: {count}</button>;
-}
-        </code>
-    </pre>
-</div>
-
-<div class="section" onclick="toggleContent('q10')">
-    <h2>🔟 What is useRef?</h2>
-</div>
-<div id="q10" class="content">
-    <p>useRef allows referencing **DOM elements** without re-rendering.</p>
-    <pre>
-        <button class="copy-btn" onclick="copyToClipboard('code10')">Copy</button>
-        <code id="code10">
-import { useRef } from 'react';
-
-function FocusInput() {
-    const inputRef = useRef(null);
-    return <input ref={inputRef} />;
-}
-        </code>
-    </pre>
-</div>
-
-<div class="section" onclick="toggleContent('q11')">
-    <h2>1️⃣1️⃣ What is Context API?</h2>
-</div>
-<div id="q11" class="content">
-    <p>The **Context API** avoids prop drilling by sharing data globally.</p>
-    <pre>
-        <button class="copy-btn" onclick="copyToClipboard('code11')">Copy</button>
-        <code id="code11">
-const ThemeContext = React.createContext();
-
-function App() {
-    return (
-        <ThemeContext.Provider value="dark">
-            <ChildComponent />
-        </ThemeContext.Provider>
-    );
-}
-        </code>
-    </pre>
-</div>
-
-<div class="section" onclick="toggleContent('q12')">
-    <h2>1️⃣2️⃣ What is memoization in React?</h2>
-</div>
-<div id="q12" class="content">
-    <p>Memoization optimizes performance by **caching results** of expensive computations.</p>
-    <pre>
-        <button class="copy-btn" onclick="copyToClipboard('code12')">Copy</button>
-        <code id="code12">
-import React, { useMemo } from 'react';
-
-function ExpensiveComponent({ num }) {
-    const result = useMemo(() => num * 10, [num]);
-    return <p>Computed Value: {result}</p>;
-}
-        </code>
-    </pre>
-</div>
-
-<div class="section" onclick="toggleContent('q13')">
-    <h2>1️⃣3️⃣ What are controlled and uncontrolled components?</h2>
-</div>
-<div id="q13" class="content">
-    <p>A controlled component manages its **own state**, while an uncontrolled component relies on the DOM.</p>
-    <pre>
-        <button class="copy-btn" onclick="copyToClipboard('code13')">Copy</button>
-        <code id="code13">
-// Controlled Component
-function ControlledInput() {
-    const [value, setValue] = useState('');
-    return <input value={value} onChange={(e) => setValue(e.target.value)} />;
-}
-        </code>
-    </pre>
-</div>
-
-<div class="section" onclick="toggleContent('q14')">
-    <h2>1️⃣4️⃣ What is lazy loading in React?</h2>
-</div>
-<div id="q14" class="content">
-    <p>Lazy loading loads components **only when needed**, improving performance.</p>
-    <pre>
-        <button class="copy-btn" onclick="copyToClipboard('code14')">Copy</button>
-        <code id="code14">
-import React, { lazy, Suspense } from 'react';
-
-const LazyComponent = lazy(() => import('./LazyComponent'));
-
-function App() {
-    return (
-        <Suspense fallback={<p>Loading...</p>}>
-            <LazyComponent />
-        </Suspense>
-    );
-}
-        </code>
-    </pre>
-</div>
-
-<div class="section" onclick="toggleContent('q15')">
-    <h2>1️⃣5️⃣ How to implement dark mode in React?</h2>
-</div>
-<div id="q15" class="content">
-    <p>Dark mode changes the background and text color based on user selection.</p>
-    <pre>
-        <button class="copy-btn" onclick="copyToClipboard('code15')">Copy</button>
-        <code id="code15">
-import { useState } from 'react';
-
-function App() {
-    const [dark, setDark] = useState(false);
-    return (
-        <div style={{ background: dark ? '#222' : '#fff', color: dark ? '#fff' : '#000' }}>
-            <button onClick={() => setDark(!dark)}>Toggle Dark Mode</button>
-        </div>
-    );
-}
-        </code>
-    </pre>
-</div>
-<div class="section" onclick="toggleContent('q16')">
-    <h2>1️⃣6️⃣ What is Redux and why is it used?</h2>
-</div>
-<div id="q16" class="content">
-    <p>Redux is a **state management library** that helps manage global state in large applications.</p>
-    <pre>
-        <button class="copy-btn" onclick="copyToClipboard('code16')">Copy</button>
-        <code id="code16">
-import { createStore } from 'redux';
-
-const initialState = { count: 0 };
-const reducer = (state = initialState, action) => {
-    return action.type === "INCREMENT" ? { count: state.count + 1 } : state;
-};
-
-const store = createStore(reducer);
-store.dispatch({ type: "INCREMENT" });
-console.log(store.getState());  // Output: { count: 1 }
-        </code>
-    </pre>
-</div>
-
-<div class="section" onclick="toggleContent('q17')">
-    <h2>1️⃣7️⃣ What is React.memo?</h2>
-</div>
-<div id="q17" class="content">
-    <p>React.memo is used to **optimize functional components** by preventing unnecessary re-renders.</p>
-    <pre>
-        <button class="copy-btn" onclick="copyToClipboard('code17')">Copy</button>
-        <code id="code17">
-import React, { useState } from 'react';
-
-const MemoComponent = React.memo(({ name }) => {
-    console.log("Rendered");
-    return <p>Hello, {name}!</p>;
-});
-
-function App() {
-    const [count, setCount] = useState(0);
-    return (
-        <div>
-            <MemoComponent name="John" />
-            <button onClick={() => setCount(count + 1)}>Increment</button>
-        </div>
-    );
-}
-        </code>
-    </pre>
-</div>
-
-<div class="section" onclick="toggleContent('q18')">
-    <h2>1️⃣8️⃣ What is useCallback and useMemo?</h2>
-</div>
-<div id="q18" class="content">
-    <p>Both useCallback and useMemo optimize performance by **memoizing values and functions**.</p>
-    <pre>
-        <button class="copy-btn" onclick="copyToClipboard('code18')">Copy</button>
-        <code id="code18">
-import { useCallback, useMemo, useState } from 'react';
-
-function ExpensiveComponent({ number }) {
-    const square = useMemo(() => number * number, [number]);
-
-    const logMessage = useCallback(() => {
-        console.log("Square calculated!");
-    }, [number]);
-
-    return <p>Square: {square}</p>;
-}
-        </code>
-    </pre>
-</div>
-
-<div class="section" onclick="toggleContent('q19')">
-    <h2>1️⃣9️⃣ What is Server-Side Rendering (SSR) in React?</h2>
-</div>
-<div id="q19" class="content">
-    <p>Server-Side Rendering (SSR) generates pages **on the server** instead of the client.</p>
-    <pre>
-        <button class="copy-btn" onclick="copyToClipboard('code19')">Copy</button>
-        <code id="code19">
-import express from 'express';
-import React from 'react';
-import ReactDOMServer from 'react-dom/server';
-
-const app = express();
-const App = () => <h1>Hello from SSR</h1>;
-
-app.get('/', (req, res) => {
-    const html = ReactDOMServer.renderToString(<App />);
-    res.send(html);
-});
-
-app.listen(3000, () => console.log('Server running'));
-        </code>
-    </pre>
-</div>
-
-<div class="section" onclick="toggleContent('q20')">
-    <h2>2️⃣0️⃣ What is Suspense in React?</h2>
-</div>
-<div id="q20" class="content">
-    <p>Suspense **handles lazy loading** and asynchronous data fetching.</p>
-    <pre>
-        <button class="copy-btn" onclick="copyToClipboard('code20')">Copy</button>
-        <code id="code20">
-import React, { lazy, Suspense } from 'react';
-
-const LazyComponent = lazy(() => import('./LazyComponent'));
-
-function App() {
-    return (
-        <Suspense fallback={<h2>Loading...</h2>}>
-            <LazyComponent />
-        </Suspense>
-    );
-}
-        </code>
-    </pre>
-</div>
-       <div class="section" onclick="toggleContent('q21')">
-    <h2>2️⃣1️⃣ What is React Context API?</h2>
-</div>
-<div id="q21" class="content">
-    <p>Context API is used to manage global state without prop drilling.</p>
-    <pre>
-        <button class="copy-btn" onclick="copyToClipboard('code21')">Copy</button>
-        <code id="code21">
-import React, { createContext, useContext } from 'react';
-
-const ThemeContext = createContext('light');
-
-function ThemeComponent() {
-    const theme = useContext(ThemeContext);
-    return <p>Current Theme: {theme}</p>;
-}
-
-function App() {
-    return (
-        <ThemeContext.Provider value="dark">
-            <ThemeComponent />
-        </ThemeContext.Provider>
-    );
-}
-        </code>
-    </pre>
-</div>
-
-<div class="section" onclick="toggleContent('q22')">
-    <h2>2️⃣2️⃣ What is React Router?</h2>
-</div>
-<div id="q22" class="content">
-    <p>React Router helps in **navigation between pages** in a React app.</p>
-    <pre>
-        <button class="copy-btn" onclick="copyToClipboard('code22')">Copy</button>
-        <code id="code22">
-import { BrowserRouter, Route, Routes, Link } from 'react-router-dom';
-
-function Home() {
-    return <h1>Home Page</h1>;
-}
-
-function About() {
-    return <h1>About Page</h1>;
-}
-
-function App() {
-    return (
-        <BrowserRouter>
-            <nav>
-                <Link to="/">Home</Link> | <Link to="/about">About</Link>
-            </nav>
-            <Routes>
-                <Route path="/" element={<Home />} />
-                <Route path="/about" element={<About />} />
-            </Routes>
-        </BrowserRouter>
-    );
-}
-        </code>
-    </pre>
-</div>
-
-<div class="section" onclick="toggleContent('q23')">
-    <h2>2️⃣3️⃣ What is Prop Drilling?</h2>
-</div>
-<div id="q23" class="content">
-    <p>Prop drilling occurs when props are passed **multiple levels down** unnecessarily.</p>
-    <pre>
-        <button class="copy-btn" onclick="copyToClipboard('code23')">Copy</button>
-        <code id="code23">
-function ChildComponent({ message }) {
-    return <p>{message}</p>;
-}
-
-function ParentComponent() {
-    return <ChildComponent message="Hello from Parent!" />;
-}
-        </code>
-    </pre>
-</div>
-
-<div class="section" onclick="toggleContent('q25')">
-    <h2>2️⃣5️⃣ What are Controlled vs Uncontrolled Components?</h2>
-</div>
-<div id="q25" class="content">
-    <p>Controlled components are managed by React state, while uncontrolled components rely on the DOM.</p>
-    <pre>
-        <button class="copy-btn" onclick="copyToClipboard('code25')">Copy</button>
-        <code id="code25">
-function ControlledInput() {
-    const [value, setValue] = useState("");
-    return <input value={value} onChange={(e) => setValue(e.target.value)} />;
-}
-
-function UncontrolledInput() {
-    return <input ref={inputRef} />;
-}
-        </code>
-    </pre>
-</div>
-
-<div class="section" onclick="toggleContent('q26')">
-    <h2>2️⃣6️⃣ What is React Portals?</h2>
-</div>
-<div id="q26" class="content">
-    <p>React Portals allow rendering elements outside their parent DOM hierarchy.</p>
-    <pre>
-        <button class="copy-btn" onclick="copyToClipboard('code26')">Copy</button>
-        <code id="code26">
-import ReactDOM from 'react-dom';
-
-function Modal({ children }) {
-    return ReactDOM.createPortal(
-        <div className="modal">{children}</div>,
-        document.getElementById("modal-root")
-    );
-}
-        </code>
-    </pre>
-</div>
-
-<div class="section" onclick="toggleContent('q27')">
-    <h2>2️⃣7️⃣ What is the difference between useEffect and useLayoutEffect?</h2>
-</div>
-<div id="q27" class="content">
-    <p><strong>useEffect</strong> runs after rendering, while <strong>useLayoutEffect</strong> runs before painting the screen.</p>
-    <pre>
-        <button class="copy-btn" onclick="copyToClipboard('code27')">Copy</button>
-        <code id="code27">
-import { useEffect, useLayoutEffect } from 'react';
-
-useLayoutEffect(() => {
-    console.log("Before paint");
-});
-
-useEffect(() => {
-    console.log("After paint");
-});
-        </code>
-    </pre>
-</div>
-
-<div class="section" onclick="toggleContent('q28')">
-    <h2>2️⃣8️⃣ What is React.lazy?</h2>
-</div>
-<div id="q28" class="content">
-    <p>React.lazy allows **lazy loading** components to improve performance.</p>
-    <pre>
-        <button class="copy-btn" onclick="copyToClipboard('code28')">Copy</button>
-        <code id="code28">
-import { lazy, Suspense } from 'react';
-
-const LazyComponent = lazy(() => import('./LazyComponent'));
-
-function App() {
-    return (
-        <Suspense fallback={<p>Loading...</p>}>
-            <LazyComponent />
-        </Suspense>
-    );
-}
-        </code>
-    </pre>
-</div>
-
-<div class="section" onclick="toggleContent('q29')">
-    <h2>2️⃣9️⃣ What is React.Fragment?</h2>
-</div>
-<div id="q29" class="content">
-    <p>React.Fragment allows grouping multiple elements without adding extra DOM nodes.</p>
-    <pre>
-        <button class="copy-btn" onclick="copyToClipboard('code29')">Copy</button>
-        <code id="code29">
-function App() {
-    return (
-        <React.Fragment>
-            <h1>Title</h1>
-            <p>Description</p>
-        </React.Fragment>
-    );
-}
-        </code>
-    </pre>
-</div>
-
-<div class="section" onclick="toggleContent('q30')">
-    <h2>3️⃣0️⃣ What is Concurrent Mode in React?</h2>
-</div>
-<div id="q30" class="content">
-    <p>Concurrent Mode makes React apps more responsive by **prioritizing updates efficiently**.</p>
-    <pre>
-        <button class="copy-btn" onclick="copyToClipboard('code30')">Copy</button>
-        <code id="code30">
-import { createRoot } from 'react-dom';
-
-const root = createRoot(document.getElementById("root"));
-root.render(<App />);
-        </code>
-    </pre>
-</div> 
-        
-        <a href="index.html">⬅️ Back to Home</a>
     </div>
 
+    <!-- Footer -->
+    <footer id="contact">
+        <p>&copy; 2023 Learn Coding. All rights reserved.</p>
+    </footer>
+
     <script>
+        const topics = [
+            ["What is React?", "React.js is a JavaScript library for building fast and interactive user interfaces. It is maintained by Facebook."],
+            ["What are Components in React?", "Components are reusable UI elements in React. They can be **class-based** or **functional**."],
+            ["What is JSX?", "JSX (JavaScript XML) allows you to write HTML inside JavaScript."],
+            ["What is State in React?", "State allows React components to **manage dynamic data**."],
+            ["What are Props?", "Props (short for properties) are used to **pass data** between components."],
+            ["What is the Virtual DOM?", "The Virtual DOM is a **lightweight copy** of the actual DOM that React updates efficiently."],
+            ["What is useEffect?", "useEffect is a **React Hook** for handling side effects like fetching data."],
+            ["What is React Router?", "React Router enables **navigation** in React applications."],
+            ["What are React Hooks?", "React Hooks let you **use state and lifecycle methods** inside functional components."],
+            ["What is useRef?", "useRef allows referencing **DOM elements** without re-rendering."],
+            ["What is Context API?", "The **Context API** avoids prop drilling by sharing data globally."],
+            ["What is memoization in React?", "Memoization optimizes performance by **caching results** of expensive computations."],
+            ["What are controlled and uncontrolled components?", "A controlled component manages its **own state**, while an uncontrolled component relies on the DOM."],
+            ["What is lazy loading in React?", "Lazy loading loads components **only when needed**, improving performance."],
+            ["How to implement dark mode in React?", "Dark mode changes the background and text color based on user selection."],
+            ["What is Redux and why is it used?", "Redux is a **state management library** that helps manage global state in large applications."],
+            ["What is React.memo?", "React.memo is used to **optimize functional components** by preventing unnecessary re-renders."],
+            ["What is useCallback and useMemo?", "Both useCallback and useMemo optimize performance by **memoizing values and functions**."],
+            ["What is Server-Side Rendering (SSR) in React?", "Server-Side Rendering (SSR) generates pages **on the server** instead of the client."],
+            ["What is Suspense in React?", "Suspense **handles lazy loading** and asynchronous data fetching."],
+            ["What is React Context API?", "Context API is used to manage global state without prop drilling."],
+            ["What is React Router?", "React Router helps in **navigation between pages** in a React app."],
+            ["What is Prop Drilling?", "Prop drilling occurs when props are passed **multiple levels down** unnecessarily."],
+            ["What are Controlled vs Uncontrolled Components?", "Controlled components are managed by React state, while uncontrolled components rely on the DOM."],
+            ["What is React Portals?", "React Portals allow rendering elements outside their parent DOM hierarchy."],
+            ["What is the difference between useEffect and useLayoutEffect?", "<strong>useEffect</strong> runs after rendering, while <strong>useLayoutEffect</strong> runs before painting the screen."],
+            ["What is React.lazy?", "React.lazy allows **lazy loading** components to improve performance."],
+            ["What is React.Fragment?", "React.Fragment allows grouping multiple elements without adding extra DOM nodes."],
+            ["What is Concurrent Mode in React?", "Concurrent Mode makes React apps more responsive by **prioritizing updates efficiently**."]
+        ];
+ const menuData = [
+   
+    {
+        title: "Basic Math",
+        subMenu: [
+            { name: "Trigonometry", link: "Trigonometry" },
+            { name: "Algebra", link: "Algebra" },
+            { name: "Geometry", link: "Geometry" },
+        
+        ]
+    },
+    
+    
+    {
+        title: "Tutorial",
+        subMenu: [
+            { name: "React.js Tutorial", link: "react_tutorial" },
+            { name: "Node.js Tutorial", link: "node_tutorial" },
+            { name: "JavaScript Tutorial", link: "JavaScript_tutorial" }
+        ]
+    }
+];     
+const menuContainer = document.querySelector('.menu');
+menuData.forEach(menuItem => {
+    const li = document.createElement('li');
+    const subMenu = document.createElement('ul');
+    subMenu.classList.add('sub-menu');
+    menuItem.subMenu.forEach(subItem => {
+        subMenu.innerHTML += `<li><a href="${subItem.link}">${subItem.name}</a></li>`;
+    });
+    li.appendChild(subMenu);
+    menuContainer.appendChild(li);
+});
+
+// Toggle Mobile Menu
+function toggleMenu() {
+    const menu = document.querySelector('.menu');
+    menu.classList.toggle('active');
+}
+const topicsContainer = document.getElementById('topics-container');
+        topics.forEach((topic, index) => {
+            topicsContainer.innerHTML += `
+                <div class="section" onclick="toggleContent('q${index + 1}')">
+                    <h2>${index + 1}️⃣ ${topic[0]}</h2>
+                </div>
+                <div id="q${index + 1}" class="content">
+                    <p>${topic[1]}</p>
+                    <textarea id="code${index + 1}">${topic[1]}</textarea><br>
+                    <button class="run-btn" onclick="runCode('code${index + 1}')">Run</button>
+                    <button class="copy-btn" onclick="copyToClipboard('code${index + 1}')">Copy</button>
+                </div>
+            `;
+        });
+
         function toggleContent(id) {
             let content = document.getElementById(id);
-            content.classList.toggle("show");
+            content.style.display = (content.style.display === "none" || content.style.display === "") ? "block" : "none";
         }
 
         function toggleDarkMode() {
             document.body.classList.toggle("dark-mode");
+            Swal.fire("🌙 Dark mode " + (document.body.classList.contains("dark-mode") ? "enabled" : "disabled"));
         }
 
-        function copyToClipboard(elementId) {
-            let textArea = document.createElement("textarea");
-            textArea.value = document.getElementById(elementId).innerText;
-            document.body.appendChild(textArea);
-            textArea.select();
+        function searchTopics() {
+            let input = document.getElementById("search").value.toLowerCase();
+            let sections = document.getElementsByClassName("section");
+            for (let section of sections) {
+                if (section.textContent.toLowerCase().includes(input)) section.style.display = "";
+                else section.style.display = "none";
+            }
+        }
+
+        function copyToClipboard(codeId) {
+            let codeElement = document.getElementById(codeId);
+            codeElement.select();
             document.execCommand("copy");
-            document.body.removeChild(textArea);
-            alert("Code copied!");
+            Swal.fire("✅ Code copied!");
+        }
+
+        function runCode(codeId) {
+            let code = document.getElementById(codeId).value;
+            try { eval(code); } 
+            catch (error) { Swal.fire("❌ Error: " + error.message); }
+        }
+
+        function toggleMenu() {
+            const menu = document.querySelector('.menu');
+            menu.classList.toggle('active');
         }
     </script>
-
 </body>
 </html>
