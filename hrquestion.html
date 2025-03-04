@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HR Interview Questions</title>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+   <style>
+        /* General Styles */
+        body {
+            font-family: 'Arial', sans-serif;
+            background: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            transition: 0.3s;
+        }
+
+        .dark-mode {
+            background: #222;
+            color: #fff;
+        }
+
+        /* Header */
+        header {
+            background: #2c3e50;
+            color: #fff;
+            padding: 10px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: #fff;
+        }
+
+        nav ul {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            align-items: center;
+        }
+
+        nav ul li {
+            margin-left: 25px;
+        }
+
+        nav ul li a {
+            color: #fff;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 16px;
+            transition: color 0.3s ease;
+        }
+
+        nav ul li a:hover {
+            color: #ff6f61;
+        }
+
+        .hamburger {
+            display: none;
+            font-size: 24px;
+            cursor: pointer;
+        }
+
+        /* Main Content */
+        .container {
+            max-width: 900px;
+            margin: 20px auto;
+            padding: 20px;
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .dark-mode .container {
+            background: #333;
+            box-shadow: 0 4px 8px rgba(255, 255, 255, 0.2);
+        }
+
+        h1 {
+            text-align: center;
+            color: #007bff;
+        }
+
+        .search-box {
+            padding: 10px;
+            width: 80%;
+            max-width: 400px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+            margin: 20px auto;
+            display: block;
+        }
+
+        .toggle-btn {
+            background: #008CBA;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 10px auto;
+            display: block;
+            transition: background 0.3s ease;
+        }
+
+        .toggle-btn:hover {
+            background: #005f73;
+        }
+
+        /* Sections */
+        .section {
+            background: #f9f9f9;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 10px;
+            cursor: pointer;
+            border-left: 5px solid #007bff;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .section:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        }
+
+        .content {
+            display: none;
+            padding: 15px;
+            background: #fff;
+            border-left: 5px solid #007bff;
+            color: black;
+            margin: 10px 0;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .dark-mode .content {
+            background: #444;
+            color: white;
+            border-left: 5px solid #008CBA;
+        }
+
+        pre {
+            background: #1e1e1e;
+            color: lime;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+            position: relative;
+        }
+
+        .copy-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 3px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .copy-btn:hover {
+            background: #0056b3;
+        }
+
+        textarea {
+            width: 100%;
+            height: 100px;
+            font-family: monospace;
+            margin-top: 10px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+
+        .run-btn {
+            background: #28a745;
+            color: white;
+            padding: 8px 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-right: 10px;
+            transition: background 0.3s ease;
+        }
+
+        .run-btn:hover {
+            background: #218838;
+        }
+
+        a {
+            display: block;
+            text-align: center;
+            margin-top: 20px;
+            padding: 10px;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: background 0.3s ease;
+        }
+
+        a:hover {
+            background: #0056b3;
+        }
+
+        /* Footer */
+        footer {
+            background: #1a252f;
+            color: #fff;
+            text-align: center;
+            padding: 20px;
+            margin-top: 20px;
+        }
+
+        footer p {
+            margin: 0;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .hamburger {
+                display: block;
+            }
+
+            nav ul {
+                display: none;
+                flex-direction: column;
+                width: 100%;
+                background: #2c3e50;
+                position: absolute;
+                top: 60px;
+                left: 0;
+            }
+
+            nav ul.active {
+                display: flex;
+            }
+
+            nav ul li {
+                margin: 10px 0;
+                text-align: center;
+            }
+
+            .header h3 {
+                font-size: 24px;
+            }
+
+            .search-box {
+                width: 90%;
+            }
+        }
+    </style>
+</head>
+<body>
+   <header>
+        <div class="logo">Learn Coding</div>
+        <nav>
+            <ul class="menu">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="javascript_tutorial.html">JavaScript Tutorial</a></li>
+                <li><a href="#tutorials">Tutorials</a></li>
+                <li><a href="#topics">Topics</a></li>
+                <li><a href="#testimonials">Testimonials</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+            <div class="hamburger" onclick="toggleMenu()">&#9776;</div>
+        </nav>
+    </header>
+   
+
+    <div class="container">
+        <h1>📌 HR Interview Questions & Answers</h1>
+        <input type="text" class="search-box" placeholder="Search questions..." onkeyup="searchQuestions()">
+        <div id="questions-container"></div>
+    </div>
+
+    <footer>
+        <p>&copy; 2023 HR Interview Guide. All rights reserved.</p>
+    </footer>
+
+    <script>
+    const questions = [
+    ["Tell me about yourself or introduce yourself.", 
+    "I recently graduated with a degree in Computer Science, and I've been working as a software developer for the past two years. During my time at college, I developed a strong foundation in programming, particularly in Java and Python. In my current role, I've gained practical experience working on real-world projects like developing a web-based application that improved internal team productivity. I'm now looking to grow further in a challenging environment like itsruntym."],
+
+    ["What interests you about working for this company?", 
+    "I've heard a lot about itsruntym's commitment to innovation and its focus on technology. As someone who is passionate about problem-solving and eager to learn new technologies, I feel that itsruntym would provide me with the perfect environment to grow and contribute to meaningful projects."],
+
+    ["What would you say are your biggest professional strengths?", 
+    "My strengths include a quick learning ability and strong analytical skills. I've been able to grasp new technologies easily, which has allowed me to contribute to various projects early in my career. I'm also detail-oriented, ensuring that I produce high-quality work."],
+
+    ["Can you walk us through a recent accomplishment you're proud of?", 
+    "In my current role, I was tasked with optimizing a database query that was slowing down our application. After researching and testing different approaches, I was able to reduce the query execution time by 50%, which significantly improved the app's performance."],
+
+    ["What are your long-term career goals?", 
+    "In the long term, I'd like to develop my skills and take on leadership roles in software development. My goal is to grow into a position where I can lead projects and contribute to technological advancements that make a real impact."],
+
+    ["Tell me about a project where you faced a significant challenge and how you overcame it.", 
+    "During one of my college projects, our team had difficulties integrating various modules. To overcome this, I took the initiative to map out a clear integration plan and facilitated better communication between team members. This helped us meet our deadline and deliver a successful project."],
+
+    ["Describe a situation where you failed and how you handled it.", 
+    "In one project, I initially underestimated the time required to complete a task, which led to a delay in the overall timeline. I learned from that mistake and have since become much more careful with time management and estimation. I also make it a point to ask for help early when needed."],
+
+    ["How do you prioritize tasks when you have multiple deadlines?", 
+    "I prioritize tasks based on deadlines and importance. I make a to-do list and use time management tools like Trello or a calendar to stay organized. If a deadline is tight, I focus on breaking the task down into smaller, manageable pieces to avoid feeling overwhelmed."],
+
+    ["What keeps you motivated to perform at your best?", 
+    "I'm motivated by the opportunity to learn and improve. Every project presents a chance to grow my skills, and I enjoy the process of tackling challenges and finding solutions. Additionally, being able to contribute to a larger goal within a team is highly motivating for me."],
+
+    ["Tell me about a time when you resolved a conflict within your team.", 
+    "During a group project at college, there was a disagreement between two team members about how to approach a problem. I suggested we have a quick brainstorming session where everyone could share their ideas. This helped us find a middle ground, and we ended up combining the best parts of both approaches."],
+
+    ["What are your expectations regarding salary and benefits?", 
+    "As someone who is early in their career, I'm looking for a fair compensation package that reflects industry standards and the opportunity to grow. I'm more focused on gaining experience and advancing my skills in a company like itsruntym."],
+
+    ["Why are you looking to transition from your current role?", 
+    "While I've gained valuable experience in my current role, I feel that I'm ready for a new challenge where I can apply my skills in a more dynamic environment. I believe itsruntym can provide me with the opportunities I'm looking for."],
+
+    ["How do you approach team collaboration, especially when there are differing opinions?", 
+    "I believe it's important to listen to everyone's viewpoint and focus on the common goal. When opinions differ, I try to facilitate a discussion where we can evaluate the pros and cons of each idea, which usually leads to a better, collective decision."],
+
+    ["Can you give an example of a time when you provided exceptional service to a client or colleague?", 
+    "In my current role, a colleague was struggling with a feature implementation. I spent extra time after work to help him debug and figure out a solution. This helped him meet the deadline, and it also improved our team's overall performance."],
+
+    ["What is the one achievement in your career you are most proud of?", 
+    "One of my proudest achievements is completing my final year college project where we built a machine learning model that could predict stock prices with a high degree of accuracy. It was a challenging task, but seeing it work in real-time was extremely rewarding."],
+
+    ["How do you manage stress and ensure productivity during tight deadlines?", 
+    "I manage stress by staying organized and breaking tasks into smaller, actionable steps. I also make sure to take short breaks to clear my mind, which helps me stay focused. When deadlines are tight, I try to maintain clear communication with my team to avoid unnecessary delays."],
+
+    ["Tell me about a time when you had to learn something quickly to adapt to a new situation.", 
+    "In my first job, I had to learn a new framework, Spring Boot, within a week to support a client project. I dedicated extra hours to reading documentation and watching tutorials, which allowed me to contribute effectively by the following week."],
+
+    ["How do you handle feedback or criticism from peers or supervisors?", 
+    "I always take feedback as an opportunity to improve. If someone points out something I can work on, I make sure to listen carefully, ask questions for clarity, and then take action to improve. It's an important part of growing as a professional."],
+
+    ["What type of company culture do you thrive in, and why?", 
+    "I thrive in a collaborative and learning-oriented culture. I believe in teamwork, and I enjoy environments where people are open to sharing ideas and supporting each other. A culture that encourages growth and learning is where I feel I can do my best work."],
+
+    ["What questions do you have for us regarding this role or our company?", 
+    "I'm curious about how itsruntym fosters learning and growth for its employees. Could you share more about the kind of training or development opportunities available?"]
+];
+
+
+
+        const container = document.getElementById("questions-container");
+
+        questions.forEach(([question, answer]) => {
+            const section = document.createElement("div");
+            section.classList.add("section");
+            section.innerHTML = `<strong>${question}</strong>`;
+            
+            const content = document.createElement("div");
+            content.classList.add("content");
+            content.innerHTML = `<p>${answer}</p>`;
+            
+            section.addEventListener("click", () => {
+                document.querySelectorAll(".content").forEach(c => c.style.display = "none");
+                content.style.display = "block";
+                
+            });
+            
+            container.appendChild(section);
+            container.appendChild(content);
+        });
+
+        function searchQuestions() {
+            const searchValue = document.querySelector(".search-box").value.toLowerCase();
+            document.querySelectorAll(".section").forEach((section, index) => {
+                const questionText = questions[index][0].toLowerCase();
+                section.style.display = questionText.includes(searchValue) ? "block" : "none";
+            });
+        }
+
+        function toggleDarkMode() {
+            document.body.classList.toggle("dark-mode");
+        }
+    </script>
+</body>
+</html>
