@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Binary Search Visualizer</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+            color: #333;
+        }
+        
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .container {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        
+        .controls {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .control-group {
+            margin-bottom: 15px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        
+        input, select, button {
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+        
+        button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        
+        button:hover {
+            background-color: #2980b9;
+        }
+        
+        button:disabled {
+            background-color: #95a5a6;
+            cursor: not-allowed;
+        }
+        
+        .visualization {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        
+        .array-container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .array {
+            display: flex;
+            justify-content: center;
+            align-items: flex-end;
+            height: 200px;
+            margin-top: 20px;
+            position: relative;
+        }
+        
+        .array-element {
+            width: 40px;
+            margin: 0 2px;
+            background-color: #3498db;
+            transition: all 0.3s ease;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            font-weight: bold;
+            position: relative;
+        }
+        
+        .array-element.target {
+            background-color: #e74c3c;
+        }
+        
+        .array-element.left-pointer {
+            background-color: #2ecc71;
+        }
+        
+        .array-element.right-pointer {
+            background-color: #f39c12;
+        }
+        
+        .array-element.mid-pointer {
+            background-color: #9b59b6;
+        }
+        
+        .array-element.checked {
+            background-color: #95a5a6;
+        }
+        
+        .pointer-label {
+            position: absolute;
+            top: -25px;
+            font-size: 12px;
+            color: #333;
+        }
+        
+        .graph-container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            height: 300px;
+        }
+        
+        .explanation {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            line-height: 1.6;
+        }
+        
+        .step-info {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #f8f9fa;
+            border-radius: 4px;
+            border-left: 4px solid #3498db;
+        }
+        
+        .complexity-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+        
+        .complexity-table th, .complexity-table td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: center;
+        }
+        
+        .complexity-table th {
+            background-color: #f2f2f2;
+        }
+        
+        .legend {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 15px;
+            flex-wrap: wrap;
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 14px;
+        }
+        
+        .legend-color {
+            width: 20px;
+            height: 20px;
+            border-radius: 3px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Binary Search Visualizer</h1>
+    
+    <div class="container">
+        <div class="controls">
+            <div class="control-group">
+                <label for="arrayInput">Array (comma separated sorted numbers):</label>
+                <input type="text" id="arrayInput" value="1, 3, 5, 7, 9, 11, 13, 15, 17, 19">
+            </div>
+            
+            <div class="control-group">
+                <label for="targetInput">Target value to search:</label>
+                <input type="number" id="targetInput" value="13">
+            </div>
+            
+            <div class="control-group">
+                <label for="speedInput">Animation Speed:</label>
+                <select id="speedInput">
+                    <option value="500">Slow</option>
+                    <option value="300" selected>Medium</option>
+                    <option value="100">Fast</option>
+                </select>
+            </div>
+            
+            <button id="startBtn">Start Search</button>
+            <button id="resetBtn">Reset</button>
+            <button id="nextStepBtn" disabled>Next Step</button>
+        </div>
+        
+        <div class="visualization">
+            <div class="array-container">
+                <h2>Array Visualization</h2>
+                <div class="legend">
+                    <div class="legend-item">
+                        <div class="legend-color" style="background-color: #e74c3c;"></div>
+                        <span>Target</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color" style="background-color: #2ecc71;"></div>
+                        <span>Left Pointer</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color" style="background-color: #f39c12;"></div>
+                        <span>Right Pointer</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color" style="background-color: #9b59b6;"></div>
+                        <span>Mid Pointer</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color" style="background-color: #95a5a6;"></div>
+                        <span>Checked</span>
+                    </div>
+                </div>
+                <div class="array" id="array"></div>
+                <div class="step-info" id="stepInfo">
+                    Click "Start Search" to begin the visualization.
+                </div>
+            </div>
+            
+            <div class="graph-container">
+                <h2>Time Complexity Graph</h2>
+                <canvas id="complexityGraph"></canvas>
+            </div>
+        </div>
+        
+        <div class="explanation">
+            <h2>Binary Search Explanation</h2>
+            <p>Binary search is an efficient algorithm for finding an item from a sorted list of items. It works by repeatedly dividing in half the portion of the list that could contain the item, until you've narrowed down the possible locations to just one.</p>
+            
+            <h3>Algorithm Steps:</h3>
+            <ol>
+                <li>Initialize two pointers: <code>left = 0</code> and <code>right = array.length - 1</code></li>
+                <li>While <code>left ≤ right</code>:
+                    <ol>
+                        <li>Calculate <code>mid = Math.floor((left + right) / 2)</code></li>
+                        <li>If the element at <code>mid</code> is the target, return <code>mid</code></li>
+                        <li>If the target is less than the element at <code>mid</code>, set <code>right = mid - 1</code></li>
+                        <li>If the target is greater than the element at <code>mid</code>, set <code>left = mid + 1</code></li>
+                    </ol>
+                </li>
+                <li>If the element is not found, return -1</li>
+            </ol>
+            
+            <h3>Time Complexity:</h3>
+            <table class="complexity-table">
+                <tr>
+                    <th>Case</th>
+                    <th>Time Complexity</th>
+                </tr>
+                <tr>
+                    <td>Best Case</td>
+                    <td>O(1) - Target is the middle element</td>
+                </tr>
+                <tr>
+                    <td>Average Case</td>
+                    <td>O(log n)</td>
+                </tr>
+                <tr>
+                    <td>Worst Case</td>
+                    <td>O(log n) - Target is at the beginning or end</td>
+                </tr>
+            </table>
+            
+            <p>Binary search is much more efficient than linear search (O(n)) for large datasets because it halves the search space with each comparison.</p>
+        </div>
+    </div>
+
+    <script>
+        // DOM elements
+        const arrayInput = document.getElementById('arrayInput');
+        const targetInput = document.getElementById('targetInput');
+        const speedInput = document.getElementById('speedInput');
+        const startBtn = document.getElementById('startBtn');
+        const resetBtn = document.getElementById('resetBtn');
+        const nextStepBtn = document.getElementById('nextStepBtn');
+        const arrayContainer = document.getElementById('array');
+        const stepInfo = document.getElementById('stepInfo');
+        const complexityGraph = document.getElementById('complexityGraph');
+        
+        // Search state
+        let array = [];
+        let target = 0;
+        let left = 0;
+        let right = 0;
+        let mid = 0;
+        let steps = [];
+        let currentStep = 0;
+        let animationSpeed = 300;
+        let isAutoPlaying = false;
+        let animationTimeout = null;
+        
+        // Initialize the graph
+        const ctx = complexityGraph.getContext('2d');
+        complexityGraph.width = complexityGraph.offsetWidth;
+        complexityGraph.height = complexityGraph.offsetHeight;
+        
+        // Event listeners
+        startBtn.addEventListener('click', startSearch);
+        resetBtn.addEventListener('click', resetSearch);
+        nextStepBtn.addEventListener('click', nextStep);
+        
+        // Initialize
+        resetSearch();
+        
+        function resetSearch() {
+            // Clear any ongoing animations
+            if (animationTimeout) {
+                clearTimeout(animationTimeout);
+                animationTimeout = null;
+            }
+            
+            // Parse input
+            array = arrayInput.value.split(',').map(item => parseInt(item.trim()));
+            target = parseInt(targetInput.value);
+            animationSpeed = parseInt(speedInput.value);
+            
+            // Validate input
+            if (array.some(isNaN)) {
+                stepInfo.textContent = "Please enter a valid array of numbers.";
+                return;
+            }
+            
+            if (isNaN(target)) {
+                stepInfo.textContent = "Please enter a valid target number.";
+                return;
+            }
+            
+            // Check if array is sorted
+            for (let i = 1; i < array.length; i++) {
+                if (array[i] < array[i-1]) {
+                    stepInfo.textContent = "Array must be sorted in ascending order for binary search.";
+                    return;
+                }
+            }
+            
+            // Reset search state
+            left = 0;
+            right = array.length - 1;
+            steps = [];
+            currentStep = 0;
+            isAutoPlaying = false;
+            
+            // Enable/disable buttons
+            startBtn.disabled = false;
+            nextStepBtn.disabled = false;
+            
+            // Render initial state
+            renderArray();
+            renderGraph();
+            stepInfo.textContent = "Ready to search. Click 'Start Search' or 'Next Step' to begin.";
+        }
+        
+        function startSearch() {
+            isAutoPlaying = true;
+            startBtn.disabled = true;
+            nextStepBtn.disabled = true;
+            performStep();
+        }
+        
+        function nextStep() {
+            isAutoPlaying = false;
+            if (animationTimeout) {
+                clearTimeout(animationTimeout);
+                animationTimeout = null;
+            }
+            performStep();
+        }
+        
+        function performStep() {
+            // If we're at the end of the steps, calculate next step
+            if (currentStep >= steps.length) {
+                calculateNextStep();
+            }
+            
+            // If we have steps to perform
+            if (currentStep < steps.length) {
+                const step = steps[currentStep];
+                
+                // Update visualization based on step
+                updateVisualization(step);
+                
+                // Update step info
+                stepInfo.innerHTML = step.message;
+                
+                currentStep++;
+                
+                // If auto-playing and not finished, schedule next step
+                if (isAutoPlaying && !step.finished) {
+                    animationTimeout = setTimeout(performStep, animationSpeed);
+                } else if (step.finished) {
+                    isAutoPlaying = false;
+                    startBtn.disabled = true;
+                }
+                
+                // Enable next step button if not auto-playing
+                if (!isAutoPlaying && !step.finished) {
+                    nextStepBtn.disabled = false;
+                }
+            }
+        }
+        
+        function calculateNextStep() {
+            if (left > right) {
+                steps.push({
+                    message: `Search complete. Target ${target} not found in the array.`,
+                    left: -1,
+                    right: -1,
+                    mid: -1,
+                    finished: true
+                });
+                return;
+            }
+            
+            mid = Math.floor((left + right) / 2);
+            
+            steps.push({
+                message: `Calculating mid = floor((${left} + ${right}) / 2) = ${mid}. Checking if array[${mid}] (${array[mid]}) == ${target}`,
+                left: left,
+                right: right,
+                mid: mid,
+                finished: false
+            });
+            
+            if (array[mid] === target) {
+                steps.push({
+                    message: `Found target ${target} at index ${mid}!`,
+                    left: left,
+                    right: right,
+                    mid: mid,
+                    found: true,
+                    finished: true
+                });
+            } else if (array[mid] < target) {
+                steps.push({
+                    message: `${array[mid]} < ${target}, so we search the right half. Setting left = mid + 1 = ${mid + 1}`,
+                    left: mid + 1,
+                    right: right,
+                    mid: mid,
+                    finished: false
+                });
+                left = mid + 1;
+            } else {
+                steps.push({
+                    message: `${array[mid]} > ${target}, so we search the left half. Setting right = mid - 1 = ${mid - 1}`,
+                    left: left,
+                    right: mid - 1,
+                    mid: mid,
+                    finished: false
+                });
+                right = mid - 1;
+            }
+        }
+        
+        function updateVisualization(step) {
+            // Clear all highlights first
+            const elements = arrayContainer.querySelectorAll('.array-element');
+            elements.forEach(el => {
+                el.classList.remove('left-pointer', 'right-pointer', 'mid-pointer', 'target', 'checked');
+                el.querySelector('.pointer-label')?.remove();
+            });
+            
+            if (step.finished && step.found) {
+                // Highlight the found element
+                if (step.mid >= 0 && step.mid < elements.length) {
+                    elements[step.mid].classList.add('target');
+                    
+                    const label = document.createElement('div');
+                    label.className = 'pointer-label';
+                    label.textContent = 'Found!';
+                    elements[step.mid].appendChild(label);
+                }
+                return;
+            }
+            
+            if (step.finished) {
+                return;
+            }
+            
+            // Highlight left pointer
+            if (step.left >= 0 && step.left < elements.length) {
+                elements[step.left].classList.add('left-pointer');
+                
+                const label = document.createElement('div');
+                label.className = 'pointer-label';
+                label.textContent = 'L';
+                elements[step.left].appendChild(label);
+            }
+            
+            // Highlight right pointer
+            if (step.right >= 0 && step.right < elements.length) {
+                elements[step.right].classList.add('right-pointer');
+                
+                const label = document.createElement('div');
+                label.className = 'pointer-label';
+                label.textContent = 'R';
+                elements[step.right].appendChild(label);
+            }
+            
+            // Highlight mid pointer
+            if (step.mid >= 0 && step.mid < elements.length) {
+                elements[step.mid].classList.add('mid-pointer');
+                
+                const label = document.createElement('div');
+                label.className = 'pointer-label';
+                label.textContent = 'M';
+                elements[step.mid].appendChild(label);
+            }
+            
+            // Mark checked elements
+            if (step.mid >= 0 && step.mid < elements.length && array[step.mid] !== target) {
+                elements[step.mid].classList.add('checked');
+            }
+        }
+        
+        function renderArray() {
+            arrayContainer.innerHTML = '';
+            
+            if (array.length === 0) return;
+            
+            const maxValue = Math.max(...array);
+            
+            array.forEach((value, index) => {
+                const element = document.createElement('div');
+                element.className = 'array-element';
+                element.textContent = value;
+                
+                // Scale height based on value
+                const heightPercentage = (value / maxValue) * 80 + 20;
+                element.style.height = `${heightPercentage}%`;
+                
+                // Highlight target if it exists in array
+                if (value === target) {
+                    element.classList.add('target');
+                }
+                
+                arrayContainer.appendChild(element);
+            });
+        }
+        
+        function renderGraph() {
+            // Clear previous graph
+            ctx.clearRect(0, 0, complexityGraph.width, complexityGraph.height);
+            
+            // Graph dimensions
+            const padding = 40;
+            const graphWidth = complexityGraph.width - padding * 2;
+            const graphHeight = complexityGraph.height - padding * 2;
+            
+            // Draw axes
+            ctx.beginPath();
+            ctx.moveTo(padding, padding);
+            ctx.lineTo(padding, padding + graphHeight);
+            ctx.lineTo(padding + graphWidth, padding + graphHeight);
+            ctx.strokeStyle = '#333';
+            ctx.lineWidth = 2;
+            ctx.stroke();
+            
+            // Draw axis labels
+            ctx.font = '14px Arial';
+            ctx.fillStyle = '#333';
+            ctx.textAlign = 'center';
+            ctx.fillText('Input Size (n)', padding + graphWidth / 2, complexityGraph.height - 5);
+            
+            ctx.save();
+            ctx.translate(10, padding + graphHeight / 2);
+            ctx.rotate(-Math.PI / 2);
+            ctx.textAlign = 'center';
+            ctx.fillText('Operations (time complexity)', 0, 0);
+            ctx.restore();
+            
+            // Generate data points
+            const maxN = 100;
+            const linearPoints = [];
+            const logarithmicPoints = [];
+            const constantPoints = [];
+            
+            for (let n = 1; n <= maxN; n++) {
+                linearPoints.push({ x: n, y: n });
+                logarithmicPoints.push({ x: n, y: Math.log2(n) });
+                constantPoints.push({ x: n, y: 1 });
+            }
+            
+            // Find max Y value for scaling
+            const maxY = maxN;
+            
+            // Scale function
+            const scaleX = x => padding + (x / maxN) * graphWidth;
+            const scaleY = y => padding + graphHeight - (y / maxY) * graphHeight;
+            
+            // Draw grid lines
+            ctx.strokeStyle = '#ddd';
+            ctx.lineWidth = 1;
+            
+            // Vertical grid lines
+            for (let n = 0; n <= maxN; n += 10) {
+                const x = scaleX(n);
+                ctx.beginPath();
+                ctx.moveTo(x, padding);
+                ctx.lineTo(x, padding + graphHeight);
+                ctx.stroke();
+                
+                if (n > 0) {
+                    ctx.fillText(n.toString(), x, padding + graphHeight + 15);
+                }
+            }
+            
+            // Horizontal grid lines
+            for (let y = 0; y <= maxY; y += 20) {
+                const scaledY = scaleY(y);
+                ctx.beginPath();
+                ctx.moveTo(padding, scaledY);
+                ctx.lineTo(padding + graphWidth, scaledY);
+                ctx.stroke();
+                
+                ctx.fillText(y.toString(), padding - 20, scaledY + 5);
+            }
+            
+            // Draw curves
+            drawCurve(linearPoints, '#e74c3c', 'O(n) Linear', scaleX, scaleY);
+            drawCurve(logarithmicPoints, '#2ecc71', 'O(log n) Logarithmic', scaleX, scaleY);
+            drawCurve(constantPoints, '#3498db', 'O(1) Constant', scaleX, scaleY);
+            
+            // Draw legend
+            const legendItems = [
+                { color: '#e74c3c', label: 'O(n) Linear (e.g., Linear Search)' },
+                { color: '#2ecc71', label: 'O(log n) Logarithmic (Binary Search)' },
+                { color: '#3498db', label: 'O(1) Constant' }
+            ];
+            
+            const legendX = padding + graphWidth - 200;
+            const legendY = padding + 20;
+            
+            legendItems.forEach((item, index) => {
+                ctx.fillStyle = item.color;
+                ctx.fillRect(legendX, legendY + index * 25, 15, 15);
+                
+                ctx.fillStyle = '#333';
+                ctx.font = '12px Arial';
+                ctx.textAlign = 'left';
+                ctx.fillText(item.label, legendX + 20, legendY + 12 + index * 25);
+            });
+        }
+        
+        function drawCurve(points, color, label, scaleX, scaleY) {
+            ctx.beginPath();
+            ctx.moveTo(scaleX(points[0].x), scaleY(points[0].y));
+            
+            for (let i = 1; i < points.length; i++) {
+                ctx.lineTo(scaleX(points[i].x), scaleY(points[i].y));
+            }
+            
+            ctx.strokeStyle = color;
+            ctx.lineWidth = 3;
+            ctx.stroke();
+        }
+    </script>
+</body>
+</html>
