@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Linear Regression with Gradient Descent</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+            color: #333;
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .controls {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        
+        .control-group {
+            flex: 1;
+            min-width: 200px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        
+        input, select, button {
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        
+        button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        
+        button:hover {
+            background-color: #2980b9;
+        }
+        
+        button:disabled {
+            background-color: #95a5a6;
+            cursor: not-allowed;
+        }
+        
+        .visualization {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        
+        .plot-container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            height: 500px;
+            position: relative;
+        }
+        
+        #regressionCanvas {
+            border: 1px solid #ddd;
+            background-color: white;
+            width: 100%;
+            height: 100%;
+        }
+        
+        #costCanvas {
+            border: 1px solid #ddd;
+            background-color: white;
+            width: 100%;
+            height: 300px;
+        }
+        
+        .step-info {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #f8f9fa;
+            border-radius: 4px;
+            border-left: 4px solid #3498db;
+        }
+        
+        .explanation {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            line-height: 1.6;
+        }
+        
+        .parameter-display {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 15px;
+        }
+        
+        .parameter {
+            background-color: #f8f9fa;
+            padding: 10px;
+            border-radius: 4px;
+            text-align: center;
+            min-width: 100px;
+        }
+        
+        .legend {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 15px;
+            flex-wrap: wrap;
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 14px;
+        }
+        
+        .legend-color {
+            width: 15px;
+            height: 15px;
+            border-radius: 50%;
+            border: 1px solid #333;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Linear Regression with Gradient Descent</h1>
+        
+        <div class="controls">
+            <div class="control-group">
+                <label for="learningRate">Learning Rate (α):</label>
+                <input type="number" id="learningRate" min="0.001" max="1" step="0.001" value="0.1">
+            </div>
+            
+            <div class="control-group">
+                <label for="iterations">Iterations:</label>
+                <input type="number" id="iterations" min="10" max="1000" value="100">
+            </div>
+            
+            <div class="control-group">
+                <label for="noiseLevel">Noise Level:</label>
+                <input type="range" id="noiseLevel" min="0" max="100" value="30">
+                <span id="noiseValue">30%</span>
+            </div>
+            
+            <div class="control-group">
+                <label for="animationSpeed">Animation Speed:</label>
+                <select id="animationSpeed">
+                    <option value="500">Slow</option>
+                    <option value="200" selected>Medium</option>
+                    <option value="50">Fast</option>
+                </select>
+            </div>
+            
+            <div class="control-group">
+                <label>&nbsp;</label>
+                <button id="generateDataBtn">Generate New Data</button>
+                <button id="runBtn">Run Gradient Descent</button>
+                <button id="resetBtn">Reset</button>
+            </div>
+        </div>
+        
+        <div class="visualization">
+            <div class="plot-container">
+                <canvas id="regressionCanvas"></canvas>
+            </div>
+            
+            <div class="legend">
+                <div class="legend-item">
+                    <div class="legend-color" style="background-color: #e74c3c;"></div>
+                    <span>Data Points</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background-color: #3498db;"></div>
+                    <span>Current Regression Line</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background-color: #2ecc71;"></div>
+                    <span>True Relationship</span>
+                </div>
+            </div>
+            
+            <div class="parameter-display">
+                <div class="parameter">
+                    <div>Slope (θ₁)</div>
+                    <div id="slopeValue">0.00</div>
+                </div>
+                <div class="parameter">
+                    <div>Intercept (θ₀)</div>
+                    <div id="interceptValue">0.00</div>
+                </div>
+                <div class="parameter">
+                    <div>Cost (J(θ))</div>
+                    <div id="costValue">0.00</div>
+                </div>
+                <div class="parameter">
+                    <div>Iteration</div>
+                    <div id="iterationValue">0</div>
+                </div>
+            </div>
+            
+            <div class="plot-container">
+                <canvas id="costCanvas"></canvas>
+            </div>
+            
+            <div class="step-info" id="stepInfo">
+                Click "Generate New Data" to create random data points, then "Run Gradient Descent" to start the optimization.
+            </div>
+        </div>
+        
+        <div class="explanation">
+            <h2>How Gradient Descent Works for Linear Regression</h2>
+            
+            <h3>Linear Regression Model</h3>
+            <p>The model predicts: <span class="math">h<sub>θ</sub>(x) = θ₀ + θ₁x</span></p>
+            
+            <h3>Cost Function (Mean Squared Error)</h3>
+            <p><span class="math">J(θ) = 1/(2m) ∑<sub>i=1</sub><sup>m</sup> (h<sub>θ</sub>(x<sup>(i)</sup>) - y<sup>(i)</sup>)<sup>2</sup></span></p>
+            
+            <h3>Gradient Descent Algorithm</h3>
+            <p>Repeat until convergence:</p>
+            <p><span class="math">θ<sub>j</sub> := θ<sub>j</sub> - α ∂J(θ)/∂θ<sub>j</sub></span> (for j = 0,1)</p>
+            
+            <h3>Partial Derivatives</h3>
+            <p><span class="math">∂J(θ)/∂θ₀ = 1/m ∑<sub>i=1</sub><sup>m</sup> (h<sub>θ</sub>(x<sup>(i)</sup>) - y<sup>(i)</sup>)</span></p>
+            <p><span class="math">∂J(θ)/∂θ₁ = 1/m ∑<sub>i=1</sub><sup>m</sup> (h<sub>θ</sub>(x<sup>(i)</sup>) - y<sup>(i)</sup>)x<sup>(i)</sup></span></p>
+            
+            <h3>Key Parameters</h3>
+            <ul>
+                <li><strong>Learning Rate (α)</strong>: Controls step size (too small = slow convergence, too large = may diverge)</li>
+                <li><strong>Iterations</strong>: Number of optimization steps</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        // DOM Elements
+        const learningRateInput = document.getElementById('learningRate');
+        const iterationsInput = document.getElementById('iterations');
+        const noiseLevelInput = document.getElementById('noiseLevel');
+        const noiseValueSpan = document.getElementById('noiseValue');
+        const animationSpeedSelect = document.getElementById('animationSpeed');
+        const generateDataBtn = document.getElementById('generateDataBtn');
+        const runBtn = document.getElementById('runBtn');
+        const resetBtn = document.getElementById('resetBtn');
+        const regressionCanvas = document.getElementById('regressionCanvas');
+        const costCanvas = document.getElementById('costCanvas');
+        const slopeValue = document.getElementById('slopeValue');
+        const interceptValue = document.getElementById('interceptValue');
+        const costValue = document.getElementById('costValue');
+        const iterationValue = document.getElementById('iterationValue');
+        const stepInfo = document.getElementById('stepInfo');
+        
+        // Canvas setup
+        const regressionCtx = regressionCanvas.getContext('2d');
+        const costCtx = costCanvas.getContext('2d');
+        regressionCanvas.width = regressionCanvas.offsetWidth;
+        regressionCanvas.height = regressionCanvas.offsetHeight;
+        costCanvas.width = costCanvas.offsetWidth;
+        costCanvas.height = costCanvas.offsetHeight;
+        
+        // Data and model state
+        let data = [];
+        let trueSlope = 0;
+        let trueIntercept = 0;
+        let currentSlope = 0;
+        let currentIntercept = 0;
+        let costHistory = [];
+        let animationId = null;
+        let isRunning = false;
+        
+        // Colors
+        const dataPointColor = '#e74c3c';
+        const currentLineColor = '#3498db';
+        const trueLineColor = '#2ecc71';
+        const costLineColor = '#9b59b6';
+        
+        // Initialize
+        generateData();
+        
+        // Event listeners
+        generateDataBtn.addEventListener('click', generateData);
+        runBtn.addEventListener('click', runGradientDescent);
+        resetBtn.addEventListener('click', reset);
+        noiseLevelInput.addEventListener('input', updateNoiseLevel);
+        
+        // Generate random data
+        function generateData() {
+            if (isRunning) return;
+            
+            const noiseLevel = parseInt(noiseLevelInput.value) / 100;
+            
+            // True relationship parameters
+            trueSlope = (Math.random() - 0.5) * 4;
+            trueIntercept = (Math.random() - 0.5) * 10;
+            
+            // Generate random x values
+            data = [];
+            const numPoints = 50;
+            for (let i = 0; i < numPoints; i++) {
+                const x = Math.random() * 18 - 4; // Range: -4 to 14
+                const noise = (Math.random() - 0.5) * 10 * noiseLevel;
+                const y = trueIntercept + trueSlope * x + noise;
+                data.push({ x, y });
+            }
+            
+            // Reset model parameters
+            currentSlope = (Math.random() - 0.5) * 4;
+            currentIntercept = (Math.random() - 0.5) * 10;
+            costHistory = [];
+            
+            updateParameterDisplay();
+            drawRegressionPlot();
+            drawCostPlot();
+            
+            stepInfo.textContent = "Data generated. Click 'Run Gradient Descent' to start optimization.";
+        }
+        
+        // Update noise level display
+        function updateNoiseLevel() {
+            noiseValueSpan.textContent = `${noiseLevelInput.value}%`;
+        }
+        
+        // Run gradient descent
+        function runGradientDescent() {
+            if (isRunning) return;
+            
+            isRunning = true;
+            runBtn.disabled = true;
+            generateDataBtn.disabled = true;
+            
+            const learningRate = parseFloat(learningRateInput.value);
+            const maxIterations = parseInt(iterationsInput.value);
+            const animationSpeed = parseInt(animationSpeedSelect.value);
+            
+            let iteration = 0;
+            
+            function animate() {
+                if (iteration >= maxIterations) {
+                    isRunning = false;
+                    runBtn.disabled = false;
+                    generateDataBtn.disabled = false;
+                    stepInfo.textContent = `Optimization completed after ${maxIterations} iterations.`;
+                    return;
+                }
+                
+                // Perform one gradient descent step
+                const gradients = computeGradients();
+                currentIntercept -= learningRate * gradients.interceptGradient;
+                currentSlope -= learningRate * gradients.slopeGradient;
+                
+                // Compute and store cost
+                const cost = computeCost();
+                costHistory.push(cost);
+                
+                // Update display
+                iteration++;
+                updateParameterDisplay(iteration);
+                drawRegressionPlot();
+                drawCostPlot();
+                
+                // Continue animation
+                animationId = setTimeout(animate, animationSpeed);
+            }
+            
+            animate();
+        }
+        
+        // Compute gradients
+        function computeGradients() {
+            let interceptGradient = 0;
+            let slopeGradient = 0;
+            const m = data.length;
+            
+            data.forEach(point => {
+                const error = (currentIntercept + currentSlope * point.x) - point.y;
+                interceptGradient += error;
+                slopeGradient += error * point.x;
+            });
+            
+            return {
+                interceptGradient: interceptGradient / m,
+                slopeGradient: slopeGradient / m
+            };
+        }
+        
+        // Compute cost (MSE)
+        function computeCost() {
+            let sum = 0;
+            const m = data.length;
+            
+            data.forEach(point => {
+                const error = (currentIntercept + currentSlope * point.x) - point.y;
+                sum += error * error;
+            });
+            
+            return sum / (2 * m);
+        }
+        
+        // Reset visualization
+        function reset() {
+            if (isRunning) {
+                clearTimeout(animationId);
+                isRunning = false;
+                runBtn.disabled = false;
+                generateDataBtn.disabled = false;
+            }
+            
+            currentSlope = (Math.random() - 0.5) * 4;
+            currentIntercept = (Math.random() - 0.5) * 10;
+            costHistory = [];
+            
+            updateParameterDisplay();
+            drawRegressionPlot();
+            drawCostPlot();
+            
+            stepInfo.textContent = "Reset to initial random parameters. Click 'Run Gradient Descent' to start optimization.";
+        }
+        
+        // Update parameter displays
+        function updateParameterDisplay(iteration = 0) {
+            slopeValue.textContent = currentSlope.toFixed(4);
+            interceptValue.textContent = currentIntercept.toFixed(4);
+            costValue.textContent = computeCost().toFixed(4);
+            iterationValue.textContent = iteration;
+        }
+        
+        // Draw regression plot
+        function drawRegressionPlot() {
+            // Clear canvas
+            regressionCtx.clearRect(0, 0, regressionCanvas.width, regressionCanvas.height);
+            
+            // Set up coordinate system
+            const padding = 40;
+            const plotWidth = regressionCanvas.width - 2 * padding;
+            const plotHeight = regressionCanvas.height - 2 * padding;
+            
+            // Find data bounds
+            let minX = Infinity, maxX = -Infinity;
+            let minY = Infinity, maxY = -Infinity;
+            
+            data.forEach(point => {
+                minX = Math.min(minX, point.x);
+                maxX = Math.max(maxX, point.x);
+                minY = Math.min(minY, point.y);
+                maxY = Math.max(maxY, point.y);
+            });
+            
+            // Add some padding to bounds
+            const xRange = maxX - minX;
+            const yRange = maxY - minY;
+            minX -= xRange * 0.1;
+            maxX += xRange * 0.1;
+            minY -= yRange * 0.1;
+            maxY += yRange * 0.1;
+            
+            // Scale functions
+            const scaleX = x => padding + (x - minX) / (maxX - minX) * plotWidth;
+            const scaleY = y => regressionCanvas.height - padding - (y - minY) / (maxY - minY) * plotHeight;
+            
+            // Draw axes
+            regressionCtx.strokeStyle = '#333';
+            regressionCtx.lineWidth = 1;
+            
+            // X-axis
+            regressionCtx.beginPath();
+            regressionCtx.moveTo(padding, regressionCanvas.height - padding);
+            regressionCtx.lineTo(regressionCanvas.width - padding, regressionCanvas.height - padding);
+            regressionCtx.stroke();
+            
+            // Y-axis
+            regressionCtx.beginPath();
+            regressionCtx.moveTo(padding, padding);
+            regressionCtx.lineTo(padding, regressionCanvas.height - padding);
+            regressionCtx.stroke();
+            
+            // Draw grid lines
+            regressionCtx.strokeStyle = '#ddd';
+            regressionCtx.lineWidth = 0.5;
+            
+            // Vertical grid lines
+            const xStep = Math.pow(10, Math.floor(Math.log10(xRange))) / 2;
+            for (let x = Math.ceil(minX / xStep) * xStep; x <= maxX; x += xStep) {
+                const sx = scaleX(x);
+                regressionCtx.beginPath();
+                regressionCtx.moveTo(sx, padding);
+                regressionCtx.lineTo(sx, regressionCanvas.height - padding);
+                regressionCtx.stroke();
+                
+                // Label
+                regressionCtx.fillStyle = '#333';
+                regressionCtx.textAlign = 'center';
+                regressionCtx.fillText(x.toFixed(1), sx, regressionCanvas.height - padding + 15);
+            }
+            
+            // Horizontal grid lines
+            const yStep = Math.pow(10, Math.floor(Math.log10(yRange))) / 2;
+            for (let y = Math.ceil(minY / yStep) * yStep; y <= maxY; y += yStep) {
+                const sy = scaleY(y);
+                regressionCtx.beginPath();
+                regressionCtx.moveTo(padding, sy);
+                regressionCtx.lineTo(regressionCanvas.width - padding, sy);
+                regressionCtx.stroke();
+                
+                // Label
+                regressionCtx.fillStyle = '#333';
+                regressionCtx.textAlign = 'right';
+                regressionCtx.fillText(y.toFixed(1), padding - 5, sy + 5);
+            }
+            
+            // Draw true relationship line
+            regressionCtx.strokeStyle = trueLineColor;
+            regressionCtx.lineWidth = 2;
+            regressionCtx.beginPath();
+            regressionCtx.moveTo(scaleX(minX), scaleY(trueIntercept + trueSlope * minX));
+            regressionCtx.lineTo(scaleX(maxX), scaleY(trueIntercept + trueSlope * maxX));
+            regressionCtx.stroke();
+            
+            // Draw current regression line
+            regressionCtx.strokeStyle = currentLineColor;
+            regressionCtx.lineWidth = 2;
+            regressionCtx.beginPath();
+            regressionCtx.moveTo(scaleX(minX), scaleY(currentIntercept + currentSlope * minX));
+            regressionCtx.lineTo(scaleX(maxX), scaleY(currentIntercept + currentSlope * maxX));
+            regressionCtx.stroke();
+            
+            // Draw data points
+            regressionCtx.fillStyle = dataPointColor;
+            data.forEach(point => {
+                regressionCtx.beginPath();
+                regressionCtx.arc(scaleX(point.x), scaleY(point.y), 4, 0, Math.PI * 2);
+                regressionCtx.fill();
+            });
+        }
+        
+        // Draw cost function plot
+        function drawCostPlot() {
+            // Clear canvas
+            costCtx.clearRect(0, 0, costCanvas.width, costCanvas.height);
+            
+            if (costHistory.length === 0) return;
+            
+            // Set up coordinate system
+            const padding = 40;
+            const plotWidth = costCanvas.width - 2 * padding;
+            const plotHeight = costCanvas.height - 2 * padding;
+            
+            // Find bounds
+            const maxIteration = Math.max(costHistory.length, parseInt(iterationsInput.value));
+            const maxCost = Math.max(...costHistory, 1);
+            
+            // Scale functions
+            const scaleX = i => padding + i / maxIteration * plotWidth;
+            const scaleY = cost => costCanvas.height - padding - cost / maxCost * plotHeight;
+            
+            // Draw axes
+            costCtx.strokeStyle = '#333';
+            costCtx.lineWidth = 1;
+            
+            // X-axis
+            costCtx.beginPath();
+            costCtx.moveTo(padding, costCanvas.height - padding);
+            costCtx.lineTo(costCanvas.width - padding, costCanvas.height - padding);
+            costCtx.stroke();
+            
+            // Y-axis
+            costCtx.beginPath();
+            costCtx.moveTo(padding, padding);
+            costCtx.lineTo(padding, costCanvas.height - padding);
+            costCtx.stroke();
+            
+            // Draw grid lines
+            costCtx.strokeStyle = '#ddd';
+            costCtx.lineWidth = 0.5;
+            
+            // Vertical grid lines
+            const xStep = maxIteration / 5;
+            for (let i = 0; i <= maxIteration; i += xStep) {
+                const sx = scaleX(i);
+                costCtx.beginPath();
+                costCtx.moveTo(sx, padding);
+                costCtx.lineTo(sx, costCanvas.height - padding);
+                costCtx.stroke();
+                
+                // Label
+                costCtx.fillStyle = '#333';
+                costCtx.textAlign = 'center';
+                costCtx.fillText(i, sx, costCanvas.height - padding + 15);
+            }
+            
+            // Horizontal grid lines
+            const yStep = maxCost / 5;
+            for (let cost = 0; cost <= maxCost; cost += yStep) {
+                const sy = scaleY(cost);
+                costCtx.beginPath();
+                costCtx.moveTo(padding, sy);
+                costCtx.lineTo(costCanvas.width - padding, sy);
+                costCtx.stroke();
+                
+                // Label
+                costCtx.fillStyle = '#333';
+                costCtx.textAlign = 'right';
+                costCtx.fillText(cost.toFixed(1), padding - 5, sy + 5);
+            }
+            
+            // Draw cost curve
+            costCtx.strokeStyle = costLineColor;
+            costCtx.lineWidth = 2;
+            costCtx.beginPath();
+            
+            costHistory.forEach((cost, i) => {
+                if (i === 0) {
+                    costCtx.moveTo(scaleX(i), scaleY(cost));
+                } else {
+                    costCtx.lineTo(scaleX(i), scaleY(cost));
+                }
+            });
+            
+            costCtx.stroke();
+            
+            // Label axes
+            costCtx.fillStyle = '#333';
+            costCtx.textAlign = 'center';
+            costCtx.fillText('Iteration', costCanvas.width / 2, costCanvas.height - 5);
+            
+            costCtx.save();
+            costCtx.translate(10, costCanvas.height / 2);
+            costCtx.rotate(-Math.PI / 2);
+            costCtx.textAlign = 'center';
+            costCtx.fillText('Cost J(θ)', 0, 0);
+            costCtx.restore();
+        }
+    </script>
+</body>
+</html>
