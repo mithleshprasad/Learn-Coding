@@ -10,12 +10,70 @@
 ## Features
 
 ### 🌟 Current Features:
-- **API Testing**:
-  - Fetch responses from `info` and `array` endpoints.
-- **Dynamic Data**:
-  - View array operations (original and reversed) dynamically from the API.
-- **Structured Layout**:
-  - Organized sections for content display, API interactions, and upcoming features.
+
+### 1. **Sorting Algorithms**
+   - **Bubble Sort**: Show gradual bubbling of largest elements to the end
+   - **Merge Sort**: Visualize the divide-and-conquer approach with splitting and merging
+   - **Quick Sort**: Demonstrate pivot selection and partitioning
+   - **Insertion Sort**: Show building the sorted array one element at a time
+   - **Selection Sort**: Visualize repeatedly finding the minimum element
+
+### 2. **Graph Algorithms**
+   - **Dijkstra's Algorithm**: Animate finding shortest paths with a priority queue
+   - **A* Search**: Show heuristic-based pathfinding with open/closed sets
+   - **Breadth-First Search**: Demonstrate layer-by-layer exploration
+   - **Depth-First Search**: Visualize backtracking through nodes
+   - **Minimum Spanning Tree (Prim's/Kruskal's)**: Show tree growing process
+
+### 3. **Dynamic Programming**
+   - **Fibonacci Sequence**: Visualize recursion tree vs. memoized/dp approach
+   - **Knapsack Problem**: Show decision tree and DP table filling
+   - **Longest Common Subsequence**: Animate matrix filling process
+
+### 4. **Tree Traversals**
+   - **Inorder/Preorder/Postorder**: Animate different traversal orders
+   - **AVL Tree Rotations**: Show balancing operations
+   - **Red-Black Tree Insertions**: Demonstrate color flipping and rotations
+
+### 5. **String Matching**
+   - **Naive String Search**: Show brute-force character comparisons
+   - **KMP Algorithm**: Visualize prefix function and pattern shifting
+   - **Boyer-Moore**: Demonstrate bad character and good suffix rules
+
+### 6. **Numerical Algorithms**
+   - **Euclidean Algorithm**: Animate GCD calculation
+   - **Sieve of Eratosthenes**: Show prime number filtering
+   - **Fast Exponentiation**: Demonstrate divide-and-conquer power calculation
+
+### 7. **Machine Learning Basics**
+   - **K-Nearest Neighbors**: Show decision boundaries forming
+   - **Linear Regression**: Animate gradient descent convergence
+   - **K-Means Clustering**: Visualize centroid movement
+
+### 8. **Cryptography**
+   - **RSA Encryption**: Demonstrate key generation and modular arithmetic
+   - **Caesar Cipher**: Show letter shifting visualization
+   - **Diffie-Hellman**: Animate key exchange process
+
+### Implementation Tips:
+1. **Common UI Components** you can reuse:
+   - Array/graph visualization canvas
+   - Speed controls
+   - Step-by-step explanation panel
+   - Algorithm comparison tabs
+   - Pseudocode display synchronized with visualization
+
+2. **Visual Elements** to include:
+   - Color-coding for different states (visited, current, etc.)
+   - Pointer indicators for current positions
+   - Animated transitions between steps
+   - Performance metrics (time/space complexity)
+
+3. **Educational Features**:
+   - Best/worst case scenario toggles
+   - Big-O complexity graph comparison
+   - Real-world use case examples
+   - Common pitfalls/misconceptions
 
 ### 🔜 Coming Soon:
 - Interactive examples for arrays, strings, linked lists, stacks, and graphs.
