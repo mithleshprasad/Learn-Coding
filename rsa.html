@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RSA Encryption Visualizer</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        
+        h1, h2, h3 {
+            color: #2c3e50;
+        }
+        
+        .panel {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        
+        .control-group {
+            margin-bottom: 15px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        
+        input, select, button {
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+        
+        button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            margin-right: 10px;
+        }
+        
+        button:hover {
+            background-color: #2980b9;
+        }
+        
+        button:disabled {
+            background-color: #95a5a6;
+            cursor: not-allowed;
+        }
+        
+        .step {
+            margin: 20px 0;
+            padding: 15px;
+            background-color: #f8f9fa;
+            border-radius: 4px;
+            border-left: 4px solid #3498db;
+        }
+        
+        .math {
+            font-family: 'Courier New', monospace;
+            background-color: #f0f0f0;
+            padding: 2px 5px;
+            border-radius: 3px;
+        }
+        
+        .key-display {
+            font-family: monospace;
+            background-color: #f0f0f0;
+            padding: 10px;
+            border-radius: 4px;
+            overflow-x: auto;
+        }
+        
+        .visualization {
+            display: flex;
+            gap: 20px;
+            margin: 20px 0;
+        }
+        
+        .visual-box {
+            flex: 1;
+            padding: 15px;
+            background-color: #e8f4fc;
+            border-radius: 4px;
+            text-align: center;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+        }
+        
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        
+        th {
+            background-color: #f2f2f2;
+        }
+        
+        .prime-candidate {
+            display: inline-block;
+            padding: 5px;
+            margin: 2px;
+            border: 1px solid #ddd;
+            border-radius: 3px;
+        }
+        
+        .prime-candidate.prime {
+            background-color: #d4edda;
+            border-color: #c3e6cb;
+        }
+        
+        .prime-candidate.not-prime {
+            background-color: #f8d7da;
+            border-color: #f5c6cb;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>RSA Encryption Visualizer</h1>
+        
+        <div class="panel">
+            <h2>Key Generation</h2>
+            
+            <div class="control-group">
+                <label for="primeRange">Prime Number Range:</label>
+                <select id="primeRange">
+                    <option value="10">Very Small (3-19)</option>
+                    <option value="50" selected>Small (3-53)</option>
+                    <option value="100">Medium (3-101)</option>
+                </select>
+            </div>
+            
+            <button id="generatePrimesBtn">Generate Primes</button>
+            <button id="generateKeysBtn" disabled>Generate Keys</button>
+            <button id="resetBtn">Reset</button>
+            
+            <div id="primeGenerationSteps">
+                <div class="step" id="primeStep1">
+                    <h3>Step 1: Select Two Prime Numbers</h3>
+                    <p>First, we need to select two distinct prime numbers (p and q).</p>
+                    <div id="primeCandidates"></div>
+                </div>
+                
+                <div class="step" id="primeStep2" style="display: none;">
+                    <h3>Step 2: Calculate n and φ(n)</h3>
+                    <p>Compute <span class="math">n = p × q</span> and <span class="math">φ(n) = (p-1) × (q-1)</span></p>
+                    <div id="nAndPhiCalculation"></div>
+                </div>
+                
+                <div class="step" id="primeStep3" style="display: none;">
+                    <h3>Step 3: Choose Public Exponent e</h3>
+                    <p>Select <span class="math">e</span> such that <span class="math">1 < e < φ(n)</span> and <span class="math">gcd(e, φ(n)) = 1</span></p>
+                    <div id="eSelection"></div>
+                </div>
+                
+                <div class="step" id="primeStep4" style="display: none;">
+                    <h3>Step 4: Calculate Private Exponent d</h3>
+                    <p>Find <span class="math">d</span> such that <span class="math">d × e ≡ 1 mod φ(n)</span></p>
+                    <div id="dCalculation"></div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="panel" id="keyPanel" style="display: none;">
+            <h2>Generated Keys</h2>
+            <div class="visualization">
+                <div class="visual-box">
+                    <h3>Public Key</h3>
+                    <p>(e, n)</p>
+                    <div class="key-display" id="publicKey"></div>
+                </div>
+                <div class="visual-box">
+                    <h3>Private Key</h3>
+                    <p>(d, n)</p>
+                    <div class="key-display" id="privateKey"></div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="panel" id="encryptionPanel" style="display: none;">
+            <h2>Encryption & Decryption</h2>
+            
+            <div class="control-group">
+                <label for="messageInput">Message (Number):</label>
+                <input type="number" id="messageInput" min="1" value="42">
+                <p class="hint">Note: In real RSA, messages are converted to numbers first.</p>
+            </div>
+            
+            <button id="encryptBtn">Encrypt</button>
+            <button id="decryptBtn">Decrypt</button>
+            
+            <div id="encryptionSteps">
+                <div class="step" id="encryptStep" style="display: none;">
+                    <h3>Encryption Process</h3>
+                    <p>To encrypt message <span class="math">m</span>, compute:</p>
+                    <p><span class="math">c ≡ m<sup>e</sup> mod n</span></p>
+                    <div id="encryptionCalculation"></div>
+                </div>
+                
+                <div class="step" id="decryptStep" style="display: none;">
+                    <h3>Decryption Process</h3>
+                    <p>To decrypt ciphertext <span class="math">c</span>, compute:</p>
+                    <p><span class="math">m ≡ c<sup>d</sup> mod n</span></p>
+                    <div id="decryptionCalculation"></div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="panel">
+            <h2>How RSA Works</h2>
+            <h3>Key Generation</h3>
+            <ol>
+                <li>Choose two distinct prime numbers <span class="math">p</span> and <span class="math">q</span></li>
+                <li>Compute <span class="math">n = p × q</span></li>
+                <li>Compute <span class="math">φ(n) = (p-1)(q-1)</span></li>
+                <li>Choose integer <span class="math">e</span> such that <span class="math">1 < e < φ(n)</span> and <span class="math">gcd(e, φ(n)) = 1</span></li>
+                <li>Determine <span class="math">d</span> as modular inverse of <span class="math">e</span> modulo <span class="math">φ(n)</span></li>
+            </ol>
+            
+            <h3>Encryption</h3>
+            <p><span class="math">c ≡ m<sup>e</sup> mod n</span></p>
+            
+            <h3>Decryption</h3>
+            <p><span class="math">m ≡ c<sup>d</sup> mod n</span></p>
+            
+            <h3>Why It Works</h3>
+            <p>Euler's theorem guarantees that for any message <span class="math">m</span>:</p>
+            <p><span class="math">m<sup>φ(n)</sup> ≡ 1 mod n</span></p>
+            <p>Since <span class="math">e × d ≡ 1 mod φ(n)</span>, we have:</p>
+            <p><span class="math">(m<sup>e</sup>)<sup>d</sup> ≡ m<sup>e×d</sup> ≡ m<sup>kφ(n)+1</sup> ≡ (m<sup>φ(n)</sup>)<sup>k</sup> × m ≡ m mod n</span></p>
+        </div>
+    </div>
+
+    <script>
+        // DOM Elements
+        const primeRange = document.getElementById('primeRange');
+        const generatePrimesBtn = document.getElementById('generatePrimesBtn');
+        const generateKeysBtn = document.getElementById('generateKeysBtn');
+        const resetBtn = document.getElementById('resetBtn');
+        const encryptBtn = document.getElementById('encryptBtn');
+        const decryptBtn = document.getElementById('decryptBtn');
+        const messageInput = document.getElementById('messageInput');
+        
+        // RSA State
+        let primes = [];
+        let p = 0, q = 0;
+        let n = 0, phi = 0;
+        let e = 0, d = 0;
+        
+        // Initialize
+        reset();
+        
+        // Event Listeners
+        generatePrimesBtn.addEventListener('click', generatePrimes);
+        generateKeysBtn.addEventListener('click', generateKeys);
+        resetBtn.addEventListener('click', reset);
+        encryptBtn.addEventListener('click', encrypt);
+        decryptBtn.addEventListener('click', decrypt);
+        
+        // Reset everything
+        function reset() {
+            primes = [];
+            p = q = n = phi = e = d = 0;
+            
+            document.getElementById('primeStep1').style.display = 'block';
+            document.getElementById('primeStep2').style.display = 'none';
+            document.getElementById('primeStep3').style.display = 'none';
+            document.getElementById('primeStep4').style.display = 'none';
+            document.getElementById('keyPanel').style.display = 'none';
+            document.getElementById('encryptionPanel').style.display = 'none';
+            document.getElementById('encryptStep').style.display = 'none';
+            document.getElementById('decryptStep').style.display = 'none';
+            
+            generatePrimesBtn.disabled = false;
+            generateKeysBtn.disabled = true;
+        }
+        
+        // Generate prime candidates
+        function generatePrimes() {
+            const range = parseInt(primeRange.value);
+            primes = getPrimesUpTo(range);
+            
+            const container = document.getElementById('primeCandidates');
+            container.innerHTML = '';
+            
+            primes.forEach(prime => {
+                const elem = document.createElement('div');
+                elem.className = 'prime-candidate';
+                elem.textContent = prime;
+                elem.onclick = function() {
+                    if (!p) {
+                        p = prime;
+                        elem.style.backgroundColor = '#d4edda';
+                        document.getElementById('primeStep1').innerHTML += 
+                            `<p>Selected p = ${p}</p>`;
+                    } else if (!q && prime !== p) {
+                        q = prime;
+                        elem.style.backgroundColor = '#d4edda';
+                        document.getElementById('primeStep1').innerHTML += 
+                            `<p>Selected q = ${q}</p>`;
+                        generateKeysBtn.disabled = false;
+                    }
+                };
+                container.appendChild(elem);
+            });
+        }
+        
+        // Generate RSA keys
+        function generateKeys() {
+            // Step 2: Calculate n and φ(n)
+            n = p * q;
+            phi = (p - 1) * (q - 1);
+            
+            document.getElementById('primeStep2').style.display = 'block';
+            document.getElementById('nAndPhiCalculation').innerHTML = `
+                <p>n = p × q = ${p} × ${q} = <span class="math">${n}</span></p>
+                <p>φ(n) = (p-1) × (q-1) = ${p-1} × ${q-1} = <span class="math">${phi}</span></p>
+            `;
+            
+            // Step 3: Choose e (public exponent)
+            e = findCoprime(phi);
+            
+            document.getElementById('primeStep3').style.display = 'block';
+            document.getElementById('eSelection').innerHTML = `
+                <p>Selected e = <span class="math">${e}</span> (coprime with φ(n))</p>
+            `;
+            
+            // Step 4: Calculate d (private exponent)
+            d = modInverse(e, phi);
+            
+            document.getElementById('primeStep4').style.display = 'block';
+            document.getElementById('dCalculation').innerHTML = `
+                <p>Calculated d = <span class="math">${d}</span> (${e} × ${d} ≡ 1 mod ${phi})</p>
+            `;
+            
+            // Show keys
+            document.getElementById('keyPanel').style.display = 'block';
+            document.getElementById('publicKey').textContent = `(${e}, ${n})`;
+            document.getElementById('privateKey').textContent = `(${d}, ${n})`;
+            
+            // Enable encryption panel
+            document.getElementById('encryptionPanel').style.display = 'block';
+        }
+        
+        // Encrypt message
+        function encrypt() {
+            const m = parseInt(messageInput.value);
+            if (m >= n) {
+                alert(`Message must be less than n (${n})`);
+                return;
+            }
+            
+            const c = modExp(m, e, n);
+            
+            document.getElementById('encryptStep').style.display = 'block';
+            document.getElementById('encryptionCalculation').innerHTML = `
+                <p>c ≡ m<sup>e</sup> mod n ≡ ${m}<sup>${e}</sup> mod ${n}</p>
+                <p>c ≡ ${c} mod ${n}</p>
+                <p>Ciphertext: <span class="math">${c}</span></p>
+            `;
+        }
+        
+        // Decrypt message
+        function decrypt() {
+            const c = parseInt(messageInput.value);
+            
+            const m = modExp(c, d, n);
+            
+            document.getElementById('decryptStep').style.display = 'block';
+            document.getElementById('decryptionCalculation').innerHTML = `
+                <p>m ≡ c<sup>d</sup> mod n ≡ ${c}<sup>${d}</sup> mod ${n}</p>
+                <p>m ≡ ${m} mod ${n}</p>
+                <p>Decrypted message: <span class="math">${m}</span></p>
+            `;
+        }
+        
+        // Helper functions
+        
+        // Sieve of Eratosthenes to find primes up to max
+        function getPrimesUpTo(max) {
+            const sieve = new Array(max + 1).fill(true);
+            sieve[0] = sieve[1] = false;
+            
+            for (let i = 2; i <= Math.sqrt(max); i++) {
+                if (sieve[i]) {
+                    for (let j = i * i; j <= max; j += i) {
+                        sieve[j] = false;
+                    }
+                }
+            }
+            
+            return sieve.map((isPrime, num) => isPrime ? num : 0).filter(num => num > 1);
+        }
+        
+        // Find a number coprime with phi (usually 65537 is used in practice)
+        function findCoprime(phi) {
+            // Try common values first
+            const commonEs = [3, 5, 17, 257, 65537];
+            for (let candidate of commonEs) {
+                if (candidate < phi && gcd(candidate, phi) === 1) {
+                    return candidate;
+                }
+            }
+            
+            // If no common values work, find the smallest possible
+            for (let i = 2; i < phi; i++) {
+                if (gcd(i, phi) === 1) {
+                    return i;
+                }
+            }
+            
+            return 0;
+        }
+        
+        // Greatest Common Divisor (Euclidean algorithm)
+        function gcd(a, b) {
+            while (b !== 0) {
+                [a, b] = [b, a % b];
+            }
+            return a;
+        }
+        
+        // Modular inverse (extended Euclidean algorithm)
+        function modInverse(a, m) {
+            let [oldR, r] = [a, m];
+            let [oldS, s] = [1, 0];
+            let [oldT, t] = [0, 1];
+            
+            while (r !== 0) {
+                const quotient = Math.floor(oldR / r);
+                [oldR, r] = [r, oldR - quotient * r];
+                [oldS, s] = [s, oldS - quotient * s];
+                [oldT, t] = [t, oldT - quotient * t];
+            }
+            
+            return oldS < 0 ? oldS + m : oldS;
+        }
+        
+        // Modular exponentiation (for large numbers)
+        function modExp(base, exp, mod) {
+            let result = 1;
+            base = base % mod;
+            
+            while (exp > 0) {
+                if (exp % 2 === 1) {
+                    result = (result * base) % mod;
+                }
+                exp = Math.floor(exp / 2);
+                base = (base * base) % mod;
+            }
+            
+            return result;
+        }
+    </script>
+</body>
+</html>
