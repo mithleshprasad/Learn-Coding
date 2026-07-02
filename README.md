@@ -1346,6 +1346,978 @@ terraform apply
 * Monitoring
 
 This is **100% real DevOps project**.
+Here’s a **clean complete list of Top 20 pattern questions in Node.js/JavaScript** with **comments for understanding**. These are the most commonly asked in coding rounds and help build loop logic strongly.
+
+---
+
+# 1. Square Pattern
+
+```javascript
+let n = 5;
+
+for (let i = 1; i <= n; i++) {   // Controls rows
+    let row = "";
+
+    for (let j = 1; j <= n; j++) { // Controls columns
+        row += "* ";
+    }
+
+    console.log(row);
+}
+```
+
+Output:
+
+```text
+* * * * *
+* * * * *
+* * * * *
+* * * * *
+* * * * *
+```
+
+---
+
+# 2. Right Triangle
+
+```javascript
+let n = 5;
+
+for (let i = 1; i <= n; i++) {
+    let row = "";
+
+    // Print stars equal to row number
+    for (let j = 1; j <= i; j++) {
+        row += "* ";
+    }
+
+    console.log(row);
+}
+```
+
+Output:
+
+```text
+*
+* *
+* * *
+* * * *
+* * * * *
+```
+
+---
+
+# 3. Inverted Triangle
+
+```javascript
+let n = 5;
+
+for (let i = n; i >= 1; i--) {
+    let row = "";
+
+    // Print decreasing stars
+    for (let j = 1; j <= i; j++) {
+        row += "* ";
+    }
+
+    console.log(row);
+}
+```
+
+Output:
+
+```text
+* * * * *
+* * * *
+* * *
+* *
+*
+```
+
+---
+
+# 4. Pyramid
+
+```javascript
+let n = 5;
+
+for (let i = 1; i <= n; i++) {
+    let row = "";
+
+    // Left spaces
+    for (let s = 1; s <= n - i; s++) {
+        row += " ";
+    }
+
+    // Stars
+    for (let j = 1; j <= i; j++) {
+        row += "* ";
+    }
+
+    console.log(row);
+}
+```
+
+Output:
+
+```text
+    *
+   * *
+  * * *
+ * * * *
+* * * * *
+```
+
+---
+
+# 5. Reverse Pyramid
+
+```javascript
+let n = 5;
+
+for (let i = n; i >= 1; i--) {
+    let row = "";
+
+    // Leading spaces
+    for (let s = 1; s <= n - i; s++) {
+        row += " ";
+    }
+
+    // Stars
+    for (let j = 1; j <= i; j++) {
+        row += "* ";
+    }
+
+    console.log(row);
+}
+```
+
+---
+
+# 6. Diamond
+
+```javascript
+let n = 4;
+
+// Upper part
+for (let i = 1; i <= n; i++) {
+    let row = "";
+
+    row += " ".repeat(n - i);
+    row += "* ".repeat(i);
+
+    console.log(row);
+}
+
+// Lower part
+for (let i = n - 1; i >= 1; i--) {
+    let row = "";
+
+    row += " ".repeat(n - i);
+    row += "* ".repeat(i);
+
+    console.log(row);
+}
+```
+
+---
+
+# 7. Hollow Square
+
+```javascript
+let n = 5;
+
+for (let i = 1; i <= n; i++) {
+    let row = "";
+
+    for (let j = 1; j <= n; j++) {
+
+        // Border stars only
+        if (i === 1 || i === n || j === 1 || j === n) {
+            row += "* ";
+        } else {
+            row += "  ";
+        }
+    }
+
+    console.log(row);
+}
+```
+
+---
+
+# 8. Hollow Triangle
+
+```javascript
+let n = 5;
+
+for (let i = 1; i <= n; i++) {
+    let row = "";
+
+    for (let j = 1; j <= i; j++) {
+
+        // First, last and bottom stars
+        if (j === 1 || j === i || i === n) {
+            row += "* ";
+        } else {
+            row += "  ";
+        }
+    }
+
+    console.log(row);
+}
+```
+
+---
+
+# 9. Number Triangle
+
+```javascript
+let n = 5;
+
+for (let i = 1; i <= n; i++) {
+    let row = "";
+
+    // Print numbers from 1 to row number
+    for (let j = 1; j <= i; j++) {
+        row += j + " ";
+    }
+
+    console.log(row);
+}
+```
+
+Output:
+
+```text
+1
+1 2
+1 2 3
+1 2 3 4
+1 2 3 4 5
+```
+
+---
+
+# 10. Reverse Number Triangle
+
+```javascript
+let n = 5;
+
+for (let i = n; i >= 1; i--) {
+    let row = "";
+
+    for (let j = 1; j <= i; j++) {
+        row += j + " ";
+    }
+
+    console.log(row);
+}
+```
+
+---
+
+# 11. Floyd’s Triangle
+
+```javascript
+let n = 5;
+let num = 1;
+
+for (let i = 1; i <= n; i++) {
+    let row = "";
+
+    for (let j = 1; j <= i; j++) {
+        row += num + " ";
+        num++; // Increment every time
+    }
+
+    console.log(row);
+}
+```
+
+---
+
+# 12. Binary Triangle
+
+```javascript
+let n = 5;
+
+for (let i = 1; i <= n; i++) {
+    let row = "";
+
+    for (let j = 1; j <= i; j++) {
+
+        // Alternate between 0 and 1
+        row += (i + j) % 2 + " ";
+    }
+
+    console.log(row);
+}
+```
+
+---
+
+# 13. Palindrome Triangle
+
+```javascript
+let n = 5;
+
+for (let i = 1; i <= n; i++) {
+    let row = "";
+
+    // Forward numbers
+    for (let j = 1; j <= i; j++) {
+        row += j;
+    }
+
+    // Backward numbers
+    for (let j = i - 1; j >= 1; j--) {
+        row += j;
+    }
+
+    console.log(row);
+}
+```
+
+---
+
+# 14. Pascal Triangle
+
+```javascript
+let n = 5;
+
+for (let i = 0; i < n; i++) {
+    let row = "";
+    let num = 1;
+
+    for (let j = 0; j <= i; j++) {
+        row += num + " ";
+
+        // Formula
+        num = num * (i - j) / (j + 1);
+    }
+
+    console.log(row);
+}
+```
+
+---
+
+# 15. Butterfly Pattern
+
+```javascript
+let n = 4;
+
+// Upper
+for (let i = 1; i <= n; i++) {
+    let row = "";
+
+    row += "* ".repeat(i);
+    row += "  ".repeat(2 * (n - i));
+    row += "* ".repeat(i);
+
+    console.log(row);
+}
+
+// Lower
+for (let i = n; i >= 1; i--) {
+    let row = "";
+
+    row += "* ".repeat(i);
+    row += "  ".repeat(2 * (n - i));
+    row += "* ".repeat(i);
+
+    console.log(row);
+}
+```
+
+---
+
+# 16. X Pattern
+
+```javascript
+let n = 5;
+
+for (let i = 0; i < n; i++) {
+    let row = "";
+
+    for (let j = 0; j < n; j++) {
+
+        // Diagonal stars
+        if (i === j || i + j === n - 1) {
+            row += "* ";
+        } else {
+            row += "  ";
+        }
+    }
+
+    console.log(row);
+}
+```
+
+---
+
+# 17. Cross Pattern
+
+```javascript
+let n = 5;
+let mid = Math.floor(n / 2);
+
+for (let i = 0; i < n; i++) {
+    let row = "";
+
+    for (let j = 0; j < n; j++) {
+
+        // Middle row or column
+        if (i === mid || j === mid) {
+            row += "* ";
+        } else {
+            row += "  ";
+        }
+    }
+
+    console.log(row);
+}
+```
+
+---
+
+# 18. Number Pyramid
+
+```javascript
+let n = 5;
+
+for (let i = 1; i <= n; i++) {
+    let row = "";
+
+    row += " ".repeat(n - i);
+
+    for (let j = 1; j <= i; j++) {
+        row += i + " ";
+    }
+
+    console.log(row);
+}
+```
+
+---
+
+# 19. Palindrome Pyramid
+
+```javascript
+let n = 5;
+
+for (let i = 1; i <= n; i++) {
+    let row = "";
+
+    row += " ".repeat(n - i);
+
+    // Descending
+    for (let j = i; j >= 1; j--) {
+        row += j;
+    }
+
+    // Ascending
+    for (let j = 2; j <= i; j++) {
+        row += j;
+    }
+
+    console.log(row);
+}
+```
+
+---
+
+# 20. Alphabet Triangle
+
+```javascript
+let n = 5;
+
+for (let i = 1; i <= n; i++) {
+    let row = "";
+
+    for (let j = 0; j < i; j++) {
+        row += String.fromCharCode(65 + j) + " ";
+    }
+
+    console.log(row);
+}
+```
+
+Output:
+
+```text
+A
+A B
+A B C
+A B C D
+A B C D E
+```
+
+These 20 cover almost all interview loop patterns in Node.js/JavaScript. Once you understand these, advanced patterns become much easier.
+Here are **Top 20 Array + String DSA questions in JavaScript/Node.js** (very common in interviews), with **code + comments + output**.
+
+---
+
+# ARRAY QUESTIONS (1–10)
+
+---
+
+## 1. Reverse an Array
+
+```javascript id="a1x93d"
+let arr = [1, 2, 3, 4, 5];
+
+// reverse() modifies original array
+let reversed = arr.reverse();
+
+console.log(reversed);
+```
+
+Output:
+
+```text id="r81kd2"
+[5,4,3,2,1]
+```
+
+---
+
+## 2. Find Maximum Number
+
+```javascript id="d82ks1"
+let arr = [10, 50, 20, 80, 30];
+
+let max = arr[0];
+
+for (let i = 1; i < arr.length; i++) {
+    // Update max if bigger number found
+    if (arr[i] > max) {
+        max = arr[i];
+    }
+}
+
+console.log(max);
+```
+
+Output:
+
+```text id="m82ld0"
+80
+```
+
+---
+
+## 3. Find Minimum Number
+
+```javascript id="s7d8k2"
+let arr = [10, 50, 20, 80, 30];
+
+let min = arr[0];
+
+for (let i = 1; i < arr.length; i++) {
+    if (arr[i] < min) {
+        min = arr[i];
+    }
+}
+
+console.log(min);
+```
+
+Output:
+
+```text id="n1j8k3"
+10
+```
+
+---
+
+## 4. Sum of Array
+
+```javascript id="p8q9s1"
+let arr = [1, 2, 3, 4, 5];
+let sum = 0;
+
+for (let num of arr) {
+    sum += num;
+}
+
+console.log(sum);
+```
+
+Output:
+
+```text id="w7c8d2"
+15
+```
+
+---
+
+## 5. Remove Duplicates
+
+```javascript id="e4k2d8"
+let arr = [1, 2, 2, 3, 4, 4];
+
+// Set stores unique values
+let unique = [...new Set(arr)];
+
+console.log(unique);
+```
+
+Output:
+
+```text id="f3d8s1"
+[1,2,3,4]
+```
+
+---
+
+## 6. Second Largest Number
+
+```javascript id="k2m9d1"
+let arr = [10, 50, 20, 80, 30];
+
+arr.sort((a, b) => b - a);
+
+// Second largest after sorting
+console.log(arr[1]);
+```
+
+Output:
+
+```text id="l8s3k2"
+50
+```
+
+---
+
+## 7. Check Array is Sorted
+
+```javascript id="u8d1k3"
+let arr = [1, 2, 3, 4, 5];
+let sorted = true;
+
+for (let i = 0; i < arr.length - 1; i++) {
+    if (arr[i] > arr[i + 1]) {
+        sorted = false;
+        break;
+    }
+}
+
+console.log(sorted);
+```
+
+Output:
+
+```text id="g2m9s4"
+true
+```
+
+---
+
+## 8. Rotate Array Left
+
+```javascript id="b3k7m2"
+let arr = [1, 2, 3, 4, 5];
+
+// Remove first element
+let first = arr.shift();
+
+// Add at end
+arr.push(first);
+
+console.log(arr);
+```
+
+Output:
+
+```text id="p4s8d1"
+[2,3,4,5,1]
+```
+
+---
+
+## 9. Find Missing Number
+
+```javascript id="m9s2k1"
+let arr = [1, 2, 4, 5];
+let n = 5;
+
+// Sum formula
+let total = (n * (n + 1)) / 2;
+
+let sum = arr.reduce((a, b) => a + b, 0);
+
+console.log(total - sum);
+```
+
+Output:
+
+```text id="v7d8m3"
+3
+```
+
+---
+
+## 10. Merge Two Arrays
+
+```javascript id="q2d7m9"
+let arr1 = [1, 2];
+let arr2 = [3, 4];
+
+// Merge using spread
+let merged = [...arr1, ...arr2];
+
+console.log(merged);
+```
+
+Output:
+
+```text id="t8s4m1"
+[1,2,3,4]
+```
+
+---
+
+# STRING QUESTIONS (11–20)
+
+---
+
+## 11. Reverse a String
+
+```javascript id="r8m3k2"
+let str = "hello";
+
+// Split → reverse → join
+let reversed = str.split("").reverse().join("");
+
+console.log(reversed);
+```
+
+Output:
+
+```text id="j2k9d1"
+olleh
+```
+
+---
+
+## 12. Check Palindrome
+
+```javascript id="w2m8d1"
+let str = "madam";
+
+let reversed = str.split("").reverse().join("");
+
+// Compare original and reversed
+console.log(str === reversed);
+```
+
+Output:
+
+```text id="s7d9k2"
+true
+```
+
+---
+
+## 13. Count Vowels
+
+```javascript id="f9k3d1"
+let str = "javascript";
+let count = 0;
+
+for (let ch of str) {
+    if ("aeiou".includes(ch)) {
+        count++;
+    }
+}
+
+console.log(count);
+```
+
+Output:
+
+```text id="x8m2d1"
+3
+```
+
+---
+
+## 14. Find Duplicate Characters
+
+```javascript id="n3d8k1"
+let str = "programming";
+let map = {};
+
+for (let ch of str) {
+    map[ch] = (map[ch] || 0) + 1;
+}
+
+for (let key in map) {
+    if (map[key] > 1) {
+        console.log(key);
+    }
+}
+```
+
+Output:
+
+```text id="c9k2m1"
+r
+g
+m
+```
+
+---
+
+## 15. First Non-Repeating Character
+
+```javascript id="t2m8d1"
+let str = "swiss";
+let map = {};
+
+for (let ch of str) {
+    map[ch] = (map[ch] || 0) + 1;
+}
+
+for (let ch of str) {
+    if (map[ch] === 1) {
+        console.log(ch);
+        break;
+    }
+}
+```
+
+Output:
+
+```text id="h8d3m1"
+w
+```
+
+---
+
+## 16. Check Anagram
+
+```javascript id="y3k8d1"
+let str1 = "listen";
+let str2 = "silent";
+
+// Sort both and compare
+let result =
+    str1.split("").sort().join("") ===
+    str2.split("").sort().join("");
+
+console.log(result);
+```
+
+Output:
+
+```text id="m4d9k2"
+true
+```
+
+---
+
+## 17. Count Characters
+
+```javascript id="u2d8k1"
+let str = "hello";
+let count = {};
+
+for (let ch of str) {
+    count[ch] = (count[ch] || 0) + 1;
+}
+
+console.log(count);
+```
+
+Output:
+
+```text id="q7m2d1"
+{ h:1, e:1, l:2, o:1 }
+```
+
+---
+
+## 18. Remove Spaces
+
+```javascript id="o8k2d1"
+let str = "hello world";
+
+// Replace spaces with empty
+let result = str.replace(/\s/g, "");
+
+console.log(result);
+```
+
+Output:
+
+```text id="p2m8d1"
+helloworld
+```
+
+---
+
+## 19. Find Longest Word
+
+```javascript id="l8d2m1"
+let str = "I love javascript programming";
+
+let words = str.split(" ");
+let longest = "";
+
+for (let word of words) {
+    if (word.length > longest.length) {
+        longest = word;
+    }
+}
+
+console.log(longest);
+```
+
+Output:
+
+```text id="n8k2d1"
+programming
+```
+
+---
+
+## 20. Capitalize First Letter
+
+```javascript id="z2m8d1"
+let str = "hello world";
+
+let result = str
+    .split(" ")
+    .map(word =>
+        word.charAt(0).toUpperCase() + word.slice(1)
+    )
+    .join(" ");
+
+console.log(result);
+```
+
+Output:
+
+```text id="v2d9m1"
+Hello World
+```
+
+### Most important for interviews:
+
+Focus on these first:
+
+✅ Reverse Array
+✅ Max/Min
+✅ Remove Duplicates
+✅ Missing Number
+✅ Palindrome
+✅ Anagram
+✅ First Non-Repeating Character
+✅ Duplicate Characters
+✅ Longest Word
+✅ Character Count
 
 ---
 
