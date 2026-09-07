@@ -1,0 +1,35 @@
+[
+  {
+    "title": "Limits",
+    "code": "Limit of a function: lim(x→a) f(x) = L",
+    "example": "Find the limit of f(x) = 2x + 3 as x approaches 1: lim(x→1) (2x + 3) = 5."
+  },
+  {
+    "title": "Derivatives",
+    "code": "Derivative of xⁿ: d/dx(xⁿ) = n·x^(n-1)\nDerivative of sin(x): d/dx[sin(x)] = cos(x)\nDerivative of cos(x): d/dx[cos(x)] = -sin(x)\nDerivative of eˣ: d/dx(eˣ) = eˣ\nDerivative of ln(x): d/dx[ln(x)] = 1/x"
+  },
+  {
+    "title": "Integrals",
+    "code": "Integral of xⁿ: ∫xⁿ dx = x^(n+1)/(n+1) + C\nIntegral of sin(x): ∫sin(x) dx = -cos(x) + C\nIntegral of cos(x): ∫cos(x) dx = sin(x) + C\nIntegral of eˣ: ∫eˣ dx = eˣ + C\nIntegral of 1/x: ∫(1/x) dx = ln|x| + C"
+  },
+  {
+    "title": "Chain Rule",
+    "code": "d/dx[f(g(x))] = f'(g(x)) · g'(x)",
+    "example": "Find the derivative of f(x) = sin(2x): d/dx[sin(2x)] = 2·cos(2x)."
+  },
+  {
+    "title": "Product Rule",
+    "code": "d/dx[u(x) · v(x)] = u'(x) · v(x) + u(x) · v'(x)",
+    "example": "Find the derivative of f(x) = x² * sin(x): d/dx[x² · sin(x)] = 2x · sin(x) + x² · cos(x)."
+  },
+  {
+    "title": "Quotient Rule",
+    "code": "d/dx( u(x)/v(x) ) = [v(x) · u'(x) - u(x) · v'(x)] / v(x)²",
+    "example": "Find the derivative of f(x) = (x²)/(cos(x)): d/dx(x²/cos(x)) = [2x · cos(x) + x² · sin(x)] / cos²(x)."
+  },
+  {
+    "title": "Fundamental Theorem of Calculus",
+    "code": "∫ from a to b of f(x) dx = F(b) - F(a), where F'(x) = f(x)",
+    "example": "Use the theorem to calculate the area under the curve of f(x) = x² from 0 to 2: ∫₀² x² dx = [x³/3]₀² = 8/3 - 0 = 8/3."
+  }
+]

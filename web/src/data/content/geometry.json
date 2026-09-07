@@ -1,0 +1,23 @@
+[
+  {
+    "title": "Area Formulas",
+    "code": "Area of a Square: A = s²\nArea of a Rectangle: A = l × w\nArea of a Triangle: A = ½ × b × h\nArea of a Circle: A = πr²\nArea of a Parallelogram: A = b × h\nArea of a Trapezoid: A = ½ × (a + b) × h"
+  },
+  {
+    "title": "Volume Formulas",
+    "code": "Volume of a Cube: V = s³\nVolume of a Rectangular Prism: V = l × w × h\nVolume of a Cylinder: V = πr²h\nVolume of a Sphere: V = 4/3 × πr³\nVolume of a Cone: V = 1/3 × πr²h\nVolume of a Pyramid: V = 1/3 × B × h (where B is the area of the base)"
+  },
+  {
+    "title": "Pythagorean Theorem",
+    "code": "a² + b² = c²",
+    "example": "In a right triangle, if the legs are 3 and 4, the hypotenuse will be √(3² + 4²) = 5."
+  },
+  {
+    "title": "Surface Area Formulas",
+    "code": "Surface Area of a Cube: SA = 6s²\nSurface Area of a Rectangular Prism: SA = 2lw + 2lh + 2wh\nSurface Area of a Sphere: SA = 4πr²\nSurface Area of a Cylinder: SA = 2πr(h + r)\nSurface Area of a Cone: SA = πr(r + √(r² + h²))"
+  },
+  {
+    "title": "Angle Formulas",
+    "code": "Sum of Angles in a Triangle: 180°\nSum of Angles in a Quadrilateral: 360°\nSum of Angles in a Polygon: (n - 2) × 180°"
+  }
+]

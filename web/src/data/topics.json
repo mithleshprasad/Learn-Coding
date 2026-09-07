@@ -1,0 +1,6 @@
+[
+  { "key": "ds", "title": "Data Structures", "description": "Learn arrays, linked lists, trees, and more." },
+  { "key": "algorithms", "title": "Algorithms", "description": "Master sorting, searching, and dynamic programming." },
+  { "key": "web-dev", "title": "Web Development", "description": "Build websites with HTML, CSS, and JavaScript." },
+  { "key": "ml", "title": "Machine Learning", "description": "Explore AI and ML concepts with Python." }
+]

@@ -1,0 +1,26 @@
+[
+  {
+    "title": "Basic Algebraic Identities",
+    "code": "(a + b)² = a² + 2ab + b²\n(a - b)² = a² - 2ab + b²\na² - b² = (a + b)(a - b)"
+  },
+  {
+    "title": "Cubic Identities",
+    "code": "(a + b)³ = a³ + 3a²b + 3ab² + b³\n(a - b)³ = a³ - 3a²b + 3ab² - b³\na³ + b³ = (a + b)(a² - ab + b²)\na³ - b³ = (a - b)(a² + ab + b²)"
+  },
+  {
+    "title": "Quadratic Formula",
+    "code": "ax² + bx + c = 0\nx = [-b ± √(b² - 4ac)] / 2a"
+  },
+  {
+    "title": "Arithmetic Progression (AP)",
+    "code": "n-th Term: Tn = a + (n - 1)d\nSum of n Terms: S = n/2 [2a + (n - 1)d]"
+  },
+  {
+    "title": "Geometric Progression (GP)",
+    "code": "n-th Term: Tn = ar^(n - 1)\nSum of n Terms: S = a(1 - r^n) / (1 - r) for r ≠ 1\nSum to Infinity: S = a / (1 - r) for |r| < 1"
+  },
+  {
+    "title": "Binomial Expansion",
+    "code": "(a + b)ⁿ = Σ [nCk * a^(n-k) * b^k]\nWhere nCk = n! / [k!(n - k)!]"
+  }
+]

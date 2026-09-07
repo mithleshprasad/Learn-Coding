@@ -1,0 +1,118 @@
+[
+  [
+    "What is React?",
+    "React is an open-source JavaScript library developed by Facebook for building user interfaces, particularly for single-page applications. It allows developers to create reusable UI components that manage their own state, making it easier to build interactive and dynamic web applications. React uses a component-based architecture, enabling developers to break down complex UIs into smaller, manageable pieces. It is highly performant due to its use of the Virtual DOM, which minimizes direct manipulation of the actual DOM. React is widely used for its simplicity, flexibility, and strong community support.\n    <br><br><strong>Example:</strong><br>\n    <pre>\nimport React from 'react';\nimport ReactDOM from 'react-dom';\nconst App = () => <h1>Hello, React!</h1>;\nReactDOM.render(<App />, document.getElementById('root'));\n    </pre>\n    This code renders a simple \"Hello, React!\" heading to the DOM."
+  ],
+  [
+    "What are Components in React?",
+    "Components are the building blocks of a React application, representing reusable pieces of the UI. They can be either <strong>class-based</strong> (using ES6 classes) or <strong>functional</strong> (using functions). Components accept inputs called <strong>props</strong> and manage their own <strong>state</strong> to render dynamic UI. Functional components are preferred in modern React, especially with Hooks for state and side effects. Components promote modularity and reusability, making code easier to maintain.\n    <br><br><strong>Example:</strong><br>\n    <pre>\nimport React from 'react';\nconst Greeting = ({ name }) => <h1>Hello, {name}!</h1>;\nexport default Greeting;\n    </pre>\n    This functional component accepts a 'name' prop and renders a greeting."
+  ],
+  [
+    "What is JSX?",
+    "JSX (JavaScript XML) is a syntax extension for JavaScript that allows developers to write HTML-like code within JavaScript. It makes React code more readable by combining UI structure with logic. JSX is transpiled by tools like Babel into plain JavaScript (React.createElement calls). It supports embedding JavaScript expressions using curly braces {} and allows attributes like HTML.\n    <br><br><strong>Example:</strong><br>\n    <pre>\nconst element = <h1>Hello, {user.name}!</h1>;\n    </pre>\n    This JSX renders an h1 element with a dynamic user name."
+  ],
+  [
+    "What is State in React?",
+    "State is an object that holds dynamic data in a React component, allowing it to update and re-render when the data changes. State is managed within a component (or via state management libraries like Redux). In functional components, the <strong>useState</strong> Hook is used to manage state. State changes trigger re-renders, making the UI reactive.\n    <br><br><strong>Example:</strong><br>\n    <pre>\nimport React, { useState } from 'react';\nconst Counter = () => {\n  const [count, setCount] = useState(0);\n  return (\n    <div>\n      <p>Count: {count}</p>\n      <button onClick={() => setCount(count + 1)}>Increment</button>\n    </div>\n  );\n};\n    </pre>\n    This component tracks and updates a counter using state."
+  ],
+  [
+    "What are Props?",
+    "Props (short for properties) are read-only inputs passed to React components to customize their behavior or output. They allow data to flow from parent to child components, enabling reusability. Props can include primitive values, objects, or functions.\n    <br><br><strong>Example:</strong><br>\n    <pre>\nconst Welcome = (props) => <h1>Hello, {props.name}!</h1>;\nconst App = () => <Welcome name=\"Alice\" />;\n    </pre>\n    The Welcome component receives the 'name' prop and displays it."
+  ],
+  [
+    "What is the Virtual DOM?",
+    "The Virtual DOM is a lightweight, in-memory representation of the actual DOM. React uses it to optimize updates by comparing the Virtual DOM with the previous version (diffing) and applying only the necessary changes to the real DOM. This minimizes expensive DOM operations, improving performance.\n    <br><br><strong>Example:</strong><br>\n    When a component's state changes, React updates the Virtual DOM, calculates the differences, and applies minimal updates to the real DOM."
+  ],
+  [
+    "What is useEffect?",
+    "The <strong>useEffect</strong> Hook allows functional components to perform side effects, such as fetching data, updating the DOM, or setting up subscriptions. It runs after every render by default but can be controlled with a dependency array to run only when specific values change.\n    <br><br><strong>Example:</strong><br>\n    <pre>\nimport React, { useState, useEffect } from 'react';\nconst DataFetcher = () => {\n  const [data, setData] = useState([]);\n  useEffect(() => {\n    fetch('https://api.example.com/data')\n      .then(res => res.json())\n      .then(setData);\n  }, []); // Empty array means run once on mount\n  return <div>{data.map(item => <p>{item.name}</p>)}</div>;\n};\n    </pre>\n    This fetches data on component mount."
+  ],
+  [
+    "What is React Router?",
+    "React Router is a library for handling navigation and routing in React applications. It enables dynamic, client-side routing, allowing users to navigate between different views without full page reloads. Key components include <strong>BrowserRouter</strong>, <strong>Route</strong>, and <strong>Link</strong>.\n    <br><br><strong>Example:</strong><br>\n    <pre>\nimport { BrowserRouter, Route, Link } from 'react-router-dom';\nconst App = () => (\n  <BrowserRouter>\n    <nav><Link to=\"/home\">Home</Link></nav>\n    <Route path=\"/home\" component={() => <h1>Home Page</h1>} />\n  </BrowserRouter>\n);\n    </pre>\n    This sets up basic routing with a link to a home page."
+  ],
+  [
+    "What are React Hooks?",
+    "React Hooks are functions that let functional components use state, lifecycle methods, and other React features without classes. Introduced in React 16.8, Hooks like <strong>useState</strong>, <strong>useEffect</strong>, and <strong>useContext</strong> simplify code and improve reusability.\n    <br><br><strong>Example:</strong><br>\n    <pre>\nimport React, { useState } from 'react';\nconst Toggle = () => {\n  const [isOn, setIsOn] = useState(false);\n  return <button onClick={() => setIsOn(!isOn)}>{isOn ? 'On' : 'Off'}</button>;\n};\n    </pre>\n    This uses useState to toggle a button's state."
+  ],
+  [
+    "What is useRef?",
+    "The <strong>useRef</strong> Hook creates a mutable reference that persists across renders without triggering re-renders. It's commonly used to access DOM elements or store values that don't affect the UI.\n    <br><br><strong>Example:</strong><br>\n    <pre>\nimport React, { useRef } from 'react';\nconst FocusInput = () => {\n  const inputRef = useRef(null);\n  const focus = () => inputRef.current.focus();\n  return (\n    <div>\n      <input ref={inputRef} />\n      <button onClick={focus}>Focus Input</button>\n    </div>\n  );\n};\n    </pre>\n    This focuses an input field using useRef."
+  ],
+  [
+    "What is Context API?",
+    "The Context API allows global state management in React by sharing data across components without prop drilling. It consists of a <strong>Provider</strong> to supply data and a <strong>Consumer</strong> (or <strong>useContext</strong> Hook) to access it.\n    <br><br><strong>Example:</strong><br>\n    <pre>\nimport React, { createContext, useContext } from 'react';\nconst ThemeContext = createContext();\nconst App = () => (\n  <ThemeContext.Provider value=\"dark\">\n    <Child />\n  </ThemeContext.Provider>\n);\nconst Child = () => {\n  const theme = useContext(ThemeContext);\n  return <p>Theme: {theme}</p>;\n};\n    </pre>\n    This shares a theme value across components."
+  ],
+  [
+    "What is memoization in React?",
+    "Memoization optimizes performance by caching the results of expensive computations or preventing unnecessary re-renders. In React, it's achieved using <strong>React.memo</strong>, <strong>useMemo</strong>, and <strong>useCallback</strong>.\n    <br><br><strong>Example:</strong><br>\n    <pre>\nimport React, { useMemo } from 'react';\nconst ExpensiveComponent = ({ numbers }) => {\n  const sum = useMemo(() => numbers.reduce((a, b) => a + b, 0), [numbers]);\n  return <p>Sum: {sum}</p>;\n};\n    </pre>\n    This caches the sum of numbers until the input changes."
+  ],
+  [
+    "What are controlled and uncontrolled components?",
+    "A <strong>controlled component</strong> has its value managed by React state, making it predictable and easier to validate. An <strong>uncontrolled component</strong> relies on the DOM for its value, using refs to access it.\n    <br><br><strong>Example (Controlled):</strong><br>\n    <pre>\nimport React, { useState } from 'react';\nconst ControlledInput = () => {\n  const [value, setValue] = useState('');\n  return <input value={value} onChange={e => setValue(e.target.value)} />;\n};\n    </pre>\n    <strong>Example (Uncontrolled):</strong><br>\n    <pre>\nimport React, { useRef } from 'react';\nconst UncontrolledInput = () => {\n  const inputRef = useRef();\n  return <input ref={inputRef} />;\n};\n    </pre>"
+  ],
+  [
+    "What is lazy loading in React?",
+    "Lazy loading defers loading of components until they're needed, improving initial load time and performance. React's <strong>React.lazy</strong> and <strong>Suspense</strong> enable this.\n    <br><br><strong>Example:</strong><br>\n    <pre>\nimport React, { lazy, Suspense } from 'react';\nconst LazyComponent = lazy(() => import('./LazyComponent'));\nconst App = () => (\n  <Suspense fallback={<div>Loading...</div>}>\n    <LazyComponent />\n  </Suspense>\n);\n    </pre>\n    This loads LazyComponent only when rendered."
+  ],
+  [
+    "How to implement dark mode in React?",
+    "Dark mode toggles between light and dark themes, typically using CSS classes or variables and React state or Context API to manage the theme state.\n    <br><br><strong>Example:</strong><br>\n    <pre>\nimport React, { useState } from 'react';\nconst App = () => {\n  const [theme, setTheme] = useState('light');\n  return (\n    <div className={theme}>\n      <button onClick={() => setTheme(theme === 'light' ? 'dark' : 'light')}>\n        Toggle Theme\n      </button>\n    </div>\n  );\n};\n    </pre>\n    CSS: .light { background: white; } .dark { background: black; color: white; }"
+  ],
+  [
+    "What is Redux and why is it used?",
+    "Redux is a predictable state management library for JavaScript apps, often used with React for managing global state in large applications. It centralizes state in a single store, using actions and reducers to update it.\n    <br><br><strong>Example:</strong><br>\n    <pre>\nimport { createStore } from 'redux';\nconst reducer = (state = { count: 0 }, action) => {\n  switch (action.type) {\n    case 'INCREMENT': return { count: state.count + 1 };\n    default: return state;\n  }\n};\nconst store = createStore(reducer);\nstore.dispatch({ type: 'INCREMENT' });\n    </pre>\n    This increments a counter in the Redux store."
+  ],
+  [
+    "What is React.memo?",
+    "React.memo is a higher-order component that memoizes functional components, preventing re-renders unless props change. It's useful for optimizing performance in components with expensive renders.\n    <br><br><strong>Example:</strong><br>\n    <pre>\nimport React, { memo } from 'react';\nconst Child = memo(({ value }) => <p>{value}</p>);\n    </pre>\n    This prevents Child from re-rendering if 'value' is unchanged."
+  ],
+  [
+    "What is useCallback and useMemo?",
+    "<strong>useCallback</strong> memoizes functions to prevent recreation on each render, while <strong>useMemo</strong> memoizes computed values. Both optimize performance by reducing unnecessary work.\n    <br><br><strong>Example (useCallback):</strong><br>\n    <pre>\nimport React, { useCallback } from 'react';\nconst Button = ({ onClick }) => <button onClick={onClick}>Click</button>;\nconst Parent = () => {\n  const handleClick = useCallback(() => console.log('Clicked'), []);\n  return <Button onClick={handleClick} />;\n};\n    </pre>\n    <strong>Example (useMemo):</strong><br>\n    <pre>\nimport React, { useMemo } from 'react';\nconst Component = ({ numbers }) => {\n  const total = useMemo(() => numbers.reduce((a, b) => a + b, 0), [numbers]);\n  return <p>Total: {total}</p>;\n};\n    </pre>"
+  ],
+  [
+    "What is Server-Side Rendering (SSR) in React?",
+    "Server-Side Rendering (SSR) renders React components on the server, sending fully formed HTML to the client. This improves SEO and initial load performance. Frameworks like Next.js simplify SSR.\n    <br><br><strong>Example (Next.js):</strong><br>\n    <pre>\nexport async function getServerSideProps() {\n  const data = await fetch('https://api.example.com/data').then(res => res.json());\n  return { props: { data } };\n}\nconst Page = ({ data }) => <div>{data.map(item => <p>{item.name}</p>)}</div>;\nexport default Page;\n    </pre>\n    This fetches data on the server and renders it."
+  ],
+  [
+    "What is Suspense in React?",
+    "Suspense allows components to \"wait\" for asynchronous operations (e.g., data fetching or lazy loading) while showing a fallback UI. It's commonly used with <strong>React.lazy</strong>.\n    <br><br><strong>Example:</strong><br>\n    <pre>\nimport React, { Suspense, lazy } from 'react';\nconst LazyComponent = lazy(() => import('./LazyComponent'));\nconst App = () => (\n  <Suspense fallback={<div>Loading...</div>}>\n    <LazyComponent />\n  </Suspense>\n);\n    </pre>\n    This shows a loading message while LazyComponent loads."
+  ],
+  [
+    "What is React Context API?",
+    "The Context API manages global state without prop drilling, using a Provider to supply data and Consumers (or useContext) to access it. It's ideal for themes, user data, or other global values.\n    <br><br><strong>Example:</strong><br>\n    <pre>\nimport React, { createContext, useContext } from 'react';\nconst UserContext = createContext();\nconst App = () => (\n  <UserContext.Provider value={{ name: 'Alice' }}>\n    <User />\n  </UserContext.Provider>\n);\nconst User = () => {\n  const user = useContext(UserContext);\n  return <p>User: {user.name}</p>;\n};\n    </pre>"
+  ],
+  [
+    "What is React Router? (Navigating Between Pages)",
+    "React Router manages navigation in React apps, enabling client-side routing. It uses components like <strong>BrowserRouter</strong>, <strong>Route</strong>, and <strong>Link</strong> to handle page transitions.\n    <br><br><strong>Example:</strong><br>\n    <pre>\nimport { BrowserRouter, Route, Link } from 'react-router-dom';\nconst App = () => (\n  <BrowserRouter>\n    <nav><Link to=\"/about\">About</Link></nav>\n    <Route path=\"/about\" component={() => <h1>About Page</h1>} />\n  </BrowserRouter>\n);\n    </pre>"
+  ],
+  [
+    "What is Prop Drilling?",
+    "Prop drilling occurs when props are passed through multiple component layers to reach a deeply nested component, making code cumbersome. Context API or Redux can avoid this.\n    <br><br><strong>Example:</strong><br>\n    <pre>\nconst Grandchild = ({ data }) => <p>{data}</p>;\nconst Child = ({ data }) => <Grandchild data={data} />;\nconst Parent = () => <Child data=\"Hello\" />;\n    </pre>\n    Here, 'data' is passed through Child to Grandchild unnecessarily."
+  ],
+  [
+    "What are Controlled vs Uncontrolled Components?",
+    "Controlled components have their form data managed by React state, ensuring predictable behavior. Uncontrolled components store data in the DOM, accessed via refs.\n    <br><br><strong>Example (Controlled):</strong><br>\n    <pre>\nimport React, { useState } from 'react';\nconst Form = () => {\n  const [value, setValue] = useState('');\n  return <input value={value} onChange={e => setValue(e.target.value)} />;\n};\n    </pre>\n    <strong>Example (Uncontrolled):</strong><br>\n    <pre>\nimport React, { useRef } from 'react';\nconst Form = () => {\n  const inputRef = useRef();\n  return <input ref={inputRef} />;\n};\n    </pre>"
+  ],
+  [
+    "What is React Portals?",
+    "React Portals allow rendering components outside their parent DOM hierarchy, useful for modals or popups. They use <strong>ReactDOM.createPortal</strong>.\n    <br><br><strong>Example:</strong><br>\n    <pre>\nimport ReactDOM from 'react-dom';\nconst Modal = ({ children }) => ReactDOM.createPortal(\n  <div className=\"modal\">{children}</div>,\n  document.getElementById('modal-root')\n);\n    </pre>\n    This renders a modal outside the main DOM tree."
+  ],
+  [
+    "What is the difference between useEffect and useLayoutEffect?",
+    "<strong>useEffect</strong> runs asynchronously after rendering, suitable for most side effects. <strong>useLayoutEffect</strong> runs synchronously before the browser paints, useful for DOM measurements.\n    <br><br><strong>Example (useLayoutEffect):</strong><br>\n    <pre>\nimport React, { useLayoutEffect, useRef } from 'react';\nconst Component = () => {\n  const divRef = useRef();\n  useLayoutEffect(() => {\n    console.log(divRef.current.getBoundingClientRect());\n  }, []);\n  return <div ref={divRef}>Measure me</div>;\n};\n    </pre>"
+  ],
+  [
+    "What is React.lazy?",
+    "<strong>React.lazy</strong> enables lazy loading of components, reducing initial bundle size. It works with <strong>Suspense</strong> to show a fallback while loading.\n    <br><br><strong>Example:</strong><br>\n    <pre>\nimport React, { lazy, Suspense } from 'react';\nconst LazyComponent = lazy(() => import('./LazyComponent'));\nconst App = () => (\n  <Suspense fallback={<div>Loading...</div>}>\n    <LazyComponent />\n  </Suspense>\n);\n    </pre>"
+  ],
+  [
+    "What is React.Fragment?",
+    "React.Fragment groups multiple elements without adding extra DOM nodes, keeping the DOM clean. It's shorthand is &lt;&gt;...&lt;/&gt;.\n    <br><br><strong>Example:</strong><br>\n    <pre>\nimport React from 'react';\nconst List = () => (\n  <>\n    <li>Item 1</li>\n    <li>Item 2</li>\n  </>\n);\n    </pre>\n    This renders two list items without a wrapper div."
+  ],
+  [
+    "What is Concurrent Mode in React?",
+    "Concurrent Mode is a set of React features that improve app responsiveness by allowing React to interrupt and prioritize rendering tasks. It's useful for handling complex UIs with smooth updates.\n    <br><br><strong>Example:</strong><br>\n    Concurrent Mode is experimental and not fully implemented in the provided code, but it's enabled in React 18 with <strong>createRoot</strong>.\n    <pre>\nimport { createRoot } from 'react-dom/client';\nconst root = createRoot(document.getElementById('root'));\nroot.render(<App />);\n    </pre>"
+  ]
+]

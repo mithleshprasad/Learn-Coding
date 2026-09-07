@@ -1,0 +1,72 @@
+[
+  {
+    "id": 0,
+    "question": "What is HTML?",
+    "description": "HTML (HyperText Markup Language) is the standard markup language for creating web pages. It structures content on the web using elements defined by tags, such as headings, paragraphs, and images. HTML provides the backbone of a webpage, which is styled with CSS and made interactive with JavaScript.",
+    "code": "<!DOCTYPE html>\n<html>\n<head>\n  <title>My Page</title>\n</head>\n<body>\n  <h1>Welcome to HTML</h1>\n  <p>This is a paragraph.</p>\n</body>\n</html>",
+    "note": "This creates a simple webpage with a heading and paragraph."
+  },
+  {
+    "id": 1,
+    "question": "What are HTML Tags?",
+    "description": "HTML tags are keywords enclosed in angle brackets (e.g., <p>) that define elements on a webpage. Tags usually come in pairs (opening and closing) to wrap content, specifying its type, such as headings (<h1>), paragraphs (<p>), or links (<a>). Some tags, like <img>, are self-closing.",
+    "code": "<h1>My Heading</h1>\n<p>This is a paragraph with a <strong>bold</strong> word.</p>",
+    "note": "This uses tags to create a heading and a paragraph with bold text."
+  },
+  {
+    "id": 2,
+    "question": "What is the Structure of an HTML Document?",
+    "description": "An HTML document follows a standard structure: a <!DOCTYPE html> declaration, followed by an <html> root element containing <head> (for metadata) and <body> (for visible content). The <head> includes elements like <title>, while <body> contains the page’s content.",
+    "code": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n  <meta charset=\"UTF-8\">\n  <title>My Website</title>\n</head>\n<body>\n  <h1>Hello, World!</h1>\n</body>\n</html>",
+    "note": "This is a basic HTML document structure."
+  },
+  {
+    "id": 3,
+    "question": "What is the Difference Between <div> and <span>?",
+    "description": "<div> is a block-level element that creates a new line and takes up the full width of its container, used for grouping content. <span> is an inline element that doesn’t break the flow, used for styling small portions of text.",
+    "code": "<div style=\"background: lightblue;\">This is a div.</div>\n<p>This is a <span style=\"color: red;\">red</span> word.</p>",
+    "note": "The div creates a block, while the span styles text inline."
+  },
+  {
+    "id": 4,
+    "question": "How to Create a Hyperlink in HTML?",
+    "description": "The <a> tag creates a hyperlink, using the href attribute to specify the destination URL. Additional attributes like target=\"_blank\" open links in a new tab.",
+    "code": "<a href=\"https://www.example.com\" target=\"_blank\">Visit Example</a>",
+    "note": "This creates a clickable link to an external website."
+  },
+  {
+    "id": 5,
+    "question": "What is the Purpose of the <head> Tag?",
+    "description": "The <head> tag contains metadata about the document, such as the page title (<title>), character encoding (<meta charset>), links to stylesheets (<link>), and scripts (<script>). It doesn’t display content on the page but provides information to browsers and search engines.",
+    "code": "<head>\n  <meta charset=\"UTF-8\">\n  <title>My Page</title>\n  <link rel=\"stylesheet\" href=\"styles.css\">\n</head>",
+    "note": "This sets up metadata for the webpage."
+  },
+  {
+    "id": 6,
+    "question": "How to Add Images in HTML?",
+    "description": "The <img> tag adds images to a webpage, using the src attribute for the image URL and alt for accessibility. It’s a self-closing tag.",
+    "code": "<img src=\"image.jpg\" alt=\"A beautiful landscape\" width=\"300\">",
+    "note": "This displays an image with an alt description."
+  },
+  {
+    "id": 7,
+    "question": "What is the Difference Between <ul> and <ol>?",
+    "description": "<ul> (unordered list) creates a bulleted list, while <ol> (ordered list) creates a numbered list. Both use <li> tags for list items.",
+    "code": "<ul>\n  <li>Apple</li>\n  <li>Banana</li>\n</ul>\n<ol>\n  <li>Step 1</li>\n  <li>Step 2</li>\n</ol>",
+    "note": "This creates a bulleted and a numbered list."
+  },
+  {
+    "id": 8,
+    "question": "How to Create a Form in HTML?",
+    "description": "The <form> tag creates a form for user input, using elements like <input>, <textarea>, and <button>. Attributes like action and method specify where and how data is sent.",
+    "code": "<form action=\"/submit\" method=\"POST\">\n  <label for=\"name\">Name:</label>\n  <input type=\"text\" id=\"name\" name=\"name\">\n  <button type=\"submit\">Submit</button>\n</form>",
+    "note": "This creates a simple form for submitting a name."
+  },
+  {
+    "id": 9,
+    "question": "What is Semantic HTML?",
+    "description": "Semantic HTML uses tags that convey meaning about the content, like <header>, <footer>, <article>, and <section>. It improves accessibility, SEO, and code readability compared to generic tags like <div>.",
+    "code": "<header>\n  <h1>My Website</h1>\n</header>\n<main>\n  <article>\n    <h2>Post Title</h2>\n    <p>Content here...</p>\n  </article>\n</main>\n<footer>\n  <p>&copy; 2023</p>\n</footer>",
+    "note": "This uses semantic tags for better structure."
+  }
+]

@@ -1,0 +1,102 @@
+[
+  [
+    "What is Node.js?",
+    "Node.js is an open-source, cross-platform runtime environment that allows JavaScript to run outside the browser, primarily for server-side applications. Built on Chrome's V8 JavaScript engine, it uses an event-driven, non-blocking I/O model, making it lightweight and efficient for real-time applications like APIs, chat apps, and streaming services. Node.js enables developers to use JavaScript for both client and server, streamlining development.\n    <br><br><strong>Example:</strong><br>\n    <pre>\nconsole.log('Hello, Node.js!');\n    </pre>\n    Save this as 'app.js' and run 'node app.js' to see the output."
+  ],
+  [
+    "How to install Node.js?",
+    "Node.js can be installed by downloading the installer from the official website (nodejs.org) or using a package manager like Homebrew (Mac), apt (Ubuntu), or Chocolatey (Windows). The installer includes Node.js and npm (Node Package Manager). After installation, verify it by running 'node -v' and 'npm -v' in a terminal.\n    <br><br><strong>Example:</strong><br>\n    <pre>\n// On Ubuntu\nsudo apt update\nsudo apt install nodejs npm\n// Verify installation\nnode -v\nnpm -v\n    </pre>\n    This installs Node.js and checks the version."
+  ],
+  [
+    "What is npm in Node.js?",
+    "npm (Node Package Manager) is the default package manager for Node.js, used to install, manage, and share JavaScript packages. It provides access to a vast registry of libraries (e.g., Express, Lodash) and allows developers to manage project dependencies via a 'package.json' file.\n    <br><br><strong>Example:</strong><br>\n    <pre>\n// Initialize a project\nnpm init -y\n// Install a package\nnpm install express\n    </pre>\n    This creates a 'package.json' and installs Express."
+  ],
+  [
+    "How to create a basic server in Node.js?",
+    "Node.js provides the built-in 'http' module to create a web server. You can define routes, handle requests, and send responses. The server listens on a specified port for incoming HTTP requests.\n    <br><br><strong>Example:</strong><br>\n    <pre>\nconst http = require('http');\nconst server = http.createServer((req, res) => {\n  res.statusCode = 200;\n  res.setHeader('Content-Type', 'text/plain');\n  res.end('Hello, World!\\n');\n});\nserver.listen(3000, () => console.log('Server running on port 3000'));\n    </pre>\n    Run this and visit 'http://localhost:3000' to see the response."
+  ],
+  [
+    "What is Express.js?",
+    "Express.js is a minimal and flexible web framework for Node.js, simplifying the creation of web servers and APIs. It provides middleware, routing, and utilities for handling HTTP requests and responses.\n    <br><br><strong>Example:</strong><br>\n    <pre>\nconst express = require('express');\nconst app = express();\napp.get('/', (req, res) => res.send('Hello, Express!'));\napp.listen(3000, () => console.log('Server running on port 3000'));\n    </pre>\n    Install Express with 'npm install express' and run this code."
+  ],
+  [
+    "What is Middleware in Express?",
+    "Middleware functions in Express are functions that execute during the request-response cycle, with access to the request (req), response (res), and next middleware (next). They can modify requests, validate data, or handle errors.\n    <br><br><strong>Example:</strong><br>\n    <pre>\nconst express = require('express');\nconst app = express();\napp.use((req, res, next) => {\n  console.log('Request received at:', new Date());\n  next();\n});\napp.get('/', (req, res) => res.send('Hello!'));\napp.listen(3000);\n    </pre>\n    This logs the timestamp of each request."
+  ],
+  [
+    "How to handle JSON data in Node.js?",
+    "Express provides 'express.json()' middleware to parse incoming JSON requests. You can access the parsed data via 'req.body' in your routes.\n    <br><br><strong>Example:</strong><br>\n    <pre>\nconst express = require('express');\nconst app = express();\napp.use(express.json());\napp.post('/data', (req, res) => {\n  res.json({ received: req.body });\n});\napp.listen(3000);\n    </pre>\n    Send a POST request with JSON to '/data' to see the response."
+  ],
+  [
+    "How to connect Node.js with MongoDB?",
+    "Mongoose is an ODM (Object Data Modeling) library for MongoDB and Node.js, simplifying database interactions. You connect to MongoDB using a connection string and define schemas for data.\n    <br><br><strong>Example:</strong><br>\n    <pre>\nconst mongoose = require('mongoose');\nmongoose.connect('mongodb://localhost/mydb', { useNewUrlParser: true });\nconst User = mongoose.model('User', new mongoose.Schema({ name: String }));\nconst user = new User({ name: 'Alice' });\nuser.save().then(() => console.log('User saved'));\n    </pre>\n    Install Mongoose with 'npm install mongoose'."
+  ],
+  [
+    "How to create a REST API in Node.js?",
+    "A REST API in Node.js is typically built with Express, defining endpoints for CRUD operations (Create, Read, Update, Delete). Routes handle HTTP methods like GET, POST, PUT, DELETE.\n    <br><br><strong>Example:</strong><br>\n    <pre>\nconst express = require('express');\nconst app = express();\napp.use(express.json());\nlet users = [];\napp.get('/users', (req, res) => res.json(users));\napp.post('/users', (req, res) => {\n  users.push(req.body);\n  res.status(201).json(req.body);\n});\napp.listen(3000);\n    </pre>\n    This creates a simple REST API for users."
+  ],
+  [
+    "How to use Environment Variables in Node.js?",
+    "Environment variables store configuration settings (e.g., API keys) securely. The 'dotenv' package loads variables from a '.env' file into 'process.env'.\n    <br><br><strong>Example:</strong><br>\n    <pre>\n// .env file\nPORT=3000\n// index.js\nrequire('dotenv').config();\nconst express = require('express');\nconst app = express();\napp.listen(process.env.PORT, () => console.log('Server on port ' + process.env.PORT));\n    </pre>\n    Install dotenv with 'npm install dotenv'."
+  ],
+  [
+    "What is Asynchronous Programming in Node.js?",
+    "Node.js uses an event-driven, non-blocking I/O model, allowing asynchronous operations (e.g., file reading, HTTP requests) to run without blocking the main thread. Callbacks, Promises, and Async/Await handle async code.\n    <br><br><strong>Example:</strong><br>\n    <pre>\nconst fs = require('fs');\nfs.readFile('file.txt', 'utf8', (err, data) => {\n  if (err) throw err;\n  console.log(data);\n});\n    </pre>\n    This reads a file asynchronously."
+  ],
+  [
+    "How to use Async/Await in Node.js?",
+    "Async/Await simplifies asynchronous code by allowing you to write it like synchronous code. Functions marked 'async' return Promises, and 'await' pauses execution until the Promise resolves.\n    <br><br><strong>Example:</strong><br>\n    <pre>\nconst fs = require('fs').promises;\nasync function readFile() {\n  try {\n    const data = await fs.readFile('file.txt', 'utf8');\n    console.log(data);\n  } catch (err) {\n    console.error(err);\n  }\n}\nreadFile();\n    </pre>\n    This reads a file using Async/Await."
+  ],
+  [
+    "What is WebSocket in Node.js?",
+    "WebSocket is a protocol for real-time, bi-directional communication between client and server over a single, persistent connection. Unlike HTTP, it allows both parties to send data at any time.\n    <br><br><strong>Example:</strong><br>\n    WebSocket is typically implemented using the 'ws' library in Node.js."
+  ],
+  [
+    "How does WebSocket work?",
+    "WebSocket starts with an HTTP handshake (using the 'Upgrade' header) to establish a persistent connection. Once established, both client and server can send messages anytime, ideal for real-time apps like chat or live notifications.\n    <br><br><strong>Example:</strong><br>\n    <pre>\nconst WebSocket = require('ws');\nconst wss = new WebSocket.Server({ port: 8080 });\nwss.on('connection', ws => {\n  ws.on('message', message => console.log('Received:', message));\n  ws.send('Welcome to WebSocket!');\n});\n    </pre>\n    Install 'ws' with 'npm install ws' and run this server."
+  ],
+  [
+    "Why use WebSocket?",
+    "WebSockets reduce latency by maintaining a single connection, unlike HTTP's request-response cycle. They're ideal for real-time applications like chat, gaming, live updates, or collaborative tools due to their efficiency and bi-directional nature."
+  ],
+  [
+    "How to implement WebSocket in Node.js?",
+    "The 'ws' library is commonly used to create a WebSocket server in Node.js. It handles connections, messages, and events like 'open' and 'close'.\n    <br><br><strong>Example:</strong><br>\n    <pre>\nconst WebSocket = require('ws');\nconst wss = new WebSocket.Server({ port: 8080 });\nwss.on('connection', ws => {\n  ws.on('message', message => {\n    ws.send('Echo: ' + message);\n  });\n});\n    </pre>\n    This echoes messages back to the client."
+  ],
+  [
+    "Example WebSocket setup?",
+    "To set up a WebSocket server, install the 'ws' package and create a server that listens for connections. Clients connect using the WebSocket API in the browser.\n    <br><br><strong>Example:</strong><br>\n    <pre>\n// Server (server.js)\nconst WebSocket = require('ws');\nconst wss = new WebSocket.Server({ port: 8080 });\nwss.on('connection', ws => {\n  ws.send('Connected!');\n});\n// Client (HTML)\nconst ws = new WebSocket('ws://localhost:8080');\nws.onmessage = event => console.log(event.data);\n    </pre>\n    Run 'npm install ws' and start the server."
+  ],
+  [
+    "How does the WebSocket client communicate?",
+    "A WebSocket client (e.g., in a browser) connects to a server using 'new WebSocket(url)'. It listens for events like 'open', 'message', 'close', and sends data with 'socket.send()'.\n    <br><br><strong>Example:</strong><br>\n    <pre>\nconst ws = new WebSocket('ws://localhost:8080');\nws.onopen = () => ws.send('Hello, Server!');\nws.onmessage = event => console.log('Received:', event.data);\nws.onclose = () => console.log('Disconnected');\n    </pre>\n    This client connects and communicates with a WebSocket server."
+  ],
+  [
+    "How to use JWT for Authentication?",
+    "JSON Web Tokens (JWT) are used for secure authentication. A token is generated on the server, signed with a secret, and sent to the client. The client includes it in requests to verify identity.\n    <br><br><strong>Example:</strong><br>\n    <pre>\nconst jwt = require('jsonwebtoken');\nconst express = require('express');\nconst app = express();\napp.use(express.json());\napp.post('/login', (req, res) => {\n  const token = jwt.sign({ userId: 1 }, 'secret');\n  res.json({ token });\n});\napp.listen(3000);\n    </pre>\n    Install 'jsonwebtoken' with 'npm install jsonwebtoken'."
+  ],
+  [
+    "What is Redis and How to Use it in Node.js?",
+    "Redis is an in-memory data store used for caching, session management, or real-time analytics. In Node.js, the 'redis' package connects to a Redis server.\n    <br><br><strong>Example:</strong><br>\n    <pre>\nconst redis = require('redis');\nconst client = redis.createClient();\nclient.set('key', 'value', redis.print);\nclient.get('key', (err, value) => console.log(value));\n    </pre>\n    Install 'redis' with 'npm install redis' and run a Redis server."
+  ],
+  [
+    "What is Event Emitter in Node.js?",
+    "The EventEmitter class enables event-driven programming in Node.js. Objects can emit named events, and listeners can handle them, useful for asynchronous operations.\n    <br><br><strong>Example:</strong><br>\n    <pre>\nconst EventEmitter = require('events');\nconst emitter = new EventEmitter();\nemitter.on('greet', name => console.log('Hello, ' + name));\nemitter.emit('greet', 'Alice');\n    </pre>\n    This emits and handles a custom 'greet' event."
+  ],
+  [
+    "How to Handle Errors in Node.js?",
+    "Errors in Node.js can be handled using try-catch for synchronous code, error-first callbacks, or Promise error handling. Express provides middleware for centralized error handling.\n    <br><br><strong>Example:</strong><br>\n    <pre>\nconst express = require('express');\nconst app = express();\napp.get('/error', (req, res, next) => {\n  next(new Error('Something went wrong'));\n});\napp.use((err, req, res, next) => {\n  res.status(500).send(err.message);\n});\napp.listen(3000);\n    </pre>\n    This handles errors in an Express app."
+  ],
+  [
+    "What is Nodemon and Why Use It?",
+    "Nodemon is a development tool that automatically restarts a Node.js server when code changes, improving development efficiency.\n    <br><br><strong>Example:</strong><br>\n    <pre>\n// Install nodemon\nnpm install -g nodemon\n// Run server\nnodemon server.js\n    </pre>\n    Nodemon watches for file changes and restarts the server."
+  ],
+  [
+    "What is the Difference Between Process.nextTick() and setImmediate()?",
+    "Both schedule callbacks, but 'process.nextTick()' runs before the next event loop phase, potentially delaying I/O, while 'setImmediate()' runs in the next event loop cycle, after I/O.\n    <br><br><strong>Example:</strong><br>\n    <pre>\nprocess.nextTick(() => console.log('Next tick'));\nsetImmediate(() => console.log('Immediate'));\nconsole.log('Main');\n    </pre>\n    Output: Main, Next tick, Immediate."
+  ],
+  [
+    "How to Deploy a Node.js App?",
+    "Deploying a Node.js app involves hosting it on a server (e.g., AWS, Heroku). PM2 manages processes, and Nginx can act as a reverse proxy for load balancing.\n    <br><br><strong>Example:</strong><br>\n    <pre>\n// Install PM2\nnpm install -g pm2\n// Start app with PM2\npm2 start server.js\n    </pre>\n    This runs a Node.js app with PM2 for process management."
+  ]
+]

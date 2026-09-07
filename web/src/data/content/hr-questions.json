@@ -1,0 +1,102 @@
+[
+  {
+    "id": 0,
+    "question": "Tell me about yourself or introduce yourself.",
+    "answer": "I recently graduated with a degree in Computer Science, and I've been working as a software developer for the past two years. During my time at college, I developed a strong foundation in programming, particularly in Java and Python. In my current role, I've gained practical experience working on real-world projects like developing a web-based application that improved internal team productivity. I'm now looking to grow further in a challenging environment like itsruntym."
+  },
+  {
+    "id": 1,
+    "question": "What interests you about working for this company?",
+    "answer": "I've heard a lot about itsruntym's commitment to innovation and its focus on technology. As someone who is passionate about problem-solving and eager to learn new technologies, I feel that itsruntym would provide me with the perfect environment to grow and contribute to meaningful projects."
+  },
+  {
+    "id": 2,
+    "question": "What would you say are your biggest professional strengths?",
+    "answer": "My strengths include a quick learning ability and strong analytical skills. I've been able to grasp new technologies easily, which has allowed me to contribute to various projects early in my career. I'm also detail-oriented, ensuring that I produce high-quality work."
+  },
+  {
+    "id": 3,
+    "question": "Can you walk us through a recent accomplishment you're proud of?",
+    "answer": "In my current role, I was tasked with optimizing a database query that was slowing down our application. After researching and testing different approaches, I was able to reduce the query execution time by 50%, which significantly improved the app's performance."
+  },
+  {
+    "id": 4,
+    "question": "What are your long-term career goals?",
+    "answer": "In the long term, I'd like to develop my skills and take on leadership roles in software development. My goal is to grow into a position where I can lead projects and contribute to technological advancements that make a real impact."
+  },
+  {
+    "id": 5,
+    "question": "Tell me about a project where you faced a significant challenge and how you overcame it.",
+    "answer": "During one of my college projects, our team had difficulties integrating various modules. To overcome this, I took the initiative to map out a clear integration plan and facilitated better communication between team members. This helped us meet our deadline and deliver a successful project."
+  },
+  {
+    "id": 6,
+    "question": "Describe a situation where you failed and how you handled it.",
+    "answer": "In one project, I initially underestimated the time required to complete a task, which led to a delay in the overall timeline. I learned from that mistake and have since become much more careful with time management and estimation. I also make it a point to ask for help early when needed."
+  },
+  {
+    "id": 7,
+    "question": "How do you prioritize tasks when you have multiple deadlines?",
+    "answer": "I prioritize tasks based on deadlines and importance. I make a to-do list and use time management tools like Trello or a calendar to stay organized. If a deadline is tight, I focus on breaking the task down into smaller, manageable pieces to avoid feeling overwhelmed."
+  },
+  {
+    "id": 8,
+    "question": "What keeps you motivated to perform at your best?",
+    "answer": "I'm motivated by the opportunity to learn and improve. Every project presents a chance to grow my skills, and I enjoy the process of tackling challenges and finding solutions. Additionally, being able to contribute to a larger goal within a team is highly motivating for me."
+  },
+  {
+    "id": 9,
+    "question": "Tell me about a time when you resolved a conflict within your team.",
+    "answer": "During a group project at college, there was a disagreement between two team members about how to approach a problem. I suggested we have a quick brainstorming session where everyone could share their ideas. This helped us find a middle ground, and we ended up combining the best parts of both approaches."
+  },
+  {
+    "id": 10,
+    "question": "What are your expectations regarding salary and benefits?",
+    "answer": "As someone who is early in their career, I'm looking for a fair compensation package that reflects industry standards and the opportunity to grow. I'm more focused on gaining experience and advancing my skills in a company like itsruntym."
+  },
+  {
+    "id": 11,
+    "question": "Why are you looking to transition from your current role?",
+    "answer": "While I've gained valuable experience in my current role, I feel that I'm ready for a new challenge where I can apply my skills in a more dynamic environment. I believe itsruntym can provide me with the opportunities I'm looking for."
+  },
+  {
+    "id": 12,
+    "question": "How do you approach team collaboration, especially when there are differing opinions?",
+    "answer": "I believe it's important to listen to everyone's viewpoint and focus on the common goal. When opinions differ, I try to facilitate a discussion where we can evaluate the pros and cons of each idea, which usually leads to a better, collective decision."
+  },
+  {
+    "id": 13,
+    "question": "Can you give an example of a time when you provided exceptional service to a client or colleague?",
+    "answer": "In my current role, a colleague was struggling with a feature implementation. I spent extra time after work to help him debug and figure out a solution. This helped him meet the deadline, and it also improved our team's overall performance."
+  },
+  {
+    "id": 14,
+    "question": "What is the one achievement in your career you are most proud of?",
+    "answer": "One of my proudest achievements is completing my final year college project where we built a machine learning model that could predict stock prices with a high degree of accuracy. It was a challenging task, but seeing it work in real-time was extremely rewarding."
+  },
+  {
+    "id": 15,
+    "question": "How do you manage stress and ensure productivity during tight deadlines?",
+    "answer": "I manage stress by staying organized and breaking tasks into smaller, actionable steps. I also make sure to take short breaks to clear my mind, which helps me stay focused. When deadlines are tight, I try to maintain clear communication with my team to avoid unnecessary delays."
+  },
+  {
+    "id": 16,
+    "question": "Tell me about a time when you had to learn something quickly to adapt to a new situation.",
+    "answer": "In my first job, I had to learn a new framework, Spring Boot, within a week to support a client project. I dedicated extra hours to reading documentation and watching tutorials, which allowed me to contribute effectively by the following week."
+  },
+  {
+    "id": 17,
+    "question": "How do you handle feedback or criticism from peers or supervisors?",
+    "answer": "I always take feedback as an opportunity to improve. If someone points out something I can work on, I make sure to listen carefully, ask questions for clarity, and then take action to improve. It's an important part of growing as a professional."
+  },
+  {
+    "id": 18,
+    "question": "What type of company culture do you thrive in, and why?",
+    "answer": "I thrive in a collaborative and learning-oriented culture. I believe in teamwork, and I enjoy environments where people are open to sharing ideas and supporting each other. A culture that encourages growth and learning is where I feel I can do my best work."
+  },
+  {
+    "id": 19,
+    "question": "What questions do you have for us regarding this role or our company?",
+    "answer": "I'm curious about how itsruntym fosters learning and growth for its employees. Could you share more about the kind of training or development opportunities available?"
+  }
+]

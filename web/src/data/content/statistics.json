@@ -1,0 +1,30 @@
+[
+  {
+    "title": "Measures of Central Tendency",
+    "code": "Mean (μ) = Σxᵢ / n  (sum over i = 1 to n)\nMedian: The middle value of a dataset (for an ordered set)\nMode: The most frequent value in a dataset"
+  },
+  {
+    "title": "Measures of Dispersion",
+    "code": "Variance (σ²) = Σ(xᵢ - μ)² / n  (sum over i = 1 to n)\nStandard Deviation (σ) = √(Variance)\nRange = Max - Min"
+  },
+  {
+    "title": "Probability",
+    "code": "Probability of an event: P(E) = (Number of favorable outcomes) / (Total number of possible outcomes)\nComplement Rule: P(E') = 1 - P(E)\nAddition Rule: P(A ∪ B) = P(A) + P(B) - P(A ∩ B)\nMultiplication Rule: P(A ∩ B) = P(A) · P(B|A)"
+  },
+  {
+    "title": "Probability Distributions",
+    "code": "Binomial Distribution: P(X = k) = nCk · pᵏ · (1 - p)^(n-k)\nNormal Distribution: P(X) = [1 / (σ√(2π))] · e^(-(X - μ)²/(2σ²))"
+  },
+  {
+    "title": "Hypothesis Testing",
+    "code": "Null Hypothesis (H₀): The hypothesis stating no effect or no difference.\nAlternative Hypothesis (H₁): The hypothesis stating there is an effect or difference.\nTest Statistic (z): z = (X - μ) / (σ/√n)\np-value: The probability of observing a result at least as extreme as the result obtained, under the null hypothesis."
+  },
+  {
+    "title": "Correlation and Regression",
+    "code": "Pearson's Correlation Coefficient: r = (nΣxy - ΣxΣy) / √[(nΣx² - (Σx)²)(nΣy² - (Σy)²)]\nSimple Linear Regression Equation: Y = a + bX, where a = intercept, b = slope"
+  },
+  {
+    "title": "Confidence Interval",
+    "code": "Confidence Interval: μ ± Z · (σ/√n)\nwhere Z is the Z-score corresponding to the confidence level."
+  }
+]

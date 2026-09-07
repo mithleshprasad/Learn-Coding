@@ -1,0 +1,34 @@
+[
+  {
+    "title": "Basic Trigonometric Ratios",
+    "code": "sin(θ) = Opposite / Hypotenuse\ncos(θ) = Adjacent / Hypotenuse\ntan(θ) = Opposite / Adjacent = sin(θ) / cos(θ)\ncsc(θ) = 1 / sin(θ)\nsec(θ) = 1 / cos(θ)\ncot(θ) = 1 / tan(θ)"
+  },
+  {
+    "title": "Pythagorean Identities",
+    "code": "sin²(θ) + cos²(θ) = 1\n1 + tan²(θ) = sec²(θ)\n1 + cot²(θ) = csc²(θ)"
+  },
+  {
+    "title": "Angle Sum and Difference Formulas",
+    "code": "sin(A ± B) = sin(A)cos(B) ± cos(A)sin(B)\ncos(A ± B) = cos(A)cos(B) ∓ sin(A)sin(B)\ntan(A ± B) = (tan(A) ± tan(B)) / (1 ∓ tan(A)tan(B))"
+  },
+  {
+    "title": "Double Angle Formulas",
+    "code": "sin(2A) = 2sin(A)cos(A)\ncos(2A) = cos²(A) - sin²(A)\ntan(2A) = 2tan(A) / (1 - tan²(A))"
+  },
+  {
+    "title": "Half-Angle Formulas",
+    "code": "sin(A/2) = ±√((1 - cos(A)) / 2)\ncos(A/2) = ±√((1 + cos(A)) / 2)\ntan(A/2) = ±√((1 - cos(A)) / (1 + cos(A)))"
+  },
+  {
+    "title": "Product-to-Sum Formulas",
+    "code": "sin(A)sin(B) = ½[cos(A-B) - cos(A+B)]\ncos(A)cos(B) = ½[cos(A+B) + cos(A-B)]\nsin(A)cos(B) = ½[sin(A+B) + sin(A-B)]"
+  },
+  {
+    "title": "Sum-to-Product Formulas",
+    "code": "sin(A) + sin(B) = 2sin((A+B)/2)cos((A-B)/2)\nsin(A) - sin(B) = 2cos((A+B)/2)sin((A-B)/2)\ncos(A) + cos(B) = 2cos((A+B)/2)cos((A-B)/2)\ncos(A) - cos(B) = -2sin((A+B)/2)sin((A-B)/2)"
+  },
+  {
+    "title": "Law of Sines and Cosines",
+    "code": "Law of Sines: a/sin(A) = b/sin(B) = c/sin(C)\nLaw of Cosines: c² = a² + b² - 2ab cos(C)"
+  }
+]

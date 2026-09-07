@@ -1,0 +1,162 @@
+[
+  [
+    "Print in JavaScript",
+    "Swal.fire(\"Hello, JavaScript! Now get back to work!\");"
+  ],
+  [
+    "Variables",
+    "let drink = \"Whiskey\"; Swal.fire(\"Tonight, we are drinking: \" + drink);"
+  ],
+  [
+    "Functions",
+    "function flirt() { Swal.fire(\"Hey there! Are you a JavaScript function? Because you just returned my heart.\"); } flirt();"
+  ],
+  [
+    "Arrays",
+    "let exes = [\"Emily\", \"Sophie\", \"Jessica\"]; Swal.fire(\"My list of exes: \" + exes.join(\", \"));"
+  ],
+  [
+    "Objects",
+    "let sugarDaddy = { name: \"Mr. Rich\", balance: \"Unlimited 💸\" }; Swal.fire(sugarDaddy.name + \" has \" + sugarDaddy.balance + \" in his bank!\");"
+  ],
+  [
+    "If-Else Conditions",
+    "let age = 21;\nif (age >= 18) Swal.fire(\"You can drink! Cheers! 🍻\");\nelse Swal.fire(\"Sorry kid, stick to juice.\");"
+  ],
+  [
+    "Loops",
+    "let tequilaShots = \"\";\nfor (let i = 1; i <= 5; i++) tequilaShots += \"🥃 \";\nSwal.fire(\"Tequila rounds: \" + tequilaShots);"
+  ],
+  [
+    "Events",
+    "document.body.onclick = function() { Swal.fire(\"Oops! You clicked too much, go touch some grass! 🌿\"); };"
+  ],
+  [
+    "DOM Manipulation",
+    "document.body.style.background = \"pink\"; Swal.fire(\"We made it spicy! 🌶️\");"
+  ],
+  [
+    "Template Literals",
+    "let lover = \"Jessica\"; Swal.fire(`Dear ${lover}, you still owe me dinner! 😏`);"
+  ],
+  [
+    "Arrow Functions",
+    "const party = (vibe) => Swal.fire(`Tonight’s party mood: ${vibe} 🔥`);\nparty(\"wild\");"
+  ],
+  [
+    "SetTimeout & SetInterval",
+    "setTimeout(() => Swal.fire(\"Reminder: Flirt responsibly! 😘\"), 3000);"
+  ],
+  [
+    "Local Storage",
+    "localStorage.setItem(\"crush\", \"Samantha\"); Swal.fire(\"Saved your crush’s name in local storage! 😉\");"
+  ],
+  [
+    "JSON Handling",
+    "let secret = { crush: \"Samantha\", age: 24 };\nSwal.fire(\"Your secret: \" + JSON.stringify(secret));"
+  ],
+  [
+    "Async/Await",
+    "async function dateRequest() {\nSwal.fire(\"Texting crush... 📲\");\nawait new Promise(r => setTimeout(r, 2000));\nSwal.fire(\"Reply received: Maybe. 😏\");\n}\ndateRequest();"
+  ],
+  [
+    "Promises",
+    "new Promise((resolve) => setTimeout(() => resolve(\"Netflix and chill? 🍿\"), 2000)).then(msg => Swal.fire(msg));"
+  ],
+  [
+    "Error Handling",
+    "try { throw new Error(\"Your ex is calling! Abort! 🚨\"); } catch (e) { Swal.fire(e.message); }"
+  ],
+  [
+    "Spread & Rest Operators",
+    "let drinks = [\"Beer\", \"Wine\", \"Whiskey\"];\nlet allDrinks = [...drinks, \"Tequila\", \"Gin\"];\nSwal.fire(\"Tonight’s menu: \" + allDrinks);"
+  ],
+  [
+    "Map & Filter",
+    "let numbers = [10, 20, 30, 40, 50];\nlet filtered = numbers.filter(n => n > 25);\nSwal.fire(\"Big money bets: \" + filtered);"
+  ],
+  [
+    "Classes",
+    "class Playboy { constructor(name) { this.name = name; } flirt() { return this.name + \" is smooth AF! 😉\"; } }\nlet player = new Playboy(\"James\");\nSwal.fire(player.flirt());"
+  ],
+  [
+    "Drunk Mode (toLowerCase)",
+    "let text = \"I LOVE JAVASCRIPT!\"; Swal.fire(text.toLowerCase());"
+  ],
+  [
+    "Horny Filter (includes)",
+    "let chat = \"Hey, wanna grab some coffee?\";\nif (chat.includes(\"coffee\")) Swal.fire(\"☕ Flirt detected!\");"
+  ],
+  [
+    "Love Calculator (Math.random)",
+    "let love = Math.floor(Math.random() * 100) + 1;\nSwal.fire(`❤️ Love Score: ${love}%`);"
+  ],
+  [
+    "Naughty Confession (Prompt)",
+    "let confession = prompt(\"Tell me your darkest secret...\");\nSwal.fire(`😏 I know your secret: ${confession}`);"
+  ],
+  [
+    "Date Picker (Date object)",
+    "let date = new Date();\nSwal.fire(`📅 Today is ${date.toDateString()}`);"
+  ],
+  [
+    "Flirty Message (Ternary Operator)",
+    "let hotness = Math.random() > 0.5 ? \"🔥 You’re sexy!\" : \"🥶 Try harder!\";\nSwal.fire(hotness);"
+  ],
+  [
+    "Drunk Dial Prevention (Confirm)",
+    "if (!confirm(\"Are you sure you want to send this drunk text?\")) Swal.fire(\"Phew! Saved from embarrassment!\");"
+  ],
+  [
+    "Online Dating Score (Object)",
+    "let user = { looks: 8, humor: 10, intelligence: 6 };\nSwal.fire(`💘 Your Dating Score: ${(user.looks + user.humor + user.intelligence) / 3}`);"
+  ],
+  [
+    "Thirst Meter (Switch Case)",
+    "let thirstLevel = 3;\nlet message = \"\";\nswitch (thirstLevel) {\n  case 1: message = \"🥤 Hydrated\"; break;\n  case 2: message = \"🍺 Thirsty\"; break;\n  case 3: message = \"🔥 Desperate\"; break;\n  default: message = \"💀 Dehydrated\";\n}\nSwal.fire(message);"
+  ],
+  [
+    "OnlyFans Calculator (Map)",
+    "let earnings = [50, 100, 200, 500];\nlet doubled = earnings.map(e => e * 2);\nSwal.fire(`💸 Your OnlyFans earnings doubled: $${doubled}`);"
+  ],
+  [
+    "Pick-Up Line Generator 💘",
+    "let lines = [\"Are you a magician? Because whenever I look at you, everyone else disappears!\", \"Do you believe in love at first sight, or should I walk by again?\", \"Is your name Google? Because you have everything I’ve been searching for.\"]; Swal.fire(lines[Math.floor(Math.random() * lines.length)]);"
+  ],
+  [
+    "Meme Magic 🖼️",
+    "let memes = [\"https://i.imgflip.com/30b1gx.jpg\", \"https://i.imgflip.com/4/1otk96.jpg\", \"https://i.imgflip.com/1bh8.jpg\"]; Swal.fire({ imageUrl: memes[Math.floor(Math.random() * memes.length)], imageWidth: 400, imageHeight: 300, });"
+  ],
+  [
+    "Truth or Dare Game 🎭",
+    "let tod = [\"Truth: What’s your weirdest habit?\", \"Dare: Send a romantic message to your crush!\", \"Truth: Have you ever stalked someone online?\", \"Dare: Dance like crazy for 30 seconds!\"]; Swal.fire(tod[Math.floor(Math.random() * tod.length)]);"
+  ],
+  [
+    "Fake Virus Prank 💀",
+    "setTimeout(() => Swal.fire(\"⚠️ System Error: Your computer is hacked!\"), 2000); setTimeout(() => Swal.fire(\"😂 Just kidding!\"), 5000);"
+  ],
+  [
+    "Girlfriend/Boyfriend Name Picker 😏",
+    "let names = [\"Sophia\", \"Emma\", \"Olivia\", \"Liam\", \"Noah\", \"Ethan\"]; Swal.fire(\"Your partner’s name is: \" + names[Math.floor(Math.random() * names.length)]);"
+  ],
+  [
+    "Love Calculator ❤️",
+    "let love = Math.floor(Math.random() * 100) + 1; Swal.fire(\"Your love compatibility is: \" + love + \"% ❤️\");"
+  ],
+  [
+    "Random Roast Generator 🔥",
+    "let roasts = [\"You bring everyone so much joy… when you leave the room!\", \"You have something on your chin… no, the third one down!\", \"You bring everyone together... when they all agree they don’t like you!\"]; Swal.fire(roasts[Math.floor(Math.random() * roasts.length)]);"
+  ],
+  [
+    "Drunk Typing Effect 🍻",
+    "let drunk = \"I’m noot drunjk, you arre!\".split(\"\").map((c, i) => i % 2 ? c.toUpperCase() : c.toLowerCase()).join(\"\"); Swal.fire(drunk);"
+  ],
+  [
+    "Who's Your Daddy? 👀",
+    "let daddy = [\"Elon Musk\", \"Bill Gates\", \"Jeff Bezos\", \"Tony Stark\", \"Your Wallet\"]; Swal.fire(\"Your daddy is: \" + daddy[Math.floor(Math.random() * daddy.length)]);"
+  ],
+  [
+    "Strip Game (for fun 🤭)",
+    "let items = [\"Shirt\", \"Pants\", \"Socks\", \"Jacket\", \"Hat\"]; Swal.fire(\"You lost! Take off your \" + items[Math.floor(Math.random() * items.length)] + \"! 😈\");"
+  ]
+]

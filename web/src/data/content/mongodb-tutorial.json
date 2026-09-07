@@ -1,0 +1,77 @@
+[
+  {
+    "id": 0,
+    "question": "What is MongoDB?",
+    "answer": "MongoDB is a **NoSQL database** that stores data in flexible, JSON-like documents."
+  },
+  {
+    "id": 1,
+    "question": "What are Collections in MongoDB?",
+    "answer": "Collections are groups of MongoDB documents, similar to tables in relational databases."
+  },
+  {
+    "id": 2,
+    "question": "What is a Document in MongoDB?",
+    "answer": "A document is a set of key-value pairs, stored in BSON (Binary JSON) format."
+  },
+  {
+    "id": 3,
+    "question": "How to Install MongoDB?",
+    "answer": "Download MongoDB from the official website and follow the installation instructions for your OS."
+  },
+  {
+    "id": 4,
+    "question": "How to Connect to MongoDB?",
+    "answer": "Use the `mongosh` command or a MongoDB driver (e.g., Node.js, Python) to connect to the database."
+  },
+  {
+    "id": 5,
+    "question": "What is the Difference Between MongoDB and SQL?",
+    "answer": "MongoDB is a NoSQL database that uses documents, while SQL databases use tables and rows."
+  },
+  {
+    "id": 6,
+    "question": "How to Create a Database in MongoDB?",
+    "answer": "Use the `use` command to create or switch to a database."
+  },
+  {
+    "id": 7,
+    "question": "How to Insert Data in MongoDB?",
+    "answer": "Use the `insertOne()` or `insertMany()` methods to add documents to a collection."
+  },
+  {
+    "id": 8,
+    "question": "How to Query Data in MongoDB?",
+    "answer": "Use the `find()` method to query documents in a collection."
+  },
+  {
+    "id": 9,
+    "question": "What is Indexing in MongoDB?",
+    "answer": "Indexing improves query performance by creating indexes on fields."
+  },
+  {
+    "id": 10,
+    "question": "How to Update Data in MongoDB?",
+    "answer": "Use the `updateOne()` or `updateMany()` methods to modify documents."
+  },
+  {
+    "id": 11,
+    "question": "How to Delete Data in MongoDB?",
+    "answer": "Use the `deleteOne()` or `deleteMany()` methods to remove documents."
+  },
+  {
+    "id": 12,
+    "question": "What is Aggregation in MongoDB?",
+    "answer": "Aggregation processes data records and returns computed results."
+  },
+  {
+    "id": 13,
+    "question": "What is Sharding in MongoDB?",
+    "answer": "Sharding distributes data across multiple servers to handle large datasets."
+  },
+  {
+    "id": 14,
+    "question": "What is Replication in MongoDB?",
+    "answer": "Replication ensures high availability by maintaining multiple copies of data."
+  }
+]

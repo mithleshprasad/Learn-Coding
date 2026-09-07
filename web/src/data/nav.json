@@ -1,0 +1,24 @@
+[
+  {
+    "key": "basic-math",
+    "label": "Basic Math",
+    "children": [
+      { "key": "trigonometry", "label": "Trigonometry", "to": "/math/trigonometry" },
+      { "key": "algebra", "label": "Algebra", "to": "/math/algebra" },
+      { "key": "geometry", "label": "Geometry", "to": "/math/geometry" },
+      { "key": "calculus", "label": "Calculus", "to": "/math/calculus" },
+      { "key": "statistics", "label": "Statistics", "to": "/math/statistics" }
+    ]
+  },
+  {
+    "key": "tutorial",
+    "label": "Tutorial",
+    "children": [
+      { "key": "react", "label": "React.js Tutorial", "to": "/tutorials/react" },
+      { "key": "node", "label": "Node.js Tutorial", "to": "/tutorials/node" },
+      { "key": "javascript", "label": "JavaScript Tutorial", "to": "/tutorials/javascript" },
+      { "key": "html", "label": "HTML Tutorial", "to": "/tutorials/html" },
+      { "key": "mongodb", "label": "MongoDB Tutorial", "to": "/tutorials/mongodb" }
+    ]
+  }
+]

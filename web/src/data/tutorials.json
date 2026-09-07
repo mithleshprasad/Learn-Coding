@@ -1,0 +1,93 @@
+[
+  {
+    "key": "react",
+    "title": "React.js Tutorial",
+    "description": "Learn React.js from scratch and build modern web applications.",
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a7/React-icon.svg/330px-React-icon.svg.png",
+    "to": "/tutorials/react"
+  },
+  {
+    "key": "node",
+    "title": "Node.js Tutorial",
+    "description": "Master backend development with Node.js and Express.",
+    "image": "https://images.ctfassets.net/aq13lwl6616q/7cS8gBoWulxkWNWEm0FspJ/c7eb42dd82e27279307f8b9fc9b136fa/nodejs_cover_photo_smaller_size.png?w=500&fm=webp",
+    "to": "/tutorials/node"
+  },
+  {
+    "key": "javascript",
+    "title": "JavaScript Tutorial",
+    "description": "Learn JavaScript fundamentals and advanced concepts.",
+    "image": "https://jbstechinfo.com/wp-content/uploads/2023/08/JavaScript-Symbol-2048x1152.png",
+    "to": "/tutorials/javascript"
+  },
+  {
+    "key": "html",
+    "title": "HTML Tutorial",
+    "description": "Master HTML and create well-structured web pages.",
+    "image": "https://upload.wikimedia.org/wikipedia/commons/6/61/HTML5_logo_and_wordmark.svg",
+    "to": "/tutorials/html"
+  },
+  {
+    "key": "mongodb",
+    "title": "MongoDB Tutorial",
+    "description": "Learn MongoDB and manage NoSQL databases efficiently.",
+    "image": "https://kangaroot.net/sites/default/files/media/images/2021-07/mongodb.png",
+    "to": "/tutorials/mongodb"
+  },
+  {
+    "key": "hr",
+    "title": "HR Question",
+    "description": "Prepare for HR interviews with top questions and answers.",
+    "image": "https://media.geeksforgeeks.org/wp-content/uploads/20240220162412/Common-Interview-Questions-&-Answers-For-2024.webp",
+    "to": "/hr-questions"
+  },
+  {
+    "key": "binary",
+    "title": "Binary Search Tutorial",
+    "description": "Learn Binary Search Visualizer efficiently.",
+    "image": "https://i0.wp.com/perexpteamworks.com/wp-content/uploads/2023/07/binary-kapak.jpg?fit=2048%2C2048&ssl=1",
+    "to": "/visualizers/binary-search"
+  },
+  {
+    "key": "dijkstra",
+    "title": "Dijkstra's Algorithm Tutorial",
+    "description": "Learn Dijkstra's Algorithm Visualizer efficiently.",
+    "image": "https://i.ytimg.com/vi/bZkzH5x0SKU/maxresdefault.jpg",
+    "to": "/visualizers/dijkstra"
+  },
+  {
+    "key": "bubble",
+    "title": "Bubble Sort Algorithm Tutorial",
+    "description": "Learn Bubble Sort Algorithm Visualizer efficiently.",
+    "image": "https://zwoong.github.io/assets/img/post/algorithm/bubble-sort.png",
+    "to": "/visualizers/bubble-sort"
+  },
+  {
+    "key": "merge",
+    "title": "Merge Sort Algorithm Tutorial",
+    "description": "Learn Merge Sort Algorithm Visualizer efficiently.",
+    "image": "https://media.geeksforgeeks.org/wp-content/uploads/20230531153308/Merge-sort-(webp).webp",
+    "to": "/visualizers/merge-sort"
+  },
+  {
+    "key": "rsa",
+    "title": "RSA Encryption Algorithm Tutorial",
+    "description": "Learn RSA Encryption Algorithm Visualizer efficiently.",
+    "image": "https://www.appviewx.com/wp-content/uploads/2022/02/Asymmetric-Encryption-Works-1536x918.png",
+    "to": "/visualizers/rsa"
+  },
+  {
+    "key": "knn",
+    "title": "K-Nearest Neighbors Tutorial",
+    "description": "Learn K-Nearest Neighbors Visualizer efficiently.",
+    "image": "https://i.ytimg.com/vi/wTF6vzS9fy4/maxresdefault.jpg",
+    "to": "/visualizers/knn"
+  },
+  {
+    "key": "linear-regression",
+    "title": "Linear Regression Tutorial",
+    "description": "Learn Linear Regression with Gradient Descent Visualizer efficiently.",
+    "image": "https://miro.medium.com/v2/resize:fit:1400/1*quSxcHc0ib4nbtj7TFH6gw.png",
+    "to": "/visualizers/linear-regression"
+  }
+]
