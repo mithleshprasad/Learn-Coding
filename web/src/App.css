@@ -48,13 +48,40 @@
   background: #0d1117;
   background-image: radial-gradient(circle at 15% 0%, rgba(47, 141, 70, 0.18), transparent 45%);
   border-bottom: 1px solid #30363d;
-  text-align: center;
   padding: 90px 20px;
 }
 
-.hero-content {
-  max-width: 720px;
+.hero-inner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 56px;
+  max-width: 1120px;
   margin: 0 auto;
+}
+
+.hero-content {
+  max-width: 480px;
+  flex: 1 1 380px;
+  text-align: left;
+}
+
+.hero-visual {
+  flex: 1 1 380px;
+  display: flex;
+  justify-content: center;
+}
+
+@media (max-width: 900px) {
+  .hero-inner {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .hero-content {
+    text-align: center;
+    max-width: 100%;
+  }
 }
 
 /* ==========================================================================
@@ -96,8 +123,9 @@
 .tutorial-thumb {
   width: 100%;
   height: 140px;
-  object-fit: cover;
-  background: #1c2128;
+  padding: 16px 18px;
+  overflow: hidden;
+  font-family: Menlo, Monaco, Consolas, monospace;
 }
 
 .tutorial-cta {

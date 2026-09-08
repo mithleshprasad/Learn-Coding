@@ -3,6 +3,9 @@ import { Link, useLocation } from 'react-router-dom';
 import { Button, Card, Col, Row, Typography } from 'antd';
 import SiteHeader from '../components/SiteHeader.jsx';
 import SiteFooter from '../components/SiteFooter.jsx';
+import FloatingChat from '../components/FloatingChat.jsx';
+import HeroCodeWindow from '../components/HeroCodeWindow.jsx';
+import TutorialThumb from '../components/TutorialThumb.jsx';
 import tutorials from '../data/tutorials.json';
 import topics from '../data/topics.json';
 import testimonials from '../data/testimonials.json';
@@ -23,16 +26,21 @@ export default function Home() {
       <SiteHeader />
 
       <section className="hero" id="home">
-        <div className="hero-content">
-          <Title level={1} style={{ color: '#fff', fontSize: 48, marginBottom: 20 }}>
-            Master Coding with Ease
-          </Title>
-          <Paragraph style={{ color: '#fff', fontSize: 20, opacity: 0.9, marginBottom: 30 }}>
-            Learn, practice, and excel in programming with our interactive tutorials and quizzes.
-          </Paragraph>
-          <Button type="primary" size="large" href="#tutorials">
-            Get Started
-          </Button>
+        <div className="hero-inner">
+          <div className="hero-content">
+            <Title level={1} style={{ color: '#fff', fontSize: 48, marginBottom: 20 }}>
+              Master Coding with Ease
+            </Title>
+            <Paragraph style={{ color: '#fff', fontSize: 20, opacity: 0.9, marginBottom: 30 }}>
+              Learn, practice, and excel in programming with our interactive tutorials and quizzes.
+            </Paragraph>
+            <Button type="primary" size="large" href="#tutorials">
+              Get Started
+            </Button>
+          </div>
+          <div className="hero-visual">
+            <HeroCodeWindow />
+          </div>
         </div>
       </section>
 
@@ -47,11 +55,10 @@ export default function Home() {
                 hoverable
                 className="tutorial-card"
                 cover={
-                  <img
-                    className="tutorial-thumb"
-                    src={tutorial.image}
-                    alt={tutorial.title}
-                    loading="lazy"
+                  <TutorialThumb
+                    code={tutorial.code}
+                    language={tutorial.language}
+                    accent={tutorial.accent}
                   />
                 }
               >
@@ -119,6 +126,7 @@ export default function Home() {
       </section>
 
       <SiteFooter />
+      <FloatingChat heading="🤖 Ask AI anything about coding" />
     </>
   );
 }

@@ -1,43 +1,134 @@
 import { useCallback, useRef, useState } from 'react';
 import { Alert, Button, Input, Space, Spin, Typography, message } from 'antd';
-import { AudioOutlined, SaveOutlined, SendOutlined, SoundOutlined } from '@ant-design/icons';
+import { AudioOutlined, FilePdfOutlined, SendOutlined, SoundOutlined } from '@ant-design/icons';
+import jsPDF from 'jspdf';
 import './AskAi.css';
 
 const { Paragraph, Text } = Typography;
 
-function downloadJson(filename, data) {
-  const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = filename;
-  a.click();
-  URL.revokeObjectURL(url);
+// jsPDF's built-in fonts only cover the WinAnsi/Latin-1 range — the smart
+// quotes, en-dashes and other Unicode punctuation Groq's answers use fall
+// outside that and render as garbled, oddly-spaced text. Fold them down to
+// plain ASCII equivalents, and drop anything else (emoji etc.) outright.
+function sanitizeForPdf(text) {
+  return text
+    .replace(/[‘’]/g, "'")
+    .replace(/[“”]/g, '"')
+    .replace(/[–—]/g, '-')
+    .replace(/‑/g, '-')
+    .replace(/…/g, '...')
+    .replace(/[•●]/g, '-')
+    // \x00-\x1f (incl. \n) are intentionally kept; only non-Latin-1
+    // characters (emoji etc.) are dropped.
+    // eslint-disable-next-line no-control-regex
+    .replace(/[^\x00-\xff]/g, '');
+}
+
+// Word-wraps `text` into `doc` starting at (x, startY), rendering **bold**
+// markdown segments in a bold font instead of printing the asterisks
+// literally, and paragraph breaks (blank lines) as extra vertical gap.
+// Returns the y position after the last line drawn.
+function renderFormattedText(doc, text, x, startY, maxWidth, pageHeight, margin, lineHeight = 6) {
+  let y = startY;
+
+  text
+    .split(/\n+/)
+    .filter((p) => p.trim())
+    .forEach((paragraph, pIndex) => {
+      if (pIndex > 0) y += 3;
+      let cursorX = x;
+
+      paragraph
+        .split(/(\*\*[^*]+\*\*)/g)
+        .filter(Boolean)
+        .forEach((segment) => {
+          const isBold = /^\*\*[^*]+\*\*$/.test(segment);
+          doc.setFont('helvetica', isBold ? 'bold' : 'normal');
+          const words = (isBold ? segment.slice(2, -2) : segment).split(/\s+/).filter(Boolean);
+
+          words.forEach((word) => {
+            const wordWidth = doc.getTextWidth(word);
+            if (cursorX > x && cursorX + wordWidth > x + maxWidth) {
+              cursorX = x;
+              y += lineHeight;
+              if (y > pageHeight - margin) {
+                doc.addPage();
+                y = margin;
+              }
+            }
+            doc.text(word, cursorX, y);
+            cursorX += wordWidth + doc.getTextWidth(' ');
+          });
+        });
+
+      y += lineHeight;
+    });
+
+  return y;
+}
+
+// Renders every saved Q&A as its own colorful page: a dark header band with
+// a green accent stripe (matching the site's theme), the question in green,
+// the answer in body text.
+function buildSavedAnswersPdf(entries) {
+  const doc = new jsPDF();
+  const pageWidth = doc.internal.pageSize.getWidth();
+  const pageHeight = doc.internal.pageSize.getHeight();
+  const margin = 16;
+  const contentWidth = pageWidth - margin * 2;
+
+  entries.forEach((entry, i) => {
+    if (i > 0) doc.addPage();
+
+    doc.setFillColor(22, 27, 34);
+    doc.rect(0, 0, pageWidth, 34, 'F');
+    doc.setFillColor(47, 141, 70);
+    doc.rect(0, 34, pageWidth, 2, 'F');
+
+    doc.setTextColor(230, 237, 243);
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(14);
+    doc.text('Ask AI - Saved Answer', margin, 15);
+
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(9);
+    doc.setTextColor(145, 152, 161);
+    doc.text(`Saved ${new Date(entry.savedAt).toLocaleString()}`, margin, 25);
+
+    let y = 50;
+
+    doc.setTextColor(47, 141, 70);
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(13);
+    const questionLines = doc.splitTextToSize(sanitizeForPdf(entry.question), contentWidth);
+    doc.text(questionLines, margin, y);
+    y += questionLines.length * 7 + 8;
+
+    doc.setTextColor(30, 30, 30);
+    doc.setFontSize(11);
+    renderFormattedText(doc, sanitizeForPdf(entry.answer), margin, y, contentWidth, pageHeight, margin);
+  });
+
+  return doc;
 }
 
 /**
  * Freeform "ask a question about this tutorial" box. Sends the question plus
  * this page's Q&A content to /api/search (a Vercel serverless function) so
- * the Groq API key never reaches the browser. Also supports asking by voice,
- * having the answer read aloud, and saving Q&As straight to a real JSON
- * file on disk via the File System Access API (Chrome/Edge) — the browser
- * keeps a handle to the file so every "Save" click appends to the SAME
- * file, no server and no localStorage involved. Firefox/Safari (no File
- * System Access API) fall back to re-downloading the full list each time.
+ * the Groq API key never reaches the browser. Also supports asking by voice
+ * and having the answer read aloud. "Save" regenerates a colorful PDF with
+ * one page per saved answer (this session) and downloads it — no server,
+ * no localStorage.
  */
-export default function AskAi({ context }) {
+export default function AskAi({ context, heading = '🤖 Ask AI about this tutorial', showHeading = true }) {
   const [question, setQuestion] = useState('');
   const [answer, setAnswer] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [listening, setListening] = useState(false);
   const [savedCount, setSavedCount] = useState(0);
-  const [savedFileName, setSavedFileName] = useState('');
   const recognitionRef = useRef(null);
-  const fileHandleRef = useRef(null);
-  const fallbackListRef = useRef([]);
-
-  const canPickFile = typeof window.showSaveFilePicker === 'function';
+  const savedListRef = useRef([]);
 
   const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
   const speechSupported = Boolean(SpeechRecognition);
@@ -91,52 +182,19 @@ export default function AskAi({ context }) {
     }
   };
 
-  const saveAnswer = useCallback(async () => {
+  const saveAsPdf = useCallback(() => {
     if (!question || !answer) return;
-    const entry = { question, answer, savedAt: new Date().toISOString() };
-
-    if (!canPickFile) {
-      fallbackListRef.current = [...fallbackListRef.current, entry];
-      downloadJson('ask-ai-saved.json', fallbackListRef.current);
-      setSavedCount(fallbackListRef.current.length);
-      message.info('Your browser can’t append to a file, so a fresh ask-ai-saved.json (with everything saved so far) just downloaded.');
-      return;
-    }
-
-    try {
-      if (!fileHandleRef.current) {
-        fileHandleRef.current = await window.showSaveFilePicker({
-          suggestedName: 'ask-ai-saved.json',
-          types: [{ description: 'JSON', accept: { 'application/json': ['.json'] } }],
-        });
-      }
-      const existingFile = await fileHandleRef.current.getFile();
-      const existingText = await existingFile.text();
-      let list = [];
-      try {
-        const parsed = JSON.parse(existingText || '[]');
-        if (Array.isArray(parsed)) list = parsed;
-      } catch {
-        // Existing file wasn't valid JSON (or was empty) — start fresh.
-      }
-      list.push(entry);
-
-      const writable = await fileHandleRef.current.createWritable();
-      await writable.write(JSON.stringify(list, null, 2));
-      await writable.close();
-
-      setSavedFileName(fileHandleRef.current.name);
-      setSavedCount(list.length);
-      message.success(`Saved to ${fileHandleRef.current.name} (${list.length} entries).`);
-    } catch (err) {
-      if (err?.name === 'AbortError') return;
-      message.error('Could not save to the file: ' + err.message);
-    }
-  }, [question, answer, canPickFile]);
+    savedListRef.current = [...savedListRef.current, { question, answer, savedAt: new Date().toISOString() }];
+    const doc = buildSavedAnswersPdf(savedListRef.current);
+    doc.save('ask-ai-saved.pdf');
+    setSavedCount(savedListRef.current.length);
+    const n = savedListRef.current.length;
+    message.success(`Saved as PDF (${n} ${n === 1 ? 'answer' : 'answers'}).`);
+  }, [question, answer]);
 
   return (
     <div className="ask-ai">
-      <div className="ask-ai-heading">🤖 Ask AI about this tutorial</div>
+      {showHeading ? <div className="ask-ai-heading">{heading}</div> : null}
       <div style={{ display: 'flex', gap: 8 }}>
         {speechSupported ? (
           <Button
@@ -172,15 +230,15 @@ export default function AskAi({ context }) {
                 Listen
               </Button>
             ) : null}
-            <Button size="small" icon={<SaveOutlined />} onClick={saveAnswer}>
-              Save to JSON file
+            <Button size="small" icon={<FilePdfOutlined />} onClick={saveAsPdf}>
+              Save as PDF
             </Button>
           </Space>
         </div>
       ) : null}
       {savedCount > 0 ? (
         <Text type="secondary" className="ask-ai-saved">
-          {savedFileName ? `${savedCount} saved to ${savedFileName}` : `${savedCount} saved`}
+          {savedCount} {savedCount === 1 ? 'answer' : 'answers'} in ask-ai-saved.pdf
         </Text>
       ) : null}
     </div>

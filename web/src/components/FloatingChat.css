@@ -1,0 +1,61 @@
+.floating-chat {
+  position: fixed;
+  right: 24px;
+  bottom: 24px;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 12px;
+}
+
+.floating-chat-toggle {
+  width: 56px !important;
+  height: 56px !important;
+  background: #2f8d46 !important;
+  border-color: #2f8d46 !important;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45);
+  font-size: 22px;
+}
+
+.floating-chat-panel {
+  width: min(380px, calc(100vw - 48px));
+  max-height: min(70vh, 560px);
+  overflow-y: auto;
+  background: #0d1117;
+  border: 1px solid #30363d;
+  border-radius: 12px;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.55);
+}
+
+.floating-chat-panel-header {
+  position: sticky;
+  top: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 14px;
+  background: #161b22;
+  border-bottom: 1px solid #30363d;
+  border-radius: 12px 12px 0 0;
+  color: #e6edf3;
+  font-weight: 600;
+}
+
+.floating-chat-panel-body {
+  padding: 14px;
+}
+
+.floating-chat-panel-body .ask-ai {
+  margin-bottom: 0;
+  padding: 0;
+  background: none;
+  border: none;
+}
+
+@media (max-width: 480px) {
+  .floating-chat {
+    right: 16px;
+    bottom: 16px;
+  }
+}
