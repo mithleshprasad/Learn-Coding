@@ -1,0 +1,31 @@
+.ask-ai {
+  margin-bottom: 24px;
+  padding: 16px;
+  background: #161b22;
+  border: 1px solid #30363d;
+  border-radius: 8px;
+}
+
+.ask-ai-heading {
+  font-weight: 600;
+  color: #e6edf3;
+  margin-bottom: 10px;
+}
+
+.ask-ai-loading {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 10px;
+  color: #9198a1;
+  font-size: 13px;
+}
+
+.ask-ai-answer {
+  margin-top: 12px;
+  padding: 12px;
+  background: #0d1117;
+  border: 1px solid #21262d;
+  border-radius: 6px;
+  color: #c9d1d9;
+}

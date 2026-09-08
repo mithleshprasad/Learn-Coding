@@ -1,0 +1,8 @@
+[
+  { "key": "html", "label": "HTML & CSS", "to": "/tutorials/html" },
+  { "key": "javascript", "label": "JavaScript", "to": "/tutorials/javascript" },
+  { "key": "react", "label": "React (Frontend)", "to": "/tutorials/react" },
+  { "key": "node", "label": "Node.js (Backend)", "to": "/tutorials/node" },
+  { "key": "mongodb", "label": "MongoDB (Database)", "to": "/tutorials/mongodb" },
+  { "key": "hr", "label": "Interview Prep", "to": "/hr-questions" }
+]

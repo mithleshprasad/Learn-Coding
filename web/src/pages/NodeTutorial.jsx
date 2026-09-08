@@ -1,18 +1,14 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Button, Collapse, Input, Space, Typography, message } from 'antd';
-import {
-  DownloadOutlined,
-  MoonOutlined,
-  QuestionCircleOutlined,
-  StarFilled,
-  StarOutlined,
-} from '@ant-design/icons';
+import { Button, Input, Space, Typography, message } from 'antd';
+import { DownloadOutlined, MoonOutlined, StarFilled, StarOutlined } from '@ant-design/icons';
 import PageLayout from '../components/PageLayout.jsx';
 import CodeBlock from '../components/CodeBlock.jsx';
+import DetailSidebar from '../components/DetailSidebar.jsx';
+import AskAi from '../components/AskAi.jsx';
 import topics from '../data/content/node-tutorial.json';
 
-const { Paragraph, Text } = Typography;
+const { Paragraph, Text, Title } = Typography;
 
 // `topics` (imported above) holds [question, answer] pairs, ported verbatim
 // from the legacy node_tutorial.html `topics` array. Each answer is the
@@ -107,8 +103,7 @@ export default function NodeTutorial() {
   const [darkMode, setDarkMode] = useState(() => loadJson(DARK_MODE_KEY, false));
   const [bookmarks, setBookmarks] = useState(() => loadJson(BOOKMARKS_KEY, []));
   const [viewed, setViewed] = useState(() => loadJson(VIEWED_KEY, []));
-  const [activeKeys, setActiveKeys] = useState([]);
-  const [focusIndex, setFocusIndex] = useState(null);
+  const [activeKey, setActiveKey] = useState('0');
   const searchInputRef = useRef(null);
 
   useEffect(() => {
@@ -123,9 +118,10 @@ export default function NodeTutorial() {
     localStorage.setItem(DARK_MODE_KEY, JSON.stringify(darkMode));
   }, [darkMode]);
 
-  const markViewed = useCallback((id) => {
+  useEffect(() => {
+    const id = Number(activeKey);
     setViewed((prev) => (prev.includes(id) ? prev : [...prev, id]));
-  }, []);
+  }, [activeKey]);
 
   const toggleBookmark = useCallback((id) => {
     setBookmarks((prev) => {
@@ -138,12 +134,20 @@ export default function NodeTutorial() {
     });
   }, []);
 
-  const handlePanelChange = useCallback(
-    (keys) => {
-      setActiveKeys(keys);
-      keys.forEach((key) => markViewed(Number(key)));
-    },
-    [markViewed],
+  const sidebarItems = useMemo(
+    () => topics.map(([question], index) => ({ key: String(index), label: `${index + 1}. ${question}` })),
+    [],
+  );
+
+  const filteredSidebarItems = useMemo(() => {
+    const query = search.trim().toLowerCase();
+    if (!query) return sidebarItems;
+    return sidebarItems.filter((item) => item.label.toLowerCase().includes(query));
+  }, [sidebarItems, search]);
+
+  const askAiContext = useMemo(
+    () => topics.map(([question, answer]) => ({ question, description: answer })),
+    [],
   );
 
   const copyAnswer = useCallback(async (raw) => {
@@ -159,11 +163,9 @@ export default function NodeTutorial() {
   const showRandomQuestion = useCallback(() => {
     const idx = Math.floor(Math.random() * topics.length);
     setSearch('');
-    setFocusIndex(idx);
-    setActiveKeys([String(idx)]);
-    markViewed(idx);
+    setActiveKey(String(idx));
     message.info(`Showing Question ${idx + 1}`);
-  }, [markViewed]);
+  }, []);
 
   const exportQuestions = useCallback(() => {
     const data = topics.map(([question, answer]) => ({ question, answer }));
@@ -198,59 +200,21 @@ export default function NodeTutorial() {
     return () => document.removeEventListener('keydown', handleKeyDown);
   }, [showRandomQuestion, exportQuestions]);
 
-  const filteredTopics = useMemo(() => {
-    if (focusIndex !== null) {
-      return [{ question: topics[focusIndex][0], answer: topics[focusIndex][1], index: focusIndex }];
-    }
-    const all = topics.map(([question, answer], index) => ({ question, answer, index }));
-    const query = search.trim().toLowerCase();
-    if (!query) return all;
-    return all.filter(({ question }) => question.toLowerCase().includes(query));
-  }, [search, focusIndex]);
-
   const wrapperStyle = darkMode
     ? { background: '#222', color: '#fff', padding: 16, borderRadius: 10 }
     : undefined;
 
-  const items = filteredTopics.map(({ question, answer, index }) => {
-    const isBookmarked = bookmarks.includes(index);
-    const isViewed = viewed.includes(index);
-    return {
-      key: String(index),
-      label: (
-        <Space wrap>
-          <Text strong style={darkMode ? { color: '#fff' } : undefined}>
-            {index + 1}️⃣ {question}
-          </Text>
-          {isBookmarked && <StarFilled style={{ color: 'gold' }} />}
-          {isViewed && <QuestionCircleOutlined style={{ color: 'green' }} />}
-        </Space>
-      ),
-      extra: (
-        <Button
-          size="small"
-          icon={isBookmarked ? <StarFilled style={{ color: 'gold' }} /> : <StarOutlined />}
-          onClick={(e) => {
-            e.stopPropagation();
-            toggleBookmark(index);
-          }}
-        >
-          {isBookmarked ? 'Remove Bookmark' : 'Bookmark'}
-        </Button>
-      ),
-      children: (
-        <>
-          <AnswerBody raw={answer} darkMode={darkMode} />
-          <Button onClick={() => copyAnswer(answer)}>Copy</Button>
-        </>
-      ),
-    };
-  });
+  const activeIndex = Number(activeKey);
+  const [activeQuestion, activeAnswer] = topics[activeIndex] ?? topics[0];
+  const isBookmarked = bookmarks.includes(activeIndex);
 
   return (
     <PageLayout
       title="📌 Node.js Tutorial"
       subtitle="Node.js tutorial — questions and answers, from the runtime basics to WebSockets and deployment."
+      sidebar={
+        <DetailSidebar items={filteredSidebarItems} activeKey={activeKey} onSelect={setActiveKey} />
+      }
     >
       <Space orientation="vertical" size="middle" style={{ width: '100%', marginBottom: 24 }}>
         <Input
@@ -258,10 +222,7 @@ export default function NodeTutorial() {
           size="large"
           placeholder="🔍 Search topics..."
           value={search}
-          onChange={(e) => {
-            setSearch(e.target.value);
-            setFocusIndex(null);
-          }}
+          onChange={(e) => setSearch(e.target.value)}
           allowClear
         />
         <Space wrap style={{ justifyContent: 'center', width: '100%' }}>
@@ -276,8 +237,22 @@ export default function NodeTutorial() {
       </Space>
 
       <div style={wrapperStyle}>
-        <Collapse activeKey={activeKeys} onChange={handlePanelChange} items={items} />
+        <Space style={{ justifyContent: 'space-between', width: '100%' }} align="start" wrap>
+          <Title level={3} style={darkMode ? { color: '#fff' } : undefined}>
+            {activeIndex + 1}. {activeQuestion}
+          </Title>
+          <Button
+            icon={isBookmarked ? <StarFilled style={{ color: 'gold' }} /> : <StarOutlined />}
+            onClick={() => toggleBookmark(activeIndex)}
+          >
+            {isBookmarked ? 'Remove Bookmark' : 'Bookmark'}
+          </Button>
+        </Space>
+        <AnswerBody raw={activeAnswer} darkMode={darkMode} />
+        <Button onClick={() => copyAnswer(activeAnswer)}>Copy</Button>
       </div>
+
+      <AskAi context={askAiContext} />
 
       <Paragraph style={{ textAlign: 'center', marginTop: 24 }}>
         <Space wrap style={{ justifyContent: 'center' }}>

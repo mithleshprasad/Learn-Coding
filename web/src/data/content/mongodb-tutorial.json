@@ -73,5 +73,55 @@
     "id": 14,
     "question": "What is Replication in MongoDB?",
     "answer": "Replication ensures high availability by maintaining multiple copies of data."
+  },
+  {
+    "id": 15,
+    "question": "How Do You Design Effective Compound Indexes and Reason About Index Selectivity?",
+    "answer": "A **compound index** covers multiple fields in a single index, and field order matters enormously: MongoDB follows the **ESR rule** — put Equality fields first, then Sort fields, then Range fields. For example, an index `{status: 1, createdAt: -1, score: 1}` efficiently serves a query that filters `status: 'active'` (equality), sorts by `createdAt` (sort), and ranges on `score`. **Selectivity** measures how well a field narrows down results — a field like `email` (mostly unique values) is highly selective and makes a great index prefix, while a field like `isActive` (only two possible values) is poorly selective and should never lead a compound index, since it barely reduces the scanned document set. A **covered query** is the ultimate win: if every field the query needs (both in the filter and the projection) exists in the index, MongoDB can answer entirely from the index structure without ever touching the underlying documents, which is dramatically faster."
+  },
+  {
+    "id": 16,
+    "question": "How Does `$lookup` Perform Joins in MongoDB's Aggregation Framework?",
+    "answer": "`$lookup` performs a **left outer join** against another collection in the same database, matching a field from the input documents against a field in the foreign collection and adding the matches as an array field. It's commonly used to denormalize related data at query time instead of duplicating it everywhere. The basic form does an equality join (`localField`/`foreignField`), while the pipeline form (using a `let` and an inner `pipeline`) supports multi-condition joins, filtering the joined documents, and even running sub-aggregations. Because `$lookup` can be expensive at scale — it's effectively a per-document lookup against another collection — it should be placed after `$match` stages that shrink the input set, and the `foreignField` should ideally be indexed."
+  },
+  {
+    "id": 17,
+    "question": "What Do `$facet` and `$bucket`/`$bucketAuto` Do in an Aggregation Pipeline?",
+    "answer": "`$facet` runs **multiple independent sub-pipelines** against the same set of input documents in a single aggregation call, returning each sub-pipeline's results as a named array in one document — this is exactly how a product listing page computes results, a total count, and filter facets (e.g., price ranges, categories) in one round trip instead of three separate queries. `$bucket` groups incoming documents into ranges you define explicitly (e.g., price buckets of `0-50`, `50-100`, `100+`) and counts or aggregates within each. `$bucketAuto` does the same but lets MongoDB determine bucket boundaries automatically to distribute documents as evenly as possible across a requested number of buckets — useful for building histograms without knowing the data distribution up front."
+  },
+  {
+    "id": 18,
+    "question": "Embedding vs. Referencing: How Do You Decide on Schema Design and When Should You Denormalize?",
+    "answer": "The core trade-off is **read pattern vs. write pattern and document growth**. Embed related data directly in a document when it's read together, doesn't grow without bound, and doesn't need to be queried independently — e.g., embedding a shipping address inside an order. Reference (store an `_id` and query separately, optionally with `$lookup`) when the related data is large, updated independently, shared across many parent documents, or could grow unboundedly (e.g., comments on a viral post). **Denormalizing** — duplicating a piece of data (like a user's display name) into many documents — trades storage and update complexity (you must update every copy, often via a background job or eventual consistency) for read performance, since it avoids a join at read time. The rule of thumb from MongoDB's own guidance: model around your application's access patterns, not around normalized relational theory."
+  },
+  {
+    "id": 19,
+    "question": "What Are Multi-Document ACID Transactions in MongoDB, and When Do You Actually Need Them?",
+    "answer": "Since MongoDB 4.0 (replica sets) and 4.2 (sharded clusters), MongoDB supports **multi-document ACID transactions**, letting you group multiple reads/writes across multiple documents — even multiple collections — into a single atomic unit via `session.startTransaction()` / `commitTransaction()`. A single-document write is *already* atomic in MongoDB by default, so transactions are only needed when an operation must atomically touch **more than one document**, such as transferring funds between two account documents where both the debit and credit must succeed or fail together. Because transactions carry a performance cost (locking, additional replication overhead) and encourage a more relational mindset, the general guidance is to prefer schema designs (embedding) that avoid needing them, and reach for transactions only for genuinely cross-document invariants like financial ledgers or inventory reservations."
+  },
+  {
+    "id": 20,
+    "question": "How Do You Pick a Good Shard Key, and What Is Hotspotting?",
+    "answer": "**Sharding** partitions a collection's data across multiple servers (shards) to scale horizontally past a single machine's capacity. The **shard key** — a field or combination of fields chosen at collection creation — determines how documents are distributed, so choosing it well is one of the most consequential decisions in a MongoDB deployment, since it's very costly to change later. A good shard key has **high cardinality** (many distinct values), **even distribution** (no single value dominates), and matches your query patterns so most queries can be routed to a single shard rather than broadcast to all of them. **Hotspotting** happens when a poorly chosen key — like a monotonically increasing field such as `createdAt` or an auto-incrementing `_id` — causes all new writes to land on the same shard (the one holding the current highest range), overloading it while other shards sit idle. A common fix is a **hashed shard key** or a compound key that combines a coarse, evenly-distributed prefix (like a `region` or hashed user ID) with the naturally incrementing field."
+  },
+  {
+    "id": 21,
+    "question": "What Are Replica Set Read Preference Modes, and What Consistency Trade-offs Do They Involve?",
+    "answer": "A **replica set** keeps multiple copies of data across a primary and several secondaries for high availability and failover. **Read preference** controls which member of the set serves a given read. `primary` (the default) always reads from the primary, guaranteeing strongly consistent, up-to-date reads. `primaryPreferred` reads from the primary when available but falls back to a secondary during failover. `secondary` and `secondaryPreferred` route reads to secondaries to offload the primary, at the cost of **eventual consistency** — secondaries apply the replication oplog asynchronously, so a read can return slightly stale data. `nearest` picks whichever member has the lowest network latency, useful for geographically distributed read replicas. Choosing `secondaryPreferred` for read-heavy, tolerant-of-staleness workloads (like analytics dashboards) while keeping `primary` for anything requiring read-your-own-write consistency is a common production pattern."
+  },
+  {
+    "id": 22,
+    "question": "How Do You Use `.explain()` and the Database Profiler to Diagnose a Slow Query?",
+    "answer": "`db.collection.find(query).explain('executionStats')` reveals exactly how MongoDB executed a query: whether it used an index (`IXSCAN`) or scanned every document (`COLLSCAN`), how many documents it examined (`totalDocsExamined`) versus how many it actually returned (`nReturned`), and the execution time. A healthy query has `totalDocsExamined` close to `nReturned`; a large gap signals a missing or ineffective index. The **database profiler** (`db.setProfilingLevel(1, {slowms: 100})`) logs all operations slower than a threshold into the `system.profile` collection, which is invaluable for catching slow queries in production that you didn't think to `.explain()` manually — you query `system.profile` afterward to find the worst offenders. Together, `.explain()` diagnoses a specific query you suspect, while the profiler surfaces slow queries you didn't know existed."
+  },
+  {
+    "id": 23,
+    "question": "What Is the `mongodump`/`mongorestore` Backup Workflow, and What Are Its Limits?",
+    "answer": "`mongodump` exports a binary (BSON) snapshot of a database or collection to disk, and `mongorestore` loads that snapshot back into a MongoDB instance — the standard logical backup/restore workflow for smaller deployments or migrating data between environments. Running `mongodump --oplog` against a replica set captures the oplog during the dump so the restore can be replayed to a **consistent point in time**, even though the dump itself takes nonzero time against a live, changing dataset. For large production clusters, logical dumps become slow and resource-intensive, which is why teams typically move to **filesystem or block-level snapshots** (e.g., via the underlying cloud provider's volume snapshot feature, or MongoDB Atlas's continuous backups) for fast, consistent backups, reserving `mongodump`/`mongorestore` for smaller datasets, exports, or copying a subset of data between environments."
+  },
+  {
+    "id": 24,
+    "question": "What Are Time-Series Collections and Change Streams Used For?",
+    "answer": "**Time-series collections** (introduced in MongoDB 5.0) are a specialized collection type purpose-built for timestamped data — sensor readings, metrics, financial ticks — that automatically organizes documents internally by time and metadata for far better storage efficiency (via columnar-style compression) and faster range queries than storing the same data in a regular collection. You create one with `db.createCollection('readings', {timeseries: {timeField: 'ts', metaField: 'sensorId'}})`. **Change streams** let an application subscribe to real-time, ordered changes (inserts, updates, deletes) on a collection, database, or whole deployment, using the same underlying oplog that powers replication — without polling. They're the backbone of reactive features like live dashboards, cache invalidation, or triggering downstream workflows (e.g., syncing to a search index) the instant data changes, and — unlike a naive polling loop — they resume cleanly from a saved `resumeToken` after a disconnect, so no changes are missed."
   }
 ]

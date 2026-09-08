@@ -1,30 +1,37 @@
 import { useMemo, useState } from 'react';
-import { Collapse, Input, Typography } from 'antd';
+import { Typography, Input } from 'antd';
 import PageLayout from '../components/PageLayout.jsx';
+import DetailSidebar from '../components/DetailSidebar.jsx';
+import AskAi from '../components/AskAi.jsx';
 import questions from '../data/content/hr-questions.json';
 
-const { Paragraph } = Typography;
+const { Paragraph, Title } = Typography;
 
 export default function HrQuestions() {
   const [search, setSearch] = useState('');
-  const [activeKey, setActiveKey] = useState();
+  const [activeKey, setActiveKey] = useState('0');
 
-  const filteredQuestions = useMemo(() => {
-    const query = search.toLowerCase();
-    if (!query) return questions;
-    return questions.filter((q) => q.question.toLowerCase().includes(query));
-  }, [search]);
+  const sidebarItems = useMemo(
+    () => questions.map((q) => ({ key: String(q.id), label: q.question })),
+    [],
+  );
 
-  const items = filteredQuestions.map((q) => ({
-    key: String(q.id),
-    label: <strong>{q.question}</strong>,
-    children: <Paragraph style={{ marginBottom: 0 }}>{q.answer}</Paragraph>,
-  }));
+  const filteredSidebarItems = useMemo(() => {
+    const query = search.trim().toLowerCase();
+    if (!query) return sidebarItems;
+    return sidebarItems.filter((item) => item.label.toLowerCase().includes(query));
+  }, [sidebarItems, search]);
+
+  const activeIndex = Number(activeKey);
+  const activeQuestion = questions[activeIndex] ?? questions[0];
 
   return (
     <PageLayout
       title="📌 HR Interview Questions & Answers"
       subtitle="Prepare for your next interview with common HR questions and sample answers."
+      sidebar={
+        <DetailSidebar items={filteredSidebarItems} activeKey={activeKey} onSelect={setActiveKey} />
+      }
     >
       <Input
         size="large"
@@ -35,12 +42,10 @@ export default function HrQuestions() {
         style={{ marginBottom: 24 }}
       />
 
-      <Collapse
-        accordion
-        activeKey={activeKey}
-        onChange={(key) => setActiveKey(key)}
-        items={items}
-      />
+      <Title level={3}>{activeQuestion.question}</Title>
+      <Paragraph style={{ marginBottom: 0 }}>{activeQuestion.answer}</Paragraph>
+
+      <AskAi context={questions} />
     </PageLayout>
   );
 }

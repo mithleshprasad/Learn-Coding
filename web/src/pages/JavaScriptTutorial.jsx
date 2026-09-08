@@ -1,12 +1,14 @@
 import { useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Button, Collapse, Input, Modal, Space, Typography, message } from 'antd';
+import { Button, Input, Modal, Space, Typography, message } from 'antd';
 import { MoonOutlined } from '@ant-design/icons';
 import PageLayout from '../components/PageLayout.jsx';
 import CodeBlock from '../components/CodeBlock.jsx';
+import DetailSidebar from '../components/DetailSidebar.jsx';
+import AskAi from '../components/AskAi.jsx';
 import topics from '../data/content/javascript-tutorial.json';
 
-const { Paragraph, Text } = Typography;
+const { Paragraph, Title } = Typography;
 const { TextArea } = Input;
 
 // `topics` (imported above) holds [title, runnable code] pairs, ported
@@ -55,6 +57,23 @@ export default function JavaScriptTutorial() {
   const [search, setSearch] = useState('');
   const [darkMode, setDarkMode] = useState(() => loadJson(DARK_MODE_KEY, false));
   const [codeValues, setCodeValues] = useState(() => topics.map(([, code]) => code));
+  const [activeKey, setActiveKey] = useState('0');
+
+  const sidebarItems = useMemo(
+    () => topics.map(([title], index) => ({ key: String(index), label: `${index + 1}. ${title}` })),
+    [],
+  );
+
+  const filteredSidebarItems = useMemo(() => {
+    const query = search.trim().toLowerCase();
+    if (!query) return sidebarItems;
+    return sidebarItems.filter((item) => item.label.toLowerCase().includes(query));
+  }, [sidebarItems, search]);
+
+  const askAiContext = useMemo(
+    () => topics.map(([title, code]) => ({ question: title, description: code })),
+    [],
+  );
 
   const toggleDarkMode = () => {
     setDarkMode((d) => {
@@ -84,57 +103,20 @@ export default function JavaScriptTutorial() {
     }
   };
 
-  const filteredTopics = useMemo(() => {
-    const query = search.trim().toLowerCase();
-    const all = topics.map(([title], index) => ({ title, index }));
-    if (!query) return all;
-    return all.filter(({ title }) => title.toLowerCase().includes(query));
-  }, [search]);
-
   const wrapperStyle = darkMode
     ? { background: '#222', color: '#fff', padding: 16, borderRadius: 10 }
     : undefined;
 
-  const items = filteredTopics.map(({ title, index }) => ({
-    key: String(index),
-    label: (
-      <Text strong style={darkMode ? { color: '#fff' } : undefined}>
-        {index + 1}️⃣ {title}
-      </Text>
-    ),
-    children: (
-      <>
-        <CodeBlock language="javascript" code={topics[index][1]} />
-        <Paragraph style={darkMode ? { color: '#fff' } : undefined}>
-          Tweak it below, then hit Run to see it fire live:
-        </Paragraph>
-        <TextArea
-          value={codeValues[index]}
-          onChange={(e) => {
-            const value = e.target.value;
-            setCodeValues((prev) => prev.map((c, i) => (i === index ? value : c)));
-          }}
-          autoSize={{ minRows: 3, maxRows: 10 }}
-          style={{ fontFamily: 'monospace', marginBottom: 12 }}
-        />
-        <Space>
-          <Button
-            type="primary"
-            style={{ background: '#008CBA', borderColor: '#008CBA' }}
-            onClick={() => runCode(index)}
-          >
-            Run
-          </Button>
-          <Button onClick={() => copyCode(index)}>Copy</Button>
-        </Space>
-      </>
-    ),
-  }));
+  const activeIndex = Number(activeKey);
+  const [activeTitle] = topics[activeIndex] ?? topics[0];
 
   return (
     <PageLayout
       title="📌 JavaScript Tutorial"
       subtitle="40 bite-sized, runnable JavaScript snippets — variables to classes, promises and beyond."
+      sidebar={
+        <DetailSidebar items={filteredSidebarItems} activeKey={activeKey} onSelect={setActiveKey} />
+      }
     >
       <Space orientation="vertical" size="middle" style={{ width: '100%', marginBottom: 24 }}>
         <Input
@@ -152,8 +134,35 @@ export default function JavaScriptTutorial() {
       </Space>
 
       <div style={wrapperStyle}>
-        <Collapse items={items} />
+        <Title level={3} style={darkMode ? { color: '#fff' } : undefined}>
+          {activeIndex + 1}. {activeTitle}
+        </Title>
+        <CodeBlock language="javascript" code={topics[activeIndex][1]} />
+        <Paragraph style={darkMode ? { color: '#fff' } : undefined}>
+          Tweak it below, then hit Run to see it fire live:
+        </Paragraph>
+        <TextArea
+          value={codeValues[activeIndex]}
+          onChange={(e) => {
+            const value = e.target.value;
+            setCodeValues((prev) => prev.map((c, i) => (i === activeIndex ? value : c)));
+          }}
+          autoSize={{ minRows: 3, maxRows: 10 }}
+          style={{ fontFamily: 'monospace', marginBottom: 12 }}
+        />
+        <Space>
+          <Button
+            type="primary"
+            style={{ background: '#008CBA', borderColor: '#008CBA' }}
+            onClick={() => runCode(activeIndex)}
+          >
+            Run
+          </Button>
+          <Button onClick={() => copyCode(activeIndex)}>Copy</Button>
+        </Space>
       </div>
+
+      <AskAi context={askAiContext} />
 
       <Paragraph style={{ textAlign: 'center', marginTop: 24 }}>
         <Space wrap style={{ justifyContent: 'center' }}>

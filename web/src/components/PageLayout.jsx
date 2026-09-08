@@ -7,10 +7,12 @@ const { Title, Paragraph } = Typography;
 
 /**
  * Shared shell for content/tutorial/visualizer pages: header, a navy title
- * band, a white content container, and the footer. `wide` widens the
- * content container for pages with canvases/wide tables (visualizers).
+ * band, a content container, and the footer. `wide` widens the content
+ * container for pages with canvases/wide tables (visualizers). `sidebar`
+ * adds a sticky GFG-style left rail (see DetailSidebar) next to the content
+ * for pages with many jump-to sections, e.g. long Q&A tutorial pages.
  */
-export default function PageLayout({ title, subtitle, wide = false, children }) {
+export default function PageLayout({ title, subtitle, wide = false, sidebar, children }) {
   const widthClass = wide ? 'page-content-wide' : '';
   return (
     <>
@@ -23,7 +25,14 @@ export default function PageLayout({ title, subtitle, wide = false, children }) 
           {subtitle ? <Paragraph className="page-banner-subtitle">{subtitle}</Paragraph> : null}
         </div>
       </section>
-      <main className={`page-content ${widthClass}`}>{children}</main>
+      {sidebar ? (
+        <div className={`page-body-with-sidebar ${widthClass}`}>
+          <aside className="page-sidebar">{sidebar}</aside>
+          <main className="page-content-inline">{children}</main>
+        </div>
+      ) : (
+        <main className={`page-content ${widthClass}`}>{children}</main>
+      )}
       <SiteFooter />
     </>
   );

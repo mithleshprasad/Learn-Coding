@@ -1,18 +1,14 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Button, Collapse, Input, Space, Typography, message } from 'antd';
-import {
-  CheckCircleFilled,
-  DownloadOutlined,
-  MoonOutlined,
-  StarFilled,
-  StarOutlined,
-} from '@ant-design/icons';
+import { Button, Input, Space, Typography, message } from 'antd';
+import { DownloadOutlined, MoonOutlined, StarFilled, StarOutlined } from '@ant-design/icons';
 import PageLayout from '../components/PageLayout.jsx';
 import CodeBlock from '../components/CodeBlock.jsx';
+import DetailSidebar from '../components/DetailSidebar.jsx';
+import AskAi from '../components/AskAi.jsx';
 import topics from '../data/content/html-tutorial.json';
 
-const { Paragraph, Text } = Typography;
+const { Paragraph, Title } = Typography;
 
 const BOOKMARKS_KEY = 'htmlTutorial.bookmarkedQuestions';
 const VIEWED_KEY = 'htmlTutorial.viewedQuestions';
@@ -32,7 +28,7 @@ export default function HtmlTutorial() {
   const [darkMode, setDarkMode] = useState(() => loadJson(DARK_MODE_KEY, false));
   const [bookmarks, setBookmarks] = useState(() => loadJson(BOOKMARKS_KEY, []));
   const [viewed, setViewed] = useState(() => loadJson(VIEWED_KEY, []));
-  const [activeKeys, setActiveKeys] = useState([]);
+  const [activeKey, setActiveKey] = useState('0');
   const searchInputRef = useRef(null);
 
   useEffect(() => {
@@ -47,9 +43,10 @@ export default function HtmlTutorial() {
     localStorage.setItem(DARK_MODE_KEY, JSON.stringify(darkMode));
   }, [darkMode]);
 
-  const markViewed = useCallback((id) => {
+  useEffect(() => {
+    const id = Number(activeKey);
     setViewed((prev) => (prev.includes(id) ? prev : [...prev, id]));
-  }, []);
+  }, [activeKey]);
 
   const toggleBookmark = useCallback((id) => {
     setBookmarks((prev) => {
@@ -62,13 +59,16 @@ export default function HtmlTutorial() {
     });
   }, []);
 
-  const handlePanelChange = useCallback(
-    (keys) => {
-      setActiveKeys(keys);
-      keys.forEach((key) => markViewed(Number(key)));
-    },
-    [markViewed],
+  const sidebarItems = useMemo(
+    () => topics.map((t) => ({ key: String(t.id), label: `${t.id + 1}. ${t.question}` })),
+    [],
   );
+
+  const filteredSidebarItems = useMemo(() => {
+    const query = search.trim().toLowerCase();
+    if (!query) return sidebarItems;
+    return sidebarItems.filter((item) => item.label.toLowerCase().includes(query));
+  }, [sidebarItems, search]);
 
   const copyCode = useCallback(async (code) => {
     try {
@@ -93,10 +93,9 @@ export default function HtmlTutorial() {
   const showRandomQuestion = useCallback(() => {
     const randomIndex = Math.floor(Math.random() * topics.length);
     setSearch('');
-    setActiveKeys([String(randomIndex)]);
-    markViewed(randomIndex);
+    setActiveKey(String(randomIndex));
     message.info(`Showing Question ${randomIndex + 1}`);
-  }, [markViewed]);
+  }, []);
 
   const exportQuestions = useCallback(() => {
     const data = topics.map(({ question, description, note }) => ({
@@ -134,68 +133,21 @@ export default function HtmlTutorial() {
     return () => document.removeEventListener('keydown', handleKeyDown);
   }, [showRandomQuestion, exportQuestions]);
 
-  const filteredTopics = useMemo(() => {
-    const query = search.toLowerCase();
-    if (!query) return topics;
-    return topics.filter(
-      (t) =>
-        t.question.toLowerCase().includes(query) ||
-        t.description.toLowerCase().includes(query),
-    );
-  }, [search]);
-
   const wrapperStyle = darkMode
     ? { background: '#222', color: '#fff', padding: 16, borderRadius: 10 }
     : undefined;
 
-  const items = filteredTopics.map((topic) => {
-    const isBookmarked = bookmarks.includes(topic.id);
-    const isViewed = viewed.includes(topic.id);
-    return {
-      key: String(topic.id),
-      label: (
-        <Space wrap>
-          <Text strong style={darkMode ? { color: '#fff' } : undefined}>
-            {topic.id + 1}️⃣ {topic.question}
-          </Text>
-          {isBookmarked && <StarFilled style={{ color: 'gold' }} />}
-          {isViewed && <CheckCircleFilled style={{ color: 'green' }} />}
-        </Space>
-      ),
-      extra: (
-        <Button
-          size="small"
-          icon={isBookmarked ? <StarFilled style={{ color: 'gold' }} /> : <StarOutlined />}
-          onClick={(e) => {
-            e.stopPropagation();
-            toggleBookmark(topic.id);
-          }}
-        >
-          {isBookmarked ? 'Remove Bookmark' : 'Bookmark'}
-        </Button>
-      ),
-      children: (
-        <>
-          <Paragraph style={darkMode ? { color: '#fff' } : undefined}>
-            {topic.description}
-          </Paragraph>
-          <CodeBlock language="html" code={topic.code} />
-          <Paragraph style={darkMode ? { color: '#fff' } : undefined}>{topic.note}</Paragraph>
-          <Space>
-            <Button type="primary" style={{ background: '#28a745', borderColor: '#28a745' }} onClick={() => runCode(topic.code)}>
-              Run
-            </Button>
-            <Button onClick={() => copyCode(topic.code)}>Copy</Button>
-          </Space>
-        </>
-      ),
-    };
-  });
+  const activeIndex = Number(activeKey);
+  const activeTopic = topics[activeIndex] ?? topics[0];
+  const isBookmarked = bookmarks.includes(activeTopic.id);
 
   return (
     <PageLayout
       title="📌 HTML Tutorial - Questions & Answers"
       subtitle="Master HTML and create well-structured web pages."
+      sidebar={
+        <DetailSidebar items={filteredSidebarItems} activeKey={activeKey} onSelect={setActiveKey} />
+      }
     >
       <Space orientation="vertical" size="middle" style={{ width: '100%', marginBottom: 24 }}>
         <Input
@@ -218,8 +170,33 @@ export default function HtmlTutorial() {
       </Space>
 
       <div style={wrapperStyle}>
-        <Collapse activeKey={activeKeys} onChange={handlePanelChange} items={items} />
+        <Space style={{ justifyContent: 'space-between', width: '100%' }} align="start" wrap>
+          <Title level={3} style={darkMode ? { color: '#fff' } : undefined}>
+            {activeTopic.id + 1}. {activeTopic.question}
+          </Title>
+          <Button
+            icon={isBookmarked ? <StarFilled style={{ color: 'gold' }} /> : <StarOutlined />}
+            onClick={() => toggleBookmark(activeTopic.id)}
+          >
+            {isBookmarked ? 'Remove Bookmark' : 'Bookmark'}
+          </Button>
+        </Space>
+        <Paragraph style={darkMode ? { color: '#fff' } : undefined}>{activeTopic.description}</Paragraph>
+        <CodeBlock language="html" code={activeTopic.code} />
+        <Paragraph style={darkMode ? { color: '#fff' } : undefined}>{activeTopic.note}</Paragraph>
+        <Space>
+          <Button
+            type="primary"
+            style={{ background: '#28a745', borderColor: '#28a745' }}
+            onClick={() => runCode(activeTopic.code)}
+          >
+            Run
+          </Button>
+          <Button onClick={() => copyCode(activeTopic.code)}>Copy</Button>
+        </Space>
       </div>
+
+      <AskAi context={topics} />
 
       <Paragraph style={{ textAlign: 'center', marginTop: 24 }}>
         <Link to="/">
