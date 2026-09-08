@@ -29,3 +29,9 @@
   border-radius: 6px;
   color: #c9d1d9;
 }
+
+.ask-ai-saved {
+  display: block;
+  margin-top: 10px;
+  font-size: 12px;
+}

@@ -13,6 +13,8 @@ const customStyle = {
   padding: '16px 20px',
   fontSize: 14,
   margin: '16px 0',
+  overflowX: 'auto',
+  maxWidth: '100%',
 };
 
 export default function CodeBlock({ code, language = 'javascript' }) {

@@ -74,6 +74,7 @@
   align-items: flex-start;
   gap: 32px;
   max-width: 860px;
+  min-width: 0;
   margin: 0 auto;
   padding: 32px 20px 60px;
 }
@@ -107,14 +108,29 @@
 @media (max-width: 900px) {
   /* The sidebar is now the only way to pick a question (the main pane shows
      just the active one), so it has to stay reachable on narrow screens —
-     stack it above the content instead of hiding it. */
+     stack it above the content instead of hiding it. `align-items` was
+     `flex-start` for the desktop row layout; left as-is here it makes both
+     children shrink-to-fit instead of spanning full width once the axis
+     flips to column, so wide content (a code block) pushes the whole page
+     into horizontal scroll. `stretch` forces full width in both directions. */
   .page-body-with-sidebar {
+    /* `margin: 0 auto` (for desktop centering) gives this element auto
+       horizontal margins, which per spec win out over `align-items:
+       stretch` on its own cross axis as a flex child of #root — so it
+       was shrink-to-fitting its content instead of filling the viewport.
+       An explicit width forces the fill regardless of that interaction. */
+    width: 100%;
     flex-direction: column;
+    align-items: stretch;
   }
 
   .page-sidebar {
     position: static;
     width: 100%;
     max-height: 60vh;
+  }
+
+  .page-content-inline {
+    width: 100%;
   }
 }
