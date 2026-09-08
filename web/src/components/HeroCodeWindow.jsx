@@ -7,7 +7,10 @@ import './HeroCodeWindow.css';
 SyntaxHighlighter.registerLanguage('javascript', javascript);
 
 const SNIPPET = `// Welcome to Learn Coding
-const skills = ['HTML', 'CSS', 'JavaScript', 'React', 'Node.js'];
+const skills = [
+  'HTML', 'CSS', 'JS',
+  'React', 'Node.js',
+];
 
 function masterCoding() {
   return skills.map(
@@ -51,7 +54,15 @@ export default function HeroCodeWindow() {
         <SyntaxHighlighter
           language="javascript"
           style={vscDarkPlus}
-          customStyle={{ background: 'transparent', padding: 0, margin: 0, fontSize: 14 }}
+          customStyle={{
+            background: 'transparent',
+            padding: 0,
+            margin: 0,
+            fontSize: 14,
+            overflowX: 'hidden',
+            whiteSpace: 'pre-wrap',
+            wordBreak: 'break-word',
+          }}
         >
           {displayed}
         </SyntaxHighlighter>
