@@ -1,1 +1,274 @@
-[]
+[
+  {
+    "key": "implement-trie",
+    "number": 56,
+    "title": "Implement Trie (Prefix Tree)",
+    "difficulty": "Medium",
+    "statement": "A **trie** (pronounced \"try\", from re**trie**val) is a tree-like data structure used to efficiently store and search a dynamic set of strings, most commonly for prefix-based lookups such as autocomplete.\n\nImplement the `Trie` class:\n- `Trie()` initializes the trie object.\n- `insert(word)` inserts the string `word` into the trie.\n- `search(word)` returns `true` if `word` was previously inserted into the trie (as a complete word), and `false` otherwise.\n- `startsWith(prefix)` returns `true` if any previously inserted word has `prefix` as a prefix, and `false` otherwise.",
+    "examples": [
+      {
+        "input": "[\"Trie\",\"insert\",\"search\",\"search\",\"startsWith\",\"insert\",\"search\"]\n[[],[\"apple\"],[\"apple\"],[\"app\"],[\"app\"],[\"app\"],[\"app\"]]",
+        "output": "[null,null,true,false,true,null,true]",
+        "explanation": "insert(\"apple\"); search(\"apple\") -> true; search(\"app\") -> false (\"app\" was never inserted as a complete word); startsWith(\"app\") -> true (\"apple\" starts with \"app\"); insert(\"app\"); search(\"app\") -> true."
+      }
+    ],
+    "constraints": [
+      "1 <= word.length, prefix.length <= 2000",
+      "word and prefix consist only of lowercase English letters.",
+      "At most 3 * 10^4 calls in total will be made to insert, search, and startsWith."
+    ],
+    "hints": [
+      "Checking a list of all inserted words against every search/startsWith call would be slow once many words are stored — you need a structure where shared prefixes share work.",
+      "Think of each node representing one character; a word is a path from the root. Nodes can have up to 26 children (one per letter) and a flag marking 'a word ends here'.",
+      "`search` needs to walk the path AND check the end-of-word flag on the final node; `startsWith` only needs the path to exist — the flag doesn't matter."
+    ],
+    "solution": {
+      "approach": "Represent the trie as a tree of nodes, where each node holds a map/object of child nodes keyed by character, plus a boolean flag marking whether a complete word ends at that node. `insert(word)` walks the tree one character at a time, creating child nodes as needed, and marks the final node's flag `true`. Both `search` and `startsWith` walk the same way and fail fast (return false) the moment a required character link doesn't exist — the difference is that `search` additionally requires the final node's end-of-word flag to be set, while `startsWith` only cares that the path exists. Sharing structure this way means every word with a common prefix reuses the same nodes, so lookups only cost as much as the length of the string being checked, regardless of how many words are stored.",
+      "language": "javascript",
+      "code": "class Trie {\n  constructor() {\n    this.children = {};\n    this.isEnd = false;\n  }\n\n  insert(word) {\n    let node = this;\n    for (const ch of word) {\n      if (!node.children[ch]) {\n        node.children[ch] = new Trie();\n      }\n      node = node.children[ch];\n    }\n    node.isEnd = true;\n  }\n\n  search(word) {\n    const node = this._traverse(word);\n    return node !== null && node.isEnd === true;\n  }\n\n  startsWith(prefix) {\n    return this._traverse(prefix) !== null;\n  }\n\n  _traverse(word) {\n    let node = this;\n    for (const ch of word) {\n      if (!node.children[ch]) return null;\n      node = node.children[ch];\n    }\n    return node;\n  }\n}",
+      "timeComplexity": "O(L) for insert, search, and startsWith, where L is the length of the word/prefix being processed — each does one pass over its characters.",
+      "spaceComplexity": "O(N * L) in the worst case, where N is the number of inserted words and L is their average length, since each new word may add up to L new nodes."
+    },
+    "functionName": "trieJudge",
+    "starterCode": "class Trie {\n  constructor() {\n    // your code here\n  }\n\n  insert(word) {\n    // your code here\n  }\n\n  search(word) {\n    // your code here\n  }\n\n  startsWith(prefix) {\n    // your code here\n  }\n}\n\nfunction trieJudge(ops, argsList) {\n  const results = [];\n  let obj = null;\n  for (let i = 0; i < ops.length; i++) {\n    const op = ops[i];\n    const opArgs = argsList[i];\n    if (op === \"Trie\") {\n      obj = new Trie();\n      results.push(null);\n    } else if (op === \"insert\") {\n      obj.insert(opArgs[0]);\n      results.push(null);\n    } else if (op === \"search\") {\n      results.push(obj.search(opArgs[0]));\n    } else if (op === \"startsWith\") {\n      results.push(obj.startsWith(opArgs[0]));\n    }\n  }\n  return results;\n}",
+    "testCases": [
+      {
+        "args": [
+          [
+            "Trie",
+            "insert",
+            "search",
+            "search",
+            "startsWith",
+            "insert",
+            "search"
+          ],
+          [
+            [],
+            [
+              "apple"
+            ],
+            [
+              "apple"
+            ],
+            [
+              "app"
+            ],
+            [
+              "app"
+            ],
+            [
+              "app"
+            ],
+            [
+              "app"
+            ]
+          ]
+        ],
+        "expected": [
+          null,
+          null,
+          true,
+          false,
+          true,
+          null,
+          true
+        ]
+      },
+      {
+        "args": [
+          [
+            "Trie",
+            "search",
+            "startsWith"
+          ],
+          [
+            [],
+            [
+              "a"
+            ],
+            [
+              "a"
+            ]
+          ]
+        ],
+        "expected": [
+          null,
+          false,
+          false
+        ]
+      },
+      {
+        "args": [
+          [
+            "Trie",
+            "insert",
+            "insert",
+            "search",
+            "search",
+            "startsWith",
+            "startsWith",
+            "startsWith"
+          ],
+          [
+            [],
+            [
+              "cat"
+            ],
+            [
+              "car"
+            ],
+            [
+              "cat"
+            ],
+            [
+              "ca"
+            ],
+            [
+              "ca"
+            ],
+            [
+              "cats"
+            ],
+            [
+              "dog"
+            ]
+          ]
+        ],
+        "expected": [
+          null,
+          null,
+          null,
+          true,
+          false,
+          true,
+          false,
+          false
+        ]
+      }
+    ]
+  },
+  {
+    "key": "word-search-ii",
+    "number": 57,
+    "title": "Word Search II",
+    "difficulty": "Hard",
+    "statement": "Given an `m x n` grid of characters `board` and a list of strings `words`, return all words from `words` that can be constructed from letters of sequentially adjacent cells, where adjacent cells are horizontally or vertically neighboring. The same letter cell may not be used more than once within a single word.\n\nWords may be returned in any order — this judge sorts the results before comparing, so the order your code produces doesn't matter.",
+    "examples": [
+      {
+        "input": "board = [[\"o\",\"a\",\"a\",\"n\"],[\"e\",\"t\",\"a\",\"e\"],[\"i\",\"h\",\"k\",\"r\"],[\"i\",\"f\",\"l\",\"v\"]], words = [\"oath\",\"pea\",\"eat\",\"rain\"]",
+        "output": "[\"eat\",\"oath\"]",
+        "explanation": "\"oath\" and \"eat\" can each be traced through adjacent cells; \"pea\" and \"rain\" cannot."
+      },
+      {
+        "input": "board = [[\"a\",\"b\"],[\"c\",\"d\"]], words = [\"abcb\"]",
+        "output": "[]",
+        "explanation": "No path visits the cells in that letter order without reusing a cell."
+      }
+    ],
+    "constraints": [
+      "1 <= board.length, board[i].length <= 12",
+      "board[i][j] is a lowercase English letter.",
+      "1 <= words.length <= 3 * 10^4",
+      "1 <= words[i].length <= 10",
+      "words[i] consists of lowercase English letters.",
+      "All words[i] are unique."
+    ],
+    "hints": [
+      "Searching for each word independently with a fresh DFS over the whole board works, but with many words it repeats the same board exploration over and over — most words share prefixes.",
+      "Combine all the words into a single trie first. Then do one DFS pass per starting cell, walking the trie and the board in lockstep — a path with no matching trie edge can be abandoned immediately.",
+      "Whenever a DFS path lands on a trie node marked 'end of word', you've found a match. Mark visited cells (e.g., temporarily overwrite them) so a word can't reuse a cell, and restore them on backtrack."
+    ],
+    "solution": {
+      "approach": "Build a trie out of every word in `words` so that shared prefixes share the same search work. Then, for every starting cell on the board, run a DFS that walks the board and the trie simultaneously: at each step, look up the current board character as a child edge of the current trie node — if that edge doesn't exist, the path can't spell any remaining word and the DFS backtracks immediately (this is what makes the combined-trie approach far faster than searching each word from scratch). Whenever the DFS reaches a trie node flagged as the end of a word, record that word. Cells are temporarily marked visited (and restored after backtracking) so a single cell is never reused twice within the same word. Once a word is found, its end marker is cleared from the trie so it isn't reported again.",
+      "language": "javascript",
+      "code": "function findWords(board, words) {\n  const root = {};\n  for (const word of words) {\n    let node = root;\n    for (const ch of word) {\n      if (!node[ch]) node[ch] = {};\n      node = node[ch];\n    }\n    node.word = word;\n  }\n\n  const rows = board.length;\n  const cols = board[0].length;\n  const found = [];\n\n  function dfs(r, c, node) {\n    const ch = board[r][c];\n    const next = node[ch];\n    if (!next) return;\n\n    if (next.word) {\n      found.push(next.word);\n      next.word = null; // don't report the same word twice\n    }\n\n    board[r][c] = \"#\"; // mark visited\n    if (r > 0) dfs(r - 1, c, next);\n    if (r < rows - 1) dfs(r + 1, c, next);\n    if (c > 0) dfs(r, c - 1, next);\n    if (c < cols - 1) dfs(r, c + 1, next);\n    board[r][c] = ch; // restore\n  }\n\n  for (let r = 0; r < rows; r++) {\n    for (let c = 0; c < cols; c++) {\n      dfs(r, c, root);\n    }\n  }\n\n  return found;\n}",
+      "timeComplexity": "O(M * 4 * 3^(L-1)) where M is the number of board cells and L is the longest word — each cell starts a DFS that branches into at most 3 new directions per step (never back the way it came); building the trie first costs O(sum of word lengths).",
+      "spaceComplexity": "O(sum of word lengths) for the trie, plus O(L) recursion depth for the DFS."
+    },
+    "functionName": "findWordsJudge",
+    "starterCode": "function findWords(board, words) {\n  const root = {};\n  for (const word of words) {\n    let node = root;\n    for (const ch of word) {\n      if (!node[ch]) node[ch] = {};\n      node = node[ch];\n    }\n    node.word = word;\n  }\n\n  const rows = board.length;\n  const cols = board[0].length;\n  const found = [];\n\n  function dfs(r, c, node) {\n    const ch = board[r][c];\n    const next = node[ch];\n    if (!next) return;\n\n    if (next.word) {\n      found.push(next.word);\n      next.word = null; // don't report the same word twice\n    }\n\n    board[r][c] = \"#\"; // mark visited\n    if (r > 0) dfs(r - 1, c, next);\n    if (r < rows - 1) dfs(r + 1, c, next);\n    if (c > 0) dfs(r, c - 1, next);\n    if (c < cols - 1) dfs(r, c + 1, next);\n    board[r][c] = ch; // restore\n  }\n\n  for (let r = 0; r < rows; r++) {\n    for (let c = 0; c < cols; c++) {\n      dfs(r, c, root);\n    }\n  }\n\n  return found;\n}\n\n// The judge sorts the returned words alphabetically before comparing,\n// so the order you return words in doesn't matter.\nfunction findWordsJudge(board, words) {\n  return findWords(board, words).sort();\n}",
+    "testCases": [
+      {
+        "args": [
+          [
+            [
+              "o",
+              "a",
+              "a",
+              "n"
+            ],
+            [
+              "e",
+              "t",
+              "a",
+              "e"
+            ],
+            [
+              "i",
+              "h",
+              "k",
+              "r"
+            ],
+            [
+              "i",
+              "f",
+              "l",
+              "v"
+            ]
+          ],
+          [
+            "oath",
+            "pea",
+            "eat",
+            "rain"
+          ]
+        ],
+        "expected": [
+          "eat",
+          "oath"
+        ]
+      },
+      {
+        "args": [
+          [
+            [
+              "a",
+              "b"
+            ],
+            [
+              "c",
+              "d"
+            ]
+          ],
+          [
+            "ab",
+            "cd",
+            "ac",
+            "bd",
+            "abcd"
+          ]
+        ],
+        "expected": [
+          "ab",
+          "ac",
+          "bd",
+          "cd"
+        ]
+      },
+      {
+        "args": [
+          [
+            [
+              "a"
+            ]
+          ],
+          [
+            "b"
+          ]
+        ],
+        "expected": []
+      }
+    ]
+  }
+]

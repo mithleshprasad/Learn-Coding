@@ -1,1 +1,376 @@
-[]
+[
+  {
+    "key": "kth-largest-element-in-an-array",
+    "number": 58,
+    "title": "Kth Largest Element in an Array",
+    "difficulty": "Medium",
+    "statement": "Given an integer array `nums` and an integer `k`, return the `k`th largest element in the array.\n\nNote that it is the `k`th largest element in sorted order, not the `k`th distinct element — duplicate values are counted separately.",
+    "examples": [
+      {
+        "input": "nums = [3,2,1,5,6,4], k = 2",
+        "output": "5",
+        "explanation": "Sorted descending: [6,5,4,3,2,1]. The 2nd largest is 5."
+      },
+      {
+        "input": "nums = [3,2,3,1,2,4,5,5,6], k = 4",
+        "output": "4",
+        "explanation": "Sorted descending: [6,5,5,4,3,3,2,2,1]. The 4th largest is 4."
+      }
+    ],
+    "constraints": [
+      "1 <= k <= nums.length <= 10^5",
+      "-10^4 <= nums[i] <= 10^4"
+    ],
+    "hints": [
+      "Sorting the whole array and indexing works but costs O(n log n) — can you avoid fully sorting when you only need one position?",
+      "You only ever need to know the k largest values seen so far, not their exact order. What structure lets you cheaply discard the smallest of a bounded set?",
+      "Keep a min-heap of size k. Push every number; whenever the heap would grow past size k, discard the current minimum instead. After scanning all of `nums`, the heap's minimum (its root) is the k-th largest."
+    ],
+    "solution": {
+      "approach": "Maintain a min-heap that is never allowed to hold more than `k` elements. Scan through `nums`: while the heap has fewer than `k` elements, push freely; once it's full, only replace the heap's minimum (its root) when the current number is larger than it, since a smaller number could never be among the k largest. Because the heap always holds the `k` largest values seen so far, and it's a min-heap, its root is always the smallest of those `k` — which is exactly the k-th largest overall once the whole array has been scanned. This avoids sorting the full array, doing O(n log k) work instead of O(n log n).",
+      "language": "javascript",
+      "code": "function kthLargest(nums, k) {\n  const heap = []; // min-heap of the k largest values seen so far\n\n  function siftUp(i) {\n    while (i > 0) {\n      const parent = (i - 1) >> 1;\n      if (heap[parent] <= heap[i]) break;\n      [heap[parent], heap[i]] = [heap[i], heap[parent]];\n      i = parent;\n    }\n  }\n\n  function siftDown(i) {\n    const n = heap.length;\n    while (true) {\n      let smallest = i;\n      const left = 2 * i + 1;\n      const right = 2 * i + 2;\n      if (left < n && heap[left] < heap[smallest]) smallest = left;\n      if (right < n && heap[right] < heap[smallest]) smallest = right;\n      if (smallest === i) break;\n      [heap[i], heap[smallest]] = [heap[smallest], heap[i]];\n      i = smallest;\n    }\n  }\n\n  for (const num of nums) {\n    if (heap.length < k) {\n      heap.push(num);\n      siftUp(heap.length - 1);\n    } else if (num > heap[0]) {\n      heap[0] = num;\n      siftDown(0);\n    }\n  }\n\n  return heap[0];\n}",
+      "timeComplexity": "O(n log k) — each of the n numbers does at most one O(log k) heap insert/replace.",
+      "spaceComplexity": "O(k) — the heap never holds more than k elements."
+    },
+    "functionName": "kthLargest",
+    "starterCode": "function kthLargest(nums, k) {\n  // your code here\n}",
+    "testCases": [
+      {
+        "args": [
+          [
+            3,
+            2,
+            1,
+            5,
+            6,
+            4
+          ],
+          2
+        ],
+        "expected": 5
+      },
+      {
+        "args": [
+          [
+            3,
+            2,
+            3,
+            1,
+            2,
+            4,
+            5,
+            5,
+            6
+          ],
+          4
+        ],
+        "expected": 4
+      },
+      {
+        "args": [
+          [
+            1
+          ],
+          1
+        ],
+        "expected": 1
+      }
+    ]
+  },
+  {
+    "key": "top-k-frequent-elements",
+    "number": 59,
+    "title": "Top K Frequent Elements",
+    "difficulty": "Medium",
+    "statement": "Given an integer array `nums` and an integer `k`, return the `k` most frequent elements in the array. It is guaranteed that the answer is unique (no ties at the k-th boundary).",
+    "examples": [
+      {
+        "input": "nums = [1,1,1,2,2,3], k = 2",
+        "output": "[1,2]",
+        "explanation": "1 appears 3 times, 2 appears 2 times, 3 appears once — the 2 most frequent are 1 and 2."
+      },
+      {
+        "input": "nums = [1], k = 1",
+        "output": "[1]"
+      }
+    ],
+    "constraints": [
+      "1 <= nums.length <= 10^5",
+      "-10^4 <= nums[i] <= 10^4",
+      "k is in the range [1, the number of distinct elements in nums].",
+      "It is guaranteed that the answer is unique."
+    ],
+    "hints": [
+      "Sorting all distinct values by frequency works but costs O(n log n) — frequencies are bounded integers (at most n), so can you avoid a comparison sort entirely?",
+      "Count each value's frequency first. Since frequency can never exceed `nums.length`, you can index directly into an array of 'buckets' by frequency instead of comparing values pairwise.",
+      "Bucket sort by frequency: put each distinct value into `buckets[frequency]`. Then walk the buckets from the highest possible frequency down to 1, collecting values until you have k of them."
+    ],
+    "solution": {
+      "approach": "Count the frequency of every distinct value with a hash map. Because a value's frequency can never exceed `nums.length`, allocate an array of buckets indexed by frequency (0 through `nums.length`) and drop each distinct value into `buckets[frequency]`. Then walk the buckets from the highest index down to 1, collecting values into the result until `k` of them have been gathered. This sidesteps comparison-based sorting entirely — bucketing by frequency and scanning the buckets once is O(n) overall, better than the O(n log n) a full sort would cost for large n (a min-heap of size k, giving O(n log k), is a common alternative when n is very large relative to k).",
+      "language": "javascript",
+      "code": "function topKFrequent(nums, k) {\n  const freq = new Map();\n  for (const num of nums) {\n    freq.set(num, (freq.get(num) || 0) + 1);\n  }\n\n  const buckets = Array.from({ length: nums.length + 1 }, () => []);\n  for (const [num, count] of freq) {\n    buckets[count].push(num);\n  }\n\n  const result = [];\n  for (let count = buckets.length - 1; count >= 1 && result.length < k; count--) {\n    for (const num of buckets[count]) {\n      result.push(num);\n      if (result.length === k) break;\n    }\n  }\n\n  return result;\n}",
+      "timeComplexity": "O(n) — counting is O(n), bucketing is O(n) (at most n distinct values), and the bucket scan visits at most n+1 buckets and n values total.",
+      "spaceComplexity": "O(n) — the frequency map and the buckets each hold up to n entries."
+    },
+    "functionName": "topKFrequent",
+    "starterCode": "function topKFrequent(nums, k) {\n  // your code here\n}",
+    "testCases": [
+      {
+        "args": [
+          [
+            1,
+            1,
+            1,
+            2,
+            2,
+            3
+          ],
+          2
+        ],
+        "expected": [
+          1,
+          2
+        ]
+      },
+      {
+        "args": [
+          [
+            1
+          ],
+          1
+        ],
+        "expected": [
+          1
+        ]
+      },
+      {
+        "args": [
+          [
+            4,
+            1,
+            -1,
+            2,
+            -1,
+            2,
+            3
+          ],
+          2
+        ],
+        "expected": [
+          -1,
+          2
+        ]
+      }
+    ]
+  },
+  {
+    "key": "find-median-from-data-stream",
+    "number": 60,
+    "title": "Find Median from Data Stream",
+    "difficulty": "Hard",
+    "statement": "The **median** is the middle value in an ordered list of numbers. If the list has even length, the median is the average of the two middle values.\n\nImplement the `MedianFinder` class:\n- `MedianFinder()` initializes the object with an empty data stream.\n- `addNum(num)` adds `num` to the data structure.\n- `findMedian()` returns the median of all elements added so far.",
+    "examples": [
+      {
+        "input": "[\"MedianFinder\",\"addNum\",\"addNum\",\"findMedian\",\"addNum\",\"findMedian\"]\n[[],[1],[2],[],[3],[]]",
+        "output": "[null,null,null,1.5,null,2]",
+        "explanation": "addNum(1), addNum(2); findMedian() -> (1+2)/2 = 1.5; addNum(3); findMedian() -> 2 (the middle of [1,2,3])."
+      }
+    ],
+    "constraints": [
+      "-10^5 <= num <= 10^5",
+      "At least one value will have been added before findMedian is called.",
+      "At most 5 * 10^4 calls in total will be made to addNum and findMedian."
+    ],
+    "hints": [
+      "Re-sorting the entire list on every `findMedian()` call works but is wasteful — most of the list doesn't change between calls.",
+      "You only ever need fast access to the values right around the middle. What if you kept the lower half of the numbers in one structure and the upper half in another?",
+      "Use a max-heap for the lower half and a min-heap for the upper half, kept balanced in size (differing by at most one). The median is then always at the top of one or both heaps — no full sort required."
+    ],
+    "solution": {
+      "approach": "Split the numbers seen so far into two halves: a max-heap holding the smaller half (`small`, so its largest element sits at the top) and a min-heap holding the larger half (`large`, so its smallest element sits at the top). Every `addNum` pushes the new value into `small`, then immediately moves `small`'s maximum over to `large` — this guarantees every value in `small` is at most every value in `large`. A size check then moves `large`'s minimum back into `small` whenever `large` grows bigger than `small`, keeping the two halves balanced to within one element, with `small` always holding the extra element when the total count is odd. `findMedian` is then O(1): if `small` is larger, its top is the median; otherwise the median is the average of both heaps' tops. JavaScript has no built-in heap, so both heaps are implemented directly as binary-heap arrays (the max-heap is simulated by storing negated values in a min-heap array).",
+      "language": "javascript",
+      "code": "class MedianFinder {\n  constructor() {\n    this.small = []; // max-heap of the lower half, values stored negated\n    this.large = []; // min-heap of the upper half\n  }\n\n  addNum(num) {\n    this._push(this.small, -num);\n    this._push(this.large, -this._pop(this.small));\n    if (this.large.length > this.small.length) {\n      this._push(this.small, -this._pop(this.large));\n    }\n  }\n\n  findMedian() {\n    if (this.small.length > this.large.length) {\n      return -this.small[0];\n    }\n    return (-this.small[0] + this.large[0]) / 2;\n  }\n\n  _push(heap, val) {\n    heap.push(val);\n    let i = heap.length - 1;\n    while (i > 0) {\n      const parent = (i - 1) >> 1;\n      if (heap[parent] <= heap[i]) break;\n      [heap[parent], heap[i]] = [heap[i], heap[parent]];\n      i = parent;\n    }\n  }\n\n  _pop(heap) {\n    const top = heap[0];\n    const last = heap.pop();\n    if (heap.length > 0) {\n      heap[0] = last;\n      let i = 0;\n      const n = heap.length;\n      while (true) {\n        let smallest = i;\n        const left = 2 * i + 1;\n        const right = 2 * i + 2;\n        if (left < n && heap[left] < heap[smallest]) smallest = left;\n        if (right < n && heap[right] < heap[smallest]) smallest = right;\n        if (smallest === i) break;\n        [heap[i], heap[smallest]] = [heap[smallest], heap[i]];\n        i = smallest;\n      }\n    }\n    return top;\n  }\n}",
+      "timeComplexity": "O(log n) for addNum (a small constant number of heap push/pop operations), O(1) for findMedian.",
+      "spaceComplexity": "O(n) — every added value is stored in exactly one of the two heaps."
+    },
+    "functionName": "medianFinderJudge",
+    "starterCode": "class MedianFinder {\n  constructor() {\n    // your code here\n  }\n\n  addNum(num) {\n    // your code here\n  }\n\n  findMedian() {\n    // your code here\n  }\n}\n\nfunction medianFinderJudge(ops, argsList) {\n  const results = [];\n  let obj = null;\n  for (let i = 0; i < ops.length; i++) {\n    const op = ops[i];\n    const opArgs = argsList[i];\n    if (op === \"MedianFinder\") {\n      obj = new MedianFinder();\n      results.push(null);\n    } else if (op === \"addNum\") {\n      obj.addNum(opArgs[0]);\n      results.push(null);\n    } else if (op === \"findMedian\") {\n      results.push(obj.findMedian());\n    }\n  }\n  return results;\n}",
+    "testCases": [
+      {
+        "args": [
+          [
+            "MedianFinder",
+            "addNum",
+            "addNum",
+            "findMedian",
+            "addNum",
+            "findMedian"
+          ],
+          [
+            [],
+            [
+              1
+            ],
+            [
+              2
+            ],
+            [],
+            [
+              3
+            ],
+            []
+          ]
+        ],
+        "expected": [
+          null,
+          null,
+          null,
+          1.5,
+          null,
+          2
+        ]
+      },
+      {
+        "args": [
+          [
+            "MedianFinder",
+            "addNum",
+            "findMedian"
+          ],
+          [
+            [],
+            [
+              5
+            ],
+            []
+          ]
+        ],
+        "expected": [
+          null,
+          null,
+          5
+        ]
+      },
+      {
+        "args": [
+          [
+            "MedianFinder",
+            "addNum",
+            "addNum",
+            "addNum",
+            "findMedian"
+          ],
+          [
+            [],
+            [
+              -1
+            ],
+            [
+              -2
+            ],
+            [
+              -3
+            ],
+            []
+          ]
+        ],
+        "expected": [
+          null,
+          null,
+          null,
+          null,
+          -2
+        ]
+      }
+    ]
+  },
+  {
+    "key": "task-scheduler",
+    "number": 61,
+    "title": "Task Scheduler",
+    "difficulty": "Medium",
+    "statement": "You're given an array of CPU `tasks`, each represented by an uppercase letter (`A` to `Z`), and a non-negative integer `n` representing a cooldown period. The CPU can complete one task (or sit idle) per unit of time, but identical tasks must be separated by at least `n` units of time.\n\nReturn the minimum number of time units the CPU needs to finish all the given tasks.",
+    "examples": [
+      {
+        "input": "tasks = [\"A\",\"A\",\"A\",\"B\",\"B\",\"B\"], n = 2",
+        "output": "8",
+        "explanation": "One valid order: A -> B -> idle -> A -> B -> idle -> A -> B. That's 8 units; the two idle slots are forced because A and B each need 2 units of cooldown between repeats."
+      },
+      {
+        "input": "tasks = [\"A\",\"A\",\"A\",\"B\",\"B\",\"B\"], n = 0",
+        "output": "6",
+        "explanation": "No cooldown needed, so the 6 tasks run back to back in some order."
+      }
+    ],
+    "constraints": [
+      "1 <= tasks.length <= 10^4",
+      "tasks[i] is an uppercase English letter.",
+      "0 <= n <= 100"
+    ],
+    "hints": [
+      "Simulating minute-by-minute with a priority queue of remaining counts works, but think about what actually forces idle time in the first place.",
+      "Idle slots are only forced by whichever task(s) are most frequent — every other task can usually be slotted into the gaps around the most frequent one. What's the minimum schedule length needed just to space out the most frequent task?",
+      "The most frequent task (frequency `maxFreq`) needs `maxFreq - 1` cooldown gaps of length `n+1` after it, plus its own final occurrence: `(maxFreq - 1) * (n + 1) + (number of tasks tied for maxFreq)`. The answer is the larger of that and simply `tasks.length` (once there are enough distinct tasks, no idle time is needed at all)."
+    ],
+    "solution": {
+      "approach": "Count how often each task letter occurs. The scheduling is dominated by whichever task(s) occur most frequently: picture laying out `maxFreq - 1` 'blocks' of the most frequent task, each followed by a mandatory gap of `n` slots that other tasks (or idle time) can fill, plus one final occurrence of that task at the end — this uses `(maxFreq - 1) * (n + 1) + 1` slots as a skeleton. If several different tasks are tied for the maximum frequency, each of them needs to occupy one slot in that final row too, adding `maxCount - 1` more (giving `(maxFreq - 1) * (n + 1) + maxCount` total). This formula can undercount when there are enough distinct tasks to fill every gap with real work and no idle time is ever needed — in that case the true answer is simply `tasks.length` (every unit of time does useful work). Taking the maximum of the two handles both regimes correctly.",
+      "language": "javascript",
+      "code": "function leastInterval(tasks, n) {\n  const freq = new Array(26).fill(0);\n  for (const task of tasks) {\n    freq[task.charCodeAt(0) - 65]++;\n  }\n\n  const maxFreq = Math.max(...freq);\n  const maxCount = freq.filter((f) => f === maxFreq).length;\n\n  return Math.max(tasks.length, (maxFreq - 1) * (n + 1) + maxCount);\n}",
+      "timeComplexity": "O(N + 26) = O(N) — one pass to count tasks, then constant work over the fixed 26-letter alphabet.",
+      "spaceComplexity": "O(1) — the frequency array always has exactly 26 slots, regardless of input size."
+    },
+    "functionName": "leastInterval",
+    "starterCode": "function leastInterval(tasks, n) {\n  // your code here\n}",
+    "testCases": [
+      {
+        "args": [
+          [
+            "A",
+            "A",
+            "A",
+            "B",
+            "B",
+            "B"
+          ],
+          2
+        ],
+        "expected": 8
+      },
+      {
+        "args": [
+          [
+            "A",
+            "A",
+            "A",
+            "B",
+            "B",
+            "B"
+          ],
+          0
+        ],
+        "expected": 6
+      },
+      {
+        "args": [
+          [
+            "A",
+            "A",
+            "A",
+            "A",
+            "A",
+            "A",
+            "B",
+            "C",
+            "D",
+            "E",
+            "F",
+            "G"
+          ],
+          2
+        ],
+        "expected": 16
+      }
+    ]
+  }
+]

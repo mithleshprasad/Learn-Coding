@@ -1,1 +1,507 @@
-[]
+[
+  {
+    "key": "subsets",
+    "number": 62,
+    "title": "Subsets",
+    "difficulty": "Medium",
+    "statement": "Given an integer array `nums` of **unique** elements, return all possible subsets (the power set). The solution set must not contain duplicate subsets — return them in any order.",
+    "examples": [
+      {
+        "input": "nums = [1,2,3]",
+        "output": "[[],[1],[1,2],[1,2,3],[1,3],[2],[2,3],[3]]"
+      },
+      {
+        "input": "nums = [0]",
+        "output": "[[],[0]]"
+      }
+    ],
+    "constraints": [
+      "1 <= nums.length <= 10",
+      "-10 <= nums[i] <= 10",
+      "All the numbers of nums are unique."
+    ],
+    "hints": [
+      "With n elements there are 2^n subsets — too many to build any other way than generating each one directly, but you can still avoid redundant work by building them systematically.",
+      "Think of building a subset by deciding, one element at a time (in array order), whether to include it. That decision tree naturally has 2^n leaves — one per subset.",
+      "Backtrack with a running `path` and a `start` index: record `path` as a subset at every step of the recursion (not just at the leaves), then loop `i` from `start` to the end, pushing `nums[i]`, recursing with `start = i + 1`, and popping it back off before trying the next `i`."
+    ],
+    "solution": {
+      "approach": "Every subset corresponds to a subset of indices, and backtracking can enumerate them directly: maintain a `path` array representing the subset built so far, and record a copy of `path` into the results at the start of every recursive call (this captures the empty subset immediately, and every partial subset along the way — not just full-length ones, since any prefix of decisions is itself a valid subset). Then, starting from a `start` index, loop forward through the remaining elements: include `nums[i]`, recurse with `start = i + 1` (never revisiting earlier indices, which is what prevents duplicate subsets like `[1,2]` and `[2,1]`), then remove it (backtrack) before trying the next index. This explores exactly the 2^n subsets, one per path through the decision tree.",
+      "language": "javascript",
+      "code": "function subsets(nums) {\n  const result = [];\n  const path = [];\n\n  function backtrack(start) {\n    result.push([...path]);\n\n    for (let i = start; i < nums.length; i++) {\n      path.push(nums[i]);\n      backtrack(i + 1);\n      path.pop();\n    }\n  }\n\n  backtrack(0);\n  return result;\n}",
+      "timeComplexity": "O(n * 2^n) — there are 2^n subsets, and copying each one into the result costs up to O(n).",
+      "spaceComplexity": "O(n) for the recursion depth and `path` array, not counting the O(n * 2^n) output itself."
+    },
+    "functionName": "subsets",
+    "starterCode": "function subsets(nums) {\n  // your code here\n}",
+    "testCases": [
+      {
+        "args": [
+          [
+            1,
+            2,
+            3
+          ]
+        ],
+        "expected": [
+          [],
+          [
+            1
+          ],
+          [
+            1,
+            2
+          ],
+          [
+            1,
+            2,
+            3
+          ],
+          [
+            1,
+            3
+          ],
+          [
+            2
+          ],
+          [
+            2,
+            3
+          ],
+          [
+            3
+          ]
+        ]
+      },
+      {
+        "args": [
+          [
+            0
+          ]
+        ],
+        "expected": [
+          [],
+          [
+            0
+          ]
+        ]
+      },
+      {
+        "args": [
+          [
+            1,
+            2
+          ]
+        ],
+        "expected": [
+          [],
+          [
+            1
+          ],
+          [
+            1,
+            2
+          ],
+          [
+            2
+          ]
+        ]
+      }
+    ]
+  },
+  {
+    "key": "combination-sum",
+    "number": 63,
+    "title": "Combination Sum",
+    "difficulty": "Medium",
+    "statement": "Given an array of **distinct** positive integers `candidates` and a target integer `target`, return a list of all unique combinations of `candidates` where the chosen numbers sum to `target`. You may reuse the same number from `candidates` an unlimited number of times. Two combinations are unique if the frequency of at least one of the chosen numbers is different.\n\nReturn the combinations in any order.",
+    "examples": [
+      {
+        "input": "candidates = [2,3,6,7], target = 7",
+        "output": "[[2,2,3],[7]]",
+        "explanation": "2+2+3 = 7 and 7 = 7 are the only two combinations that sum to 7."
+      },
+      {
+        "input": "candidates = [2,3,5], target = 8",
+        "output": "[[2,2,2,2],[2,3,3],[3,5]]"
+      }
+    ],
+    "constraints": [
+      "1 <= candidates.length <= 30",
+      "2 <= candidates[i] <= 40",
+      "All elements of candidates are distinct.",
+      "1 <= target <= 40"
+    ],
+    "hints": [
+      "Because numbers can be reused, this isn't a fixed-size selection — the search tree could branch forever unless you bound it with the running sum.",
+      "Track a running remaining target as you build a combination. Stop exploring a branch the moment the remaining amount goes negative, and record a match when it hits exactly zero.",
+      "To reuse numbers freely but still avoid generating the same combination in different orders (like both [2,3] and [3,2]), only ever move forward through `candidates` — when you pick `candidates[i]`, the next pick can be `candidates[i]` again but never anything before index `i`."
+    ],
+    "solution": {
+      "approach": "Backtrack while tracking the remaining amount needed to reach `target`. At each step, try every candidate at or after the current `start` index (allowing the same index to be tried again in the recursive call, which is what permits reuse), subtract it from the remaining amount, and recurse. If the remaining amount hits exactly zero, the current path is a valid combination — record it. If it goes negative, abandon the branch immediately (candidates are positive, so it can only get worse). Restricting each recursive call to start no earlier than the current index — rather than allowing any index — is what prevents generating the same multiset of numbers in more than one order.",
+      "language": "javascript",
+      "code": "function combinationSum(candidates, target) {\n  const result = [];\n  const path = [];\n\n  function backtrack(start, remaining) {\n    if (remaining === 0) {\n      result.push([...path]);\n      return;\n    }\n    if (remaining < 0) return;\n\n    for (let i = start; i < candidates.length; i++) {\n      path.push(candidates[i]);\n      backtrack(i, remaining - candidates[i]);\n      path.pop();\n    }\n  }\n\n  backtrack(0, target);\n  return result;\n}",
+      "timeComplexity": "O(2^target) in the worst case — the branching factor and depth both scale with how many ways the target can be decomposed; pruning negative sums keeps it well below a full search of all subsets.",
+      "spaceComplexity": "O(target / min(candidates)) for the recursion depth, not counting the output."
+    },
+    "functionName": "combinationSum",
+    "starterCode": "function combinationSum(candidates, target) {\n  // your code here\n}",
+    "testCases": [
+      {
+        "args": [
+          [
+            2,
+            3,
+            6,
+            7
+          ],
+          7
+        ],
+        "expected": [
+          [
+            2,
+            2,
+            3
+          ],
+          [
+            7
+          ]
+        ]
+      },
+      {
+        "args": [
+          [
+            2,
+            3,
+            5
+          ],
+          8
+        ],
+        "expected": [
+          [
+            2,
+            2,
+            2,
+            2
+          ],
+          [
+            2,
+            3,
+            3
+          ],
+          [
+            3,
+            5
+          ]
+        ]
+      },
+      {
+        "args": [
+          [
+            2
+          ],
+          1
+        ],
+        "expected": []
+      }
+    ]
+  },
+  {
+    "key": "permutations",
+    "number": 64,
+    "title": "Permutations",
+    "difficulty": "Medium",
+    "statement": "Given an array `nums` of distinct integers, return all possible permutations. Return them in any order.",
+    "examples": [
+      {
+        "input": "nums = [1,2,3]",
+        "output": "[[1,2,3],[1,3,2],[2,1,3],[2,3,1],[3,1,2],[3,2,1]]"
+      },
+      {
+        "input": "nums = [0,1]",
+        "output": "[[0,1],[1,0]]"
+      }
+    ],
+    "constraints": [
+      "1 <= nums.length <= 6",
+      "-10 <= nums[i] <= 10",
+      "All the integers of nums are unique."
+    ],
+    "hints": [
+      "Unlike subsets, every element must appear in every result, just in different orders — brute-force generating and filtering would be wasteful.",
+      "Build each permutation position by position: at each step, choose any element that hasn't been used yet in the current path.",
+      "Track which indices are already 'used' in the current path with a boolean array. When the path reaches full length, record it; then undo the last choice and try the next unused element."
+    ],
+    "solution": {
+      "approach": "Build permutations one position at a time using backtracking. At each step, try every index that hasn't been used yet in the current path, mark it used, append its value to `path`, and recurse to fill the next position. Once `path` reaches the full length of `nums`, every element has been placed exactly once, so record a copy of it. After each recursive call returns, undo the choice (unmark it used, pop it off `path`) before trying the next unused index — this backtracking step is what lets the same index be considered again in a sibling branch.",
+      "language": "javascript",
+      "code": "function permute(nums) {\n  const result = [];\n  const path = [];\n  const used = new Array(nums.length).fill(false);\n\n  function backtrack() {\n    if (path.length === nums.length) {\n      result.push([...path]);\n      return;\n    }\n\n    for (let i = 0; i < nums.length; i++) {\n      if (used[i]) continue;\n      used[i] = true;\n      path.push(nums[i]);\n      backtrack();\n      path.pop();\n      used[i] = false;\n    }\n  }\n\n  backtrack();\n  return result;\n}",
+      "timeComplexity": "O(n * n!) — there are n! permutations, and building each one costs O(n).",
+      "spaceComplexity": "O(n) for the recursion depth, the `used` array, and `path`, not counting the O(n * n!) output."
+    },
+    "functionName": "permute",
+    "starterCode": "function permute(nums) {\n  // your code here\n}",
+    "testCases": [
+      {
+        "args": [
+          [
+            1,
+            2,
+            3
+          ]
+        ],
+        "expected": [
+          [
+            1,
+            2,
+            3
+          ],
+          [
+            1,
+            3,
+            2
+          ],
+          [
+            2,
+            1,
+            3
+          ],
+          [
+            2,
+            3,
+            1
+          ],
+          [
+            3,
+            1,
+            2
+          ],
+          [
+            3,
+            2,
+            1
+          ]
+        ]
+      },
+      {
+        "args": [
+          [
+            0,
+            1
+          ]
+        ],
+        "expected": [
+          [
+            0,
+            1
+          ],
+          [
+            1,
+            0
+          ]
+        ]
+      },
+      {
+        "args": [
+          [
+            5
+          ]
+        ],
+        "expected": [
+          [
+            5
+          ]
+        ]
+      }
+    ]
+  },
+  {
+    "key": "word-search",
+    "number": 65,
+    "title": "Word Search",
+    "difficulty": "Medium",
+    "statement": "Given an `m x n` grid of characters `board` and a string `word`, return `true` if `word` exists in the grid.\n\nThe word must be constructed from letters of sequentially adjacent cells, where adjacent cells are horizontally or vertically neighboring. The same cell may not be used more than once within a single word.",
+    "examples": [
+      {
+        "input": "board = [[\"A\",\"B\",\"C\",\"E\"],[\"S\",\"F\",\"C\",\"S\"],[\"A\",\"D\",\"E\",\"E\"]], word = \"ABCCED\"",
+        "output": "true"
+      },
+      {
+        "input": "board = [[\"A\",\"B\",\"C\",\"E\"],[\"S\",\"F\",\"C\",\"S\"],[\"A\",\"D\",\"E\",\"E\"]], word = \"ABCB\"",
+        "output": "false",
+        "explanation": "After A -> B -> C, there's no unused, adjacent 'B' left to continue to — the only B is the one already used."
+      }
+    ],
+    "constraints": [
+      "1 <= board.length, board[i].length <= 6",
+      "1 <= word.length <= 15",
+      "board and word consist of only lowercase and uppercase English letters."
+    ],
+    "hints": [
+      "Checking every possible path from every starting cell sounds expensive, but the word's length bounds how deep any single search can go.",
+      "Try a DFS from every cell that matches `word`'s first letter, walking to unvisited neighbors while matching subsequent letters.",
+      "Since a cell can't be reused within one word, mark it visited before recursing into neighbors and un-mark it on the way back out — the classic backtracking 'try, recurse, undo' pattern applied directly on the grid."
+    ],
+    "solution": {
+      "approach": "Try starting a DFS from every cell on the board. The DFS matches `word` character by character: it fails immediately if the current cell is out of bounds or doesn't match the expected letter, and succeeds once every character of `word` has been matched. To respect the 'no reusing a cell' rule without needing a separate visited set, temporarily overwrite the current cell with a sentinel character (like `#`, which can't appear in the word) before recursing into its neighbors, then restore the original character afterward — a classic backtracking trick that avoids extra memory. The search explores at most 4 directions at each of `word.length` steps, from each of the board's starting cells.",
+      "language": "javascript",
+      "code": "function exist(board, word) {\n  const rows = board.length;\n  const cols = board[0].length;\n\n  function dfs(r, c, i) {\n    if (i === word.length) return true;\n    if (r < 0 || r >= rows || c < 0 || c >= cols || board[r][c] !== word[i]) {\n      return false;\n    }\n\n    const original = board[r][c];\n    board[r][c] = \"#\"; // mark visited\n\n    const found =\n      dfs(r + 1, c, i + 1) ||\n      dfs(r - 1, c, i + 1) ||\n      dfs(r, c + 1, i + 1) ||\n      dfs(r, c - 1, i + 1);\n\n    board[r][c] = original; // restore\n\n    return found;\n  }\n\n  for (let r = 0; r < rows; r++) {\n    for (let c = 0; c < cols; c++) {\n      if (dfs(r, c, 0)) return true;\n    }\n  }\n\n  return false;\n}",
+      "timeComplexity": "O(m * n * 3^L) where m,n are the board dimensions and L is word.length — each of the m*n starting cells can begin a DFS that branches into at most 3 new directions per step (never back the way it came).",
+      "spaceComplexity": "O(L) for the recursion stack; the board is modified in place instead of using extra visited-tracking memory."
+    },
+    "functionName": "exist",
+    "starterCode": "function exist(board, word) {\n  // your code here\n}",
+    "testCases": [
+      {
+        "args": [
+          [
+            [
+              "A",
+              "B",
+              "C",
+              "E"
+            ],
+            [
+              "S",
+              "F",
+              "C",
+              "S"
+            ],
+            [
+              "A",
+              "D",
+              "E",
+              "E"
+            ]
+          ],
+          "ABCCED"
+        ],
+        "expected": true
+      },
+      {
+        "args": [
+          [
+            [
+              "A",
+              "B",
+              "C",
+              "E"
+            ],
+            [
+              "S",
+              "F",
+              "C",
+              "S"
+            ],
+            [
+              "A",
+              "D",
+              "E",
+              "E"
+            ]
+          ],
+          "SEE"
+        ],
+        "expected": true
+      },
+      {
+        "args": [
+          [
+            [
+              "A",
+              "B",
+              "C",
+              "E"
+            ],
+            [
+              "S",
+              "F",
+              "C",
+              "S"
+            ],
+            [
+              "A",
+              "D",
+              "E",
+              "E"
+            ]
+          ],
+          "ABCB"
+        ],
+        "expected": false
+      }
+    ]
+  },
+  {
+    "key": "n-queens",
+    "number": 66,
+    "title": "N-Queens",
+    "difficulty": "Hard",
+    "statement": "The **n-queens** puzzle is the problem of placing `n` chess queens on an `n x n` chessboard so that no two queens attack each other (no two queens share a row, column, or diagonal).\n\nGiven an integer `n`, return all distinct solutions. Each solution is represented as a list of `n` strings, where `'Q'` marks a queen and `'.'` marks an empty space.\n\nSolutions may be produced in any order — this judge sorts them before comparing, so the order your code returns them in doesn't matter.",
+    "examples": [
+      {
+        "input": "n = 4",
+        "output": "[[\".Q..\",\"...Q\",\"Q...\",\"..Q.\"],[\"..Q.\",\"Q...\",\"...Q\",\".Q..\"]]",
+        "explanation": "There are exactly two distinct ways to place 4 non-attacking queens on a 4x4 board."
+      },
+      {
+        "input": "n = 1",
+        "output": "[[\"Q\"]]"
+      }
+    ],
+    "constraints": [
+      "1 <= n <= 9"
+    ],
+    "hints": [
+      "Trying every arrangement of n queens on n^2 squares is astronomically large — but no two queens can ever share a row, which cuts the search space enormously.",
+      "Since each row can hold exactly one queen, place queens one row at a time and only try columns that aren't already attacked by a queen placed in an earlier row.",
+      "Track attacked columns and diagonals with sets: a column index, and the two diagonal identities `row - col` and `row + col` (each diagonal has a constant value of one of these). Backtrack — place a queen, recurse to the next row, then remove it — whenever a row runs out of safe columns."
+    ],
+    "solution": {
+      "approach": "Because no two queens can ever share a row, the search can place exactly one queen per row and move top to bottom, which collapses the search space from choosing among n^2 squares to choosing among n columns per row. At row `r`, try every column `c` that isn't already attacked: a column is attacked if it's in the `cols` set, and a diagonal is attacked if `r - c` (the '/' diagonals) or `r + c` (the '\\\\' diagonals) is already in its respective set — every square on the same diagonal shares one of these two values. Place the queen (record the column and add all three sets), recurse to row `r + 1`, then remove it (backtrack) before trying the next column. Once `r` reaches `n`, every row has a queen and the current placement is converted into the string-grid format and recorded as one solution. Because the actual solution order this recursion produces depends only on implementation details, the judge wrapper sorts the solution list (by each solution's rows joined into one string) before comparing, so any correct implementation's output is accepted regardless of order.",
+      "language": "javascript",
+      "code": "function solveNQueens(n) {\n  const result = [];\n  const cols = new Set();\n  const diag1 = new Set(); // r - c\n  const diag2 = new Set(); // r + c\n  const placement = new Array(n).fill(-1); // placement[row] = col\n\n  function backtrack(row) {\n    if (row === n) {\n      const board = placement.map(\n        (c) => \".\".repeat(c) + \"Q\" + \".\".repeat(n - c - 1)\n      );\n      result.push(board);\n      return;\n    }\n\n    for (let c = 0; c < n; c++) {\n      if (cols.has(c) || diag1.has(row - c) || diag2.has(row + c)) continue;\n\n      cols.add(c);\n      diag1.add(row - c);\n      diag2.add(row + c);\n      placement[row] = c;\n\n      backtrack(row + 1);\n\n      cols.delete(c);\n      diag1.delete(row - c);\n      diag2.delete(row + c);\n    }\n  }\n\n  backtrack(0);\n  return result;\n}",
+      "timeComplexity": "O(n!) in the worst case — row 1 tries up to n columns, row 2 up to n-1 remaining, and so on; the column/diagonal sets prune most branches long before they reach a full placement.",
+      "spaceComplexity": "O(n) for the sets, the placement array, and recursion depth, not counting the output."
+    },
+    "functionName": "solveNQueensJudge",
+    "starterCode": "function solveNQueens(n) {\n  // your code here\n}\n\n// Solution order doesn't matter for this judge: it sorts the boards\n// (by joining each board's rows into one string) before comparing.\nfunction solveNQueensJudge(n) {\n  const solutions = solveNQueens(n);\n  return solutions\n    .map((board) => board.slice())\n    .sort((a, b) => {\n      const aKey = a.join(\"\");\n      const bKey = b.join(\"\");\n      return aKey < bKey ? -1 : aKey > bKey ? 1 : 0;\n    });\n}",
+    "testCases": [
+      {
+        "args": [
+          4
+        ],
+        "expected": [
+          [
+            "..Q.",
+            "Q...",
+            "...Q",
+            ".Q.."
+          ],
+          [
+            ".Q..",
+            "...Q",
+            "Q...",
+            "..Q."
+          ]
+        ]
+      },
+      {
+        "args": [
+          1
+        ],
+        "expected": [
+          [
+            "Q"
+          ]
+        ]
+      },
+      {
+        "args": [
+          2
+        ],
+        "expected": []
+      }
+    ]
+  }
+]

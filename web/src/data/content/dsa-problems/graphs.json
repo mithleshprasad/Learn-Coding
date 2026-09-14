@@ -1,1 +1,516 @@
-[]
+[
+  {
+    "key": "number-of-islands",
+    "number": 67,
+    "title": "Number of Islands",
+    "difficulty": "Medium",
+    "statement": "Given an `m x n` 2D binary `grid` which represents a map of `'1'`s (land) and `'0'`s (water), return the number of **islands**.\n\nAn island is surrounded by water and is formed by connecting adjacent lands **horizontally or vertically**. You may assume all four edges of the grid are all surrounded by water.",
+    "examples": [
+      {
+        "input": "grid = [\n  [\"1\",\"1\",\"1\",\"1\",\"0\"],\n  [\"1\",\"1\",\"0\",\"0\",\"0\"],\n  [\"0\",\"0\",\"1\",\"0\",\"0\"],\n  [\"0\",\"0\",\"0\",\"1\",\"1\"]\n]",
+        "output": "3",
+        "explanation": "There's one large connected landmass in the top-left, one single cell in the middle, and one 2-cell island in the bottom-right."
+      },
+      {
+        "input": "grid = [[\"0\"]]",
+        "output": "0",
+        "explanation": "All water, no land at all."
+      }
+    ],
+    "constraints": [
+      "m == grid.length",
+      "n == grid[i].length",
+      "1 <= m, n <= 300",
+      "grid[i][j] is '0' or '1'"
+    ],
+    "hints": [
+      "Whenever you find an unvisited land cell, everything reachable from it by moving up/down/left/right over other land cells belongs to the *same* island — so each island only needs to be 'discovered' once.",
+      "A flood fill (DFS or BFS) starting at a land cell can mark every cell in its island as visited in one pass, so you never count it again.",
+      "Scan every cell; each time you hit an unvisited `'1'`, increment your island counter and flood-fill outward from it (e.g. by flipping visited cells to `'0'`) so the rest of the scan skips them."
+    ],
+    "solution": {
+      "approach": "Scan the grid cell by cell. Whenever you encounter a `'1'` that hasn't been visited yet, it's the top-left-most cell of a brand-new island: increment the island count and run a flood fill (DFS) from that cell, marking every land cell reachable via up/down/left/right moves as visited (the simplest way is to overwrite visited land cells to `'0'` in place, so the flood fill naturally stops at water and never revisits a cell). Continue the outer scan — any `'1'` cells belonging to that island have now been zeroed out, so the scan will never trigger a second island count for them. By the time the scan finishes, every land cell has been consumed by exactly one flood fill, so the counter equals the number of islands.",
+      "language": "javascript",
+      "code": "function numIslands(grid) {\n  const rows = grid.length;\n  const cols = grid[0].length;\n  // Work on a copy so we don't mutate the caller's grid.\n  const g = grid.map((row) => [...row]);\n\n  function floodFill(r, c) {\n    if (r < 0 || r >= rows || c < 0 || c >= cols || g[r][c] !== '1') return;\n    g[r][c] = '0'; // mark visited\n    floodFill(r + 1, c);\n    floodFill(r - 1, c);\n    floodFill(r, c + 1);\n    floodFill(r, c - 1);\n  }\n\n  let islands = 0;\n  for (let r = 0; r < rows; r++) {\n    for (let c = 0; c < cols; c++) {\n      if (g[r][c] === '1') {\n        islands++;\n        floodFill(r, c);\n      }\n    }\n  }\n\n  return islands;\n}",
+      "timeComplexity": "O(m*n) — every cell is visited a constant number of times: once by the outer scan and once by the flood fill that consumes it.",
+      "spaceComplexity": "O(m*n) — worst case (an all-land grid) the DFS recursion stack can hold every cell."
+    },
+    "functionName": "numIslands",
+    "starterCode": "function numIslands(grid) {\n  // your code here\n}",
+    "testCases": [
+      {
+        "args": [
+          [
+            ["1", "1", "1", "1", "0"],
+            ["1", "1", "0", "0", "0"],
+            ["0", "0", "1", "0", "0"],
+            ["0", "0", "0", "1", "1"]
+          ]
+        ],
+        "expected": 3
+      },
+      {
+        "args": [
+          [
+            ["1", "1", "0", "0", "0"],
+            ["1", "1", "0", "0", "0"],
+            ["0", "0", "1", "0", "0"],
+            ["0", "0", "0", "1", "1"]
+          ]
+        ],
+        "expected": 3
+      },
+      {
+        "args": [[["0"]]],
+        "expected": 0
+      },
+      {
+        "args": [[["1"]]],
+        "expected": 1
+      }
+    ]
+  },
+  {
+    "key": "clone-graph",
+    "number": 68,
+    "title": "Clone Graph",
+    "difficulty": "Medium",
+    "statement": "Given a reference to a node in a **connected** undirected graph, return a **deep copy** (clone) of the graph.\n\nEach node in the graph contains a value (`val`) and a list of its neighbors (`neighbors`). The graph is serialized as an adjacency list, where each node is numbered from `1` to `n` and `adjList[i]` is the list of neighbor values for node `i + 1`.\n\nFor this judge, the input is given as that adjacency list. Behind the scenes it's built into real linked `Node` objects (see `buildGraph` in the starter code) before your `cloneGraph` function is called with the entry node — your job is to return the entry node of an entirely new, structurally identical graph made of brand-new `Node` objects.",
+    "examples": [
+      {
+        "input": "adjList = [[2,4],[1,3],[2,4],[1,3]]",
+        "output": "[[2,4],[1,3],[2,4],[1,3]]",
+        "explanation": "Node 1's neighbors are nodes 2 and 4, node 2's neighbors are 1 and 3, and so on — a 4-node cycle. The clone must have the same shape, but built from new node objects, not the originals."
+      },
+      {
+        "input": "adjList = [[]]",
+        "output": "[[]]",
+        "explanation": "A single node with no neighbors."
+      },
+      {
+        "input": "adjList = []",
+        "output": "[]",
+        "explanation": "An empty graph — return null/no node."
+      }
+    ],
+    "constraints": [
+      "The number of nodes is in the range [0, 100].",
+      "1 <= Node.val <= 100",
+      "Node.val is unique for each node.",
+      "There are no repeated edges and no self-loops.",
+      "The graph is connected, so every node is reachable from the given node."
+    ],
+    "hints": [
+      "If you naively clone a node, then clone its neighbors, then their neighbors, and so on with plain recursion, a cycle in the graph (which is very common here) will recurse forever.",
+      "You need to remember which original nodes you've already cloned so you can reuse that clone instead of making a new one (and instead of recursing again) the next time you reach the same node through a different path.",
+      "Keep a hash map from original node → cloned node. DFS (or BFS) from the given node: if a node is already in the map, return its clone immediately; otherwise create the clone, store it in the map *before* recursing into neighbors (so cycles terminate), then fill in its `neighbors` array by recursively cloning each original neighbor."
+    ],
+    "solution": {
+      "approach": "Do a DFS from the starting node while maintaining a `Map` from original node → its clone. When visiting a node: if it's already a key in the map, we've cloned it before, so just return that clone (this is what makes cycles safe — we never re-enter the recursion for an already-seen node). Otherwise, create a new `Node` with the same `val` and immediately register it in the map *before* recursing into its neighbors — this ordering is essential, because if node A and node B are neighbors of each other, cloning A will try to clone B, which will try to clone A again; having A's clone already in the map at that point lets that inner call return immediately instead of looping forever. Once the clone is registered, recursively clone each of the node's neighbors and push the results into the clone's `neighbors` array.",
+      "language": "javascript",
+      "code": "class Node {\n  constructor(val, neighbors) {\n    this.val = val === undefined ? 0 : val;\n    this.neighbors = neighbors === undefined ? [] : neighbors;\n  }\n}\n\n// Builds real Node objects from a LeetCode-style adjacency list\n// (adjList[i] holds the neighbor VALUES, 1-indexed, of node i + 1).\n// Returns the entry node (node 1), or null for an empty graph.\nfunction buildGraph(adjList) {\n  if (!adjList || adjList.length === 0) return null;\n  const nodes = adjList.map((_, i) => new Node(i + 1));\n  adjList.forEach((neighborVals, i) => {\n    nodes[i].neighbors = neighborVals.map((v) => nodes[v - 1]);\n  });\n  return nodes[0];\n}\n\nfunction cloneGraph(node) {\n  if (!node) return null;\n\n  const visited = new Map(); // original Node -> cloned Node\n\n  function dfs(original) {\n    if (visited.has(original)) return visited.get(original);\n\n    const clone = new Node(original.val);\n    visited.set(original, clone);\n\n    for (const neighbor of original.neighbors) {\n      clone.neighbors.push(dfs(neighbor));\n    }\n\n    return clone;\n  }\n\n  return dfs(node);\n}\n\n// --- Judge wrapper: builds the graph, clones it, and serializes the CLONE\n// back to an adjacency-list array so it can be compared to `expected`.\n// It also fails loudly (throws) if the clone reuses any original Node\n// reference, proving the copy is genuinely new objects, not aliases.\nfunction cloneGraphJudge(adjList) {\n  const original = buildGraph(adjList);\n  if (!original) return [];\n\n  const clone = cloneGraph(original);\n\n  const originalNodes = new Set();\n  (function collectOriginal(n, seen) {\n    if (seen.has(n)) return;\n    seen.add(n);\n    originalNodes.add(n);\n    n.neighbors.forEach((nb) => collectOriginal(nb, seen));\n  })(original, new Set());\n\n  const order = [];\n  (function collectClone(n, seen) {\n    if (seen.has(n)) return;\n    seen.add(n);\n    if (originalNodes.has(n)) {\n      throw new Error('Clone reused an original node reference instead of creating a new one.');\n    }\n    order.push(n);\n    n.neighbors.forEach((nb) => collectClone(nb, seen));\n  })(clone, new Set());\n\n  order.sort((a, b) => a.val - b.val);\n  const indexOf = new Map();\n  order.forEach((n, i) => indexOf.set(n, i + 1));\n\n  const serialized = [];\n  order.forEach((n) => {\n    serialized[indexOf.get(n) - 1] = n.neighbors\n      .map((nb) => indexOf.get(nb))\n      .sort((a, b) => a - b);\n  });\n\n  return serialized;\n}",
+      "timeComplexity": "O(V+E) — every node is cloned exactly once (subsequent visits are O(1) map lookups) and every edge is traversed exactly once.",
+      "spaceComplexity": "O(V) — the visited map holds one entry per node, plus O(V) recursion depth in the worst case."
+    },
+    "functionName": "cloneGraphJudge",
+    "starterCode": "class Node {\n  constructor(val, neighbors) {\n    this.val = val === undefined ? 0 : val;\n    this.neighbors = neighbors === undefined ? [] : neighbors;\n  }\n}\n\n// Builds real Node objects from a LeetCode-style adjacency list\n// (adjList[i] holds the neighbor VALUES, 1-indexed, of node i + 1).\n// Returns the entry node (node 1), or null for an empty graph.\nfunction buildGraph(adjList) {\n  if (!adjList || adjList.length === 0) return null;\n  const nodes = adjList.map((_, i) => new Node(i + 1));\n  adjList.forEach((neighborVals, i) => {\n    nodes[i].neighbors = neighborVals.map((v) => nodes[v - 1]);\n  });\n  return nodes[0];\n}\n\n// Return the entry node of a deep copy of the graph reachable from `node`.\nfunction cloneGraph(node) {\n  // your code here\n}\n\n// --- Judge wrapper (do not edit): builds the graph, calls your cloneGraph,\n// then serializes the returned clone back to an adjacency-list array.\nfunction cloneGraphJudge(adjList) {\n  const original = buildGraph(adjList);\n  if (!original) return [];\n\n  const clone = cloneGraph(original);\n  if (!clone) return [];\n\n  const originalNodes = new Set();\n  (function collectOriginal(n, seen) {\n    if (seen.has(n)) return;\n    seen.add(n);\n    originalNodes.add(n);\n    n.neighbors.forEach((nb) => collectOriginal(nb, seen));\n  })(original, new Set());\n\n  const order = [];\n  (function collectClone(n, seen) {\n    if (seen.has(n)) return;\n    seen.add(n);\n    if (originalNodes.has(n)) {\n      throw new Error('Clone reused an original node reference instead of creating a new one.');\n    }\n    order.push(n);\n    n.neighbors.forEach((nb) => collectClone(nb, seen));\n  })(clone, new Set());\n\n  order.sort((a, b) => a.val - b.val);\n  const indexOf = new Map();\n  order.forEach((n, i) => indexOf.set(n, i + 1));\n\n  const serialized = [];\n  order.forEach((n) => {\n    serialized[indexOf.get(n) - 1] = n.neighbors\n      .map((nb) => indexOf.get(nb))\n      .sort((a, b) => a - b);\n  });\n\n  return serialized;\n}",
+    "testCases": [
+      {
+        "args": [[[2, 4], [1, 3], [2, 4], [1, 3]]],
+        "expected": [[2, 4], [1, 3], [2, 4], [1, 3]]
+      },
+      {
+        "args": [[[]]],
+        "expected": [[]]
+      },
+      {
+        "args": [[]],
+        "expected": []
+      },
+      {
+        "args": [[[2, 3], [1, 3], [1, 2]]],
+        "expected": [[2, 3], [1, 3], [1, 2]]
+      }
+    ]
+  },
+  {
+    "key": "course-schedule",
+    "number": 69,
+    "title": "Course Schedule",
+    "difficulty": "Medium",
+    "statement": "There are a total of `numCourses` courses labeled `0` to `numCourses - 1`. You're given an array `prerequisites` where `prerequisites[i] = [a, b]` means you must take course `b` **before** course `a`.\n\nReturn `true` if you can finish all courses, or `false` if it's impossible (i.e. the prerequisites contain a cycle).",
+    "examples": [
+      {
+        "input": "numCourses = 2, prerequisites = [[1,0]]",
+        "output": "true",
+        "explanation": "Take course 0, then course 1."
+      },
+      {
+        "input": "numCourses = 2, prerequisites = [[1,0],[0,1]]",
+        "output": "false",
+        "explanation": "To take course 0 you need course 1, and to take course 1 you need course 0 — a cycle, so it's impossible."
+      }
+    ],
+    "constraints": [
+      "1 <= numCourses <= 2000",
+      "0 <= prerequisites.length <= 5000",
+      "prerequisites[i].length == 2",
+      "0 <= a, b < numCourses",
+      "All the pairs prerequisites[i] are unique."
+    ],
+    "hints": [
+      "This is really asking: does the directed graph of 'course depends on course' contain a cycle? If it does, none of the courses in that cycle can ever be taken first.",
+      "Think of each course as a node and each prerequisite as a directed edge. A valid ordering of all courses exists exactly when the graph has no cycle — that's a topological sort.",
+      "Use Kahn's algorithm: repeatedly take a course with zero remaining prerequisites (in-degree 0), 'complete' it, and decrement the in-degree of everything that depended on it. If you can complete every course this way, there's no cycle; if some courses never reach in-degree 0, a cycle is blocking them."
+    ],
+    "solution": {
+      "approach": "Model courses as nodes and each `[a, b]` prerequisite as a directed edge `b -> a` (finish b before a). Compute the in-degree of every node (how many prerequisites it still has) and start a queue with all courses that have in-degree 0 (no prerequisites — can be taken immediately). Repeatedly pop a course from the queue, mark it 'taken', and for every course that depends on it, decrement that course's in-degree; if it drops to 0, it's now unblocked, so push it onto the queue too. This is Kahn's algorithm for topological sorting. If we manage to process all `numCourses` courses this way, there's a valid order and no cycle exists — return true. If the queue empties out before every course is processed, the remaining courses are stuck in a cycle (each waiting on another course that's also waiting), so return false.",
+      "language": "javascript",
+      "code": "function canFinish(numCourses, prerequisites) {\n  const adj = Array.from({ length: numCourses }, () => []);\n  const inDegree = new Array(numCourses).fill(0);\n\n  for (const [course, prereq] of prerequisites) {\n    adj[prereq].push(course);\n    inDegree[course]++;\n  }\n\n  const queue = [];\n  for (let i = 0; i < numCourses; i++) {\n    if (inDegree[i] === 0) queue.push(i);\n  }\n\n  let completed = 0;\n  while (queue.length) {\n    const course = queue.shift();\n    completed++;\n    for (const next of adj[course]) {\n      inDegree[next]--;\n      if (inDegree[next] === 0) queue.push(next);\n    }\n  }\n\n  return completed === numCourses;\n}",
+      "timeComplexity": "O(V+E) — building the adjacency list and in-degree array is O(V+E), and each node/edge is processed exactly once during the BFS.",
+      "spaceComplexity": "O(V+E) — the adjacency list stores every edge, plus O(V) for the in-degree array and queue."
+    },
+    "functionName": "canFinish",
+    "starterCode": "function canFinish(numCourses, prerequisites) {\n  // your code here\n}",
+    "testCases": [
+      {
+        "args": [2, [[1, 0]]],
+        "expected": true
+      },
+      {
+        "args": [2, [[1, 0], [0, 1]]],
+        "expected": false
+      },
+      {
+        "args": [4, [[1, 0], [2, 0], [3, 1], [3, 2]]],
+        "expected": true
+      },
+      {
+        "args": [3, [[0, 1], [1, 2], [2, 0]]],
+        "expected": false
+      }
+    ]
+  },
+  {
+    "key": "pacific-atlantic-water-flow",
+    "number": 70,
+    "title": "Pacific Atlantic Water Flow",
+    "difficulty": "Medium",
+    "statement": "There's an `m x n` rectangular island bordering both the **Pacific** ocean (touching the top and left edges) and the **Atlantic** ocean (touching the bottom and right edges). `heights[r][c]` gives the height of the cell at `(r, c)`.\n\nWater can flow from a cell to an adjacent cell (up/down/left/right) if the adjacent cell's height is **less than or equal to** the current cell's height (water flows downhill or across flat ground). Water can flow into an ocean if it can reach a cell touching that ocean's border.\n\nReturn a list of grid coordinates `[r, c]` where water can flow to **both** the Pacific and the Atlantic.",
+    "examples": [
+      {
+        "input": "heights = [[1,2,2,3,5],[3,2,3,4,4],[2,4,5,3,1],[6,7,1,4,5],[5,1,1,2,4]]",
+        "output": "[[0,4],[1,3],[1,4],[2,2],[3,0],[3,1],[4,0]]",
+        "explanation": "Each listed cell can drain downhill (or across equal-height ground) all the way to both an edge touching the Pacific and an edge touching the Atlantic."
+      },
+      {
+        "input": "heights = [[1]]",
+        "output": "[[0,0]]",
+        "explanation": "A single cell touches all four edges, so it borders both oceans trivially."
+      }
+    ],
+    "constraints": [
+      "m == heights.length",
+      "n == heights[r].length",
+      "1 <= m, n <= 200",
+      "0 <= heights[r][c] <= 10^5"
+    ],
+    "hints": [
+      "Checking, for every single cell, whether water from it can reach the Pacific AND the Atlantic by searching outward is O((mn)^2) in the worst case — way too slow for large grids.",
+      "Flip the direction of the question: instead of asking 'can this cell drain to the ocean', start FROM the ocean borders and ask 'which cells could drain water back up to here' — that means moving to a neighbor whose height is greater than or equal to the current cell's height.",
+      "Run a BFS/DFS from all Pacific-border cells simultaneously (marking every cell reachable via non-decreasing height moves), then do the same separately from all Atlantic-border cells. The answer is every cell marked reachable by both searches."
+    ],
+    "solution": {
+      "approach": "Reverse the flow direction: rather than simulating water flowing downhill from every cell (which would require redundant searches), start multi-source BFS/DFS from the cells that already touch each ocean — the entire top row and left column for the Pacific, and the entire bottom row and right column for the Atlantic. From an ocean-adjacent cell, move to a neighbor only if that neighbor's height is greater than or equal to the current cell's height; this is exactly the reverse of 'water can flow downhill or flat from the neighbor into this cell', so reachability in this reversed search means 'this cell can drain to the ocean we started from'. Run the search once for the Pacific set and once for the Atlantic set, each producing a boolean grid of reachability. A cell can flow to both oceans exactly when it's marked true in both grids — collect and return those coordinates.",
+      "language": "javascript",
+      "code": "function pacificAtlantic(heights) {\n  if (!heights || heights.length === 0 || heights[0].length === 0) return [];\n\n  const rows = heights.length;\n  const cols = heights[0].length;\n  const dirs = [[1, 0], [-1, 0], [0, 1], [0, -1]];\n\n  function bfs(starts) {\n    const visited = Array.from({ length: rows }, () => new Array(cols).fill(false));\n    const queue = [];\n    for (const [r, c] of starts) {\n      if (!visited[r][c]) {\n        visited[r][c] = true;\n        queue.push([r, c]);\n      }\n    }\n\n    let head = 0;\n    while (head < queue.length) {\n      const [r, c] = queue[head++];\n      for (const [dr, dc] of dirs) {\n        const nr = r + dr;\n        const nc = c + dc;\n        if (\n          nr >= 0 && nr < rows && nc >= 0 && nc < cols &&\n          !visited[nr][nc] &&\n          heights[nr][nc] >= heights[r][c]\n        ) {\n          visited[nr][nc] = true;\n          queue.push([nr, nc]);\n        }\n      }\n    }\n\n    return visited;\n  }\n\n  const pacificStarts = [];\n  const atlanticStarts = [];\n  for (let r = 0; r < rows; r++) {\n    pacificStarts.push([r, 0]);\n    atlanticStarts.push([r, cols - 1]);\n  }\n  for (let c = 0; c < cols; c++) {\n    pacificStarts.push([0, c]);\n    atlanticStarts.push([rows - 1, c]);\n  }\n\n  const pacific = bfs(pacificStarts);\n  const atlantic = bfs(atlanticStarts);\n\n  const result = [];\n  for (let r = 0; r < rows; r++) {\n    for (let c = 0; c < cols; c++) {\n      if (pacific[r][c] && atlantic[r][c]) result.push([r, c]);\n    }\n  }\n  return result;\n}",
+      "timeComplexity": "O(m*n) — each of the two BFS searches visits every cell and every edge a constant number of times.",
+      "spaceComplexity": "O(m*n) — two boolean reachability grids plus the BFS queues."
+    },
+    "functionName": "pacificAtlantic",
+    "starterCode": "function pacificAtlantic(heights) {\n  // your code here\n}",
+    "testCases": [
+      {
+        "args": [
+          [
+            [1, 2, 2, 3, 5],
+            [3, 2, 3, 4, 4],
+            [2, 4, 5, 3, 1],
+            [6, 7, 1, 4, 5],
+            [5, 1, 1, 2, 4]
+          ]
+        ],
+        "expected": [[0, 4], [1, 3], [1, 4], [2, 2], [3, 0], [3, 1], [4, 0]]
+      },
+      {
+        "args": [[[1]]],
+        "expected": [[0, 0]]
+      },
+      {
+        "args": [
+          [
+            [1, 1],
+            [1, 1]
+          ]
+        ],
+        "expected": [[0, 0], [0, 1], [1, 0], [1, 1]]
+      },
+      {
+        "args": [
+          [
+            [3, 3, 3],
+            [3, 1, 3],
+            [3, 3, 3]
+          ]
+        ],
+        "expected": [[0, 0], [0, 1], [0, 2], [1, 0], [1, 2], [2, 0], [2, 1], [2, 2]]
+      }
+    ]
+  },
+  {
+    "key": "rotting-oranges",
+    "number": 71,
+    "title": "Rotting Oranges",
+    "difficulty": "Medium",
+    "statement": "You're given an `m x n` grid where each cell is one of:\n- `0` — an empty cell\n- `1` — a fresh orange\n- `2` — a rotten orange\n\nEvery minute, any fresh orange that is **orthogonally adjacent** (up/down/left/right) to a rotten orange also becomes rotten.\n\nReturn the minimum number of minutes until **no fresh orange remains**. If this is impossible (some fresh orange can never be reached), return `-1`.",
+    "examples": [
+      {
+        "input": "grid = [[2,1,1],[1,1,0],[0,1,1]]",
+        "output": "4",
+        "explanation": "The rot spreads outward from the single rotten orange minute by minute; the farthest fresh orange takes 4 minutes to be reached."
+      },
+      {
+        "input": "grid = [[2,1,1],[0,1,1],[1,0,1]]",
+        "output": "-1",
+        "explanation": "The orange in the bottom-left corner is isolated by empty cells and can never rot."
+      }
+    ],
+    "constraints": [
+      "m == grid.length",
+      "n == grid[i].length",
+      "1 <= m, n <= 10",
+      "grid[i][j] is 0, 1, or 2"
+    ],
+    "hints": [
+      "This isn't 'find one path' — every rotten orange spreads outward at the same time, minute by minute, so many rotten cells are infecting their neighbors simultaneously.",
+      "A multi-source BFS, starting from ALL rotten oranges at once (minute 0), naturally simulates this: everything reached in one 'layer' of the BFS rots in the same minute.",
+      "Seed the BFS queue with every initially rotten orange's coordinates (paired with time 0). Pop cells, rot their fresh neighbors (marking them rotten and pushing them with time+1), and track the maximum time seen. If any fresh orange is still unrotted when the queue empties, return -1; otherwise return the max time."
+    ],
+    "solution": {
+      "approach": "Treat every initially rotten orange as a simultaneous BFS source: seed the queue with all of their coordinates at time 0, and count the total number of fresh oranges up front. Process the queue in FIFO order — for each cell, look at its four neighbors; any neighbor that's still fresh gets marked rotten, has the fresh count decremented, and is pushed onto the queue with time+1. Because BFS explores level by level, all oranges that rot in the same minute are processed together, and the time value naturally tracks elapsed minutes. Keep a running maximum of the time value seen — that's the answer once the queue drains, PROVIDED every fresh orange got rotted (fresh count reached 0); if any fresh oranges are left unreached, the answer is -1 since they're isolated from all rot sources.",
+      "language": "javascript",
+      "code": "function orangesRotting(grid) {\n  const rows = grid.length;\n  const cols = grid[0].length;\n  const g = grid.map((row) => [...row]); // don't mutate the caller's grid\n\n  const queue = [];\n  let fresh = 0;\n\n  for (let r = 0; r < rows; r++) {\n    for (let c = 0; c < cols; c++) {\n      if (g[r][c] === 2) queue.push([r, c, 0]);\n      else if (g[r][c] === 1) fresh++;\n    }\n  }\n\n  if (fresh === 0) return 0;\n\n  const dirs = [[1, 0], [-1, 0], [0, 1], [0, -1]];\n  let minutes = 0;\n  let head = 0;\n\n  while (head < queue.length) {\n    const [r, c, time] = queue[head++];\n    minutes = Math.max(minutes, time);\n    for (const [dr, dc] of dirs) {\n      const nr = r + dr;\n      const nc = c + dc;\n      if (nr >= 0 && nr < rows && nc >= 0 && nc < cols && g[nr][nc] === 1) {\n        g[nr][nc] = 2;\n        fresh--;\n        queue.push([nr, nc, time + 1]);\n      }\n    }\n  }\n\n  return fresh === 0 ? minutes : -1;\n}",
+      "timeComplexity": "O(m*n) — every cell enters the BFS queue at most once.",
+      "spaceComplexity": "O(m*n) — the BFS queue can hold up to every cell in the grid."
+    },
+    "functionName": "orangesRotting",
+    "starterCode": "function orangesRotting(grid) {\n  // your code here\n}",
+    "testCases": [
+      {
+        "args": [
+          [
+            [2, 1, 1],
+            [1, 1, 0],
+            [0, 1, 1]
+          ]
+        ],
+        "expected": 4
+      },
+      {
+        "args": [
+          [
+            [2, 1, 1],
+            [0, 1, 1],
+            [1, 0, 1]
+          ]
+        ],
+        "expected": -1
+      },
+      {
+        "args": [[[0, 2]]],
+        "expected": 0
+      },
+      {
+        "args": [[[1]]],
+        "expected": -1
+      }
+    ]
+  },
+  {
+    "key": "word-ladder",
+    "number": 72,
+    "title": "Word Ladder",
+    "difficulty": "Hard",
+    "statement": "You're given two words, `beginWord` and `endWord`, and a `wordList`. Return the number of words in the **shortest transformation sequence** from `beginWord` to `endWord`, such that:\n\n- Only **one letter** can be changed at a time.\n- Every intermediate word (including `endWord`) must exist in `wordList`. `beginWord` does not need to be in `wordList`.\n\nIf no such sequence exists, return `0`.",
+    "examples": [
+      {
+        "input": "beginWord = \"hit\", endWord = \"cog\", wordList = [\"hot\",\"dot\",\"dog\",\"lot\",\"log\",\"cog\"]",
+        "output": "5",
+        "explanation": "One shortest sequence is \"hit\" -> \"hot\" -> \"dot\" -> \"dog\" -> \"cog\", which has 5 words."
+      },
+      {
+        "input": "beginWord = \"hit\", endWord = \"cog\", wordList = [\"hot\",\"dot\",\"dog\",\"lot\",\"log\"]",
+        "output": "0",
+        "explanation": "endWord \"cog\" is not in wordList, so no valid transformation sequence can end there."
+      }
+    ],
+    "constraints": [
+      "1 <= beginWord.length <= 10",
+      "endWord.length == beginWord.length",
+      "1 <= wordList.length <= 5000",
+      "wordList[i].length == beginWord.length",
+      "beginWord != endWord",
+      "All the words in wordList are unique."
+    ],
+    "hints": [
+      "Think of each word as a node, with an edge between two words if they differ by exactly one letter. You want the shortest path from beginWord to endWord — shortest path in an unweighted graph is a job for BFS, not DFS.",
+      "Generating every pair of words that differ by one letter up front is expensive. Instead, for each word popped from the BFS queue, generate all of its one-letter variations (26 letters × word length) and check which ones are actually in the word list.",
+      "Use a set for `wordList` for O(1) membership checks, and remove/mark a word as visited the moment you enqueue it (not when you dequeue it) so you don't enqueue the same word from multiple places and blow up the queue."
+    ],
+    "solution": {
+      "approach": "Model this as a shortest-path problem on an implicit graph where each word is a node and an edge connects two words that differ by exactly one letter. Since all edges are unweighted, BFS from beginWord finds the shortest path length. Rather than precomputing every edge, generate a word's neighbors on the fly: for each position in the word, try substituting every letter a-z (skipping the letter already there) and check whether the result is in the word set. Track path length alongside each queued word (starting at 1 for beginWord itself), and mark a word visited the moment it's enqueued to avoid processing it from multiple parents. The first time endWord is popped from the queue, its tracked length is the answer. If the queue empties without ever reaching endWord (or endWord was never in the word list to begin with), return 0.",
+      "language": "javascript",
+      "code": "function ladderLength(beginWord, endWord, wordList) {\n  const wordSet = new Set(wordList);\n  if (!wordSet.has(endWord)) return 0;\n\n  const queue = [[beginWord, 1]];\n  const visited = new Set([beginWord]);\n  let head = 0;\n\n  while (head < queue.length) {\n    const [word, steps] = queue[head++];\n    if (word === endWord) return steps;\n\n    for (let i = 0; i < word.length; i++) {\n      for (let code = 97; code <= 122; code++) {\n        const ch = String.fromCharCode(code);\n        if (ch === word[i]) continue;\n        const next = word.slice(0, i) + ch + word.slice(i + 1);\n        if (wordSet.has(next) && !visited.has(next)) {\n          visited.add(next);\n          queue.push([next, steps + 1]);\n        }\n      }\n    }\n  }\n\n  return 0;\n}",
+      "timeComplexity": "O(N * L^2) where N is the word list size and L is the word length — for each word dequeued, generating all one-letter variants costs O(L * 26) and each variant requires an O(L) string build/hash.",
+      "spaceComplexity": "O(N * L) — the word set, visited set, and BFS queue each hold up to O(N) words of length L."
+    },
+    "functionName": "ladderLength",
+    "starterCode": "function ladderLength(beginWord, endWord, wordList) {\n  // your code here\n}",
+    "testCases": [
+      {
+        "args": ["hit", "cog", ["hot", "dot", "dog", "lot", "log", "cog"]],
+        "expected": 5
+      },
+      {
+        "args": ["hit", "cog", ["hot", "dot", "dog", "lot", "log"]],
+        "expected": 0
+      },
+      {
+        "args": ["a", "c", ["a", "b", "c"]],
+        "expected": 2
+      },
+      {
+        "args": ["hot", "dog", ["hot", "dog"]],
+        "expected": 0
+      }
+    ]
+  },
+  {
+    "key": "graph-valid-tree",
+    "number": 73,
+    "title": "Graph Valid Tree",
+    "difficulty": "Medium",
+    "statement": "You have a graph of `n` nodes labeled `0` to `n - 1`, and an array `edges` where `edges[i] = [a, b]` is an **undirected** edge between nodes `a` and `b`.\n\nReturn `true` if the edges form a **valid tree** — that is, the graph is fully connected and contains no cycles — and `false` otherwise.",
+    "examples": [
+      {
+        "input": "n = 5, edges = [[0,1],[0,2],[0,3],[1,4]]",
+        "output": "true",
+        "explanation": "Every node is reachable, and there are exactly n - 1 = 4 edges with no cycle."
+      },
+      {
+        "input": "n = 5, edges = [[0,1],[1,2],[2,3],[1,3],[1,4]]",
+        "output": "false",
+        "explanation": "Nodes 1, 2, and 3 form a cycle (1-2, 2-3, 3-1), so this isn't a tree."
+      }
+    ],
+    "constraints": [
+      "1 <= n <= 2000",
+      "0 <= edges.length <= 5000",
+      "edges[i].length == 2",
+      "0 <= a, b < n",
+      "a != b",
+      "There are no self-loops or repeated edges."
+    ],
+    "hints": [
+      "A tree with n nodes has exactly n - 1 edges — if the edge count doesn't match that, it can't possibly be a valid tree (either disconnected with extra isolated pieces, or has a cycle).",
+      "Exactly n - 1 edges is necessary but not sufficient — you also need the graph to actually be fully connected (no separate disconnected components) rather than, say, one cycle plus isolated nodes.",
+      "Check the edge count is exactly n - 1 first (an O(1) shortcut that rules out most invalid cases immediately), then run a single BFS/DFS from node 0 over the undirected adjacency list and confirm every one of the n nodes gets visited — if so, and the edge count already ruled out cycles, it's a valid tree."
+    ],
+    "solution": {
+      "approach": "A graph is a valid tree if and only if it is connected and acyclic. A quick necessary condition falls out of graph theory: any connected, acyclic undirected graph on n nodes has exactly n - 1 edges, and conversely, if a graph has exactly n - 1 edges AND is connected, it cannot contain a cycle (adding any edge to a connected n-node, (n-1)-edge tree would create a cycle, and removing an edge would disconnect it) — so checking those two facts together is sufficient. First check `edges.length === n - 1`; if not, return false immediately (either too few edges to connect everything, or too many, guaranteeing a cycle). Otherwise, build an adjacency list and run a single BFS/DFS from node 0, counting how many distinct nodes are reached. If all n nodes are reached, the graph is connected, and combined with the edge-count check, that proves it's a valid tree.",
+      "language": "javascript",
+      "code": "function validTree(n, edges) {\n  if (edges.length !== n - 1) return false;\n\n  const adj = Array.from({ length: n }, () => []);\n  for (const [a, b] of edges) {\n    adj[a].push(b);\n    adj[b].push(a);\n  }\n\n  const visited = new Set([0]);\n  const stack = [0];\n\n  while (stack.length) {\n    const node = stack.pop();\n    for (const neighbor of adj[node]) {\n      if (!visited.has(neighbor)) {\n        visited.add(neighbor);\n        stack.push(neighbor);\n      }\n    }\n  }\n\n  return visited.size === n;\n}",
+      "timeComplexity": "O(V+E) — building the adjacency list is O(E), and the DFS/BFS visits every node and edge once.",
+      "spaceComplexity": "O(V+E) — the adjacency list plus the visited set and stack."
+    },
+    "functionName": "validTree",
+    "starterCode": "function validTree(n, edges) {\n  // your code here\n}",
+    "testCases": [
+      {
+        "args": [5, [[0, 1], [0, 2], [0, 3], [1, 4]]],
+        "expected": true
+      },
+      {
+        "args": [5, [[0, 1], [1, 2], [2, 3], [1, 3], [1, 4]]],
+        "expected": false
+      },
+      {
+        "args": [1, []],
+        "expected": true
+      },
+      {
+        "args": [4, [[0, 1], [2, 3]]],
+        "expected": false
+      }
+    ]
+  },
+  {
+    "key": "number-of-connected-components",
+    "number": 74,
+    "title": "Number of Connected Components",
+    "difficulty": "Medium",
+    "statement": "You have a graph of `n` nodes labeled `0` to `n - 1`, and an array `edges` where `edges[i] = [a, b]` is an **undirected** edge between nodes `a` and `b`.\n\nReturn the number of **connected components** in the graph.",
+    "examples": [
+      {
+        "input": "n = 5, edges = [[0,1],[1,2],[3,4]]",
+        "output": "2",
+        "explanation": "{0,1,2} form one connected component and {3,4} form another."
+      },
+      {
+        "input": "n = 5, edges = [[0,1],[1,2],[2,3],[3,4]]",
+        "output": "1",
+        "explanation": "All five nodes are linked in a single chain, so there's just one component."
+      }
+    ],
+    "constraints": [
+      "1 <= n <= 2000",
+      "0 <= edges.length <= 5000",
+      "edges[i].length == 2",
+      "0 <= a, b < n",
+      "a != b",
+      "There are no repeated edges."
+    ],
+    "hints": [
+      "Every node that hasn't been reached yet by a previous search starts a brand-new component — you just need a way to explore each component fully once you find its first node.",
+      "Build an undirected adjacency list, then repeatedly pick any unvisited node, flood-fill (BFS/DFS) to mark every node reachable from it as visited, and count that as one component.",
+      "Loop over nodes 0 to n-1 in order; each time you hit a node that's still unvisited, increment your component counter and run the flood fill from it before continuing the loop — visited nodes from earlier flood fills get skipped automatically."
+    ],
+    "solution": {
+      "approach": "Build an undirected adjacency list from the edge list. Then iterate over every node from 0 to n-1: whenever a node hasn't been visited yet, it must be the first node encountered from a not-yet-explored component, so increment the component counter and run a BFS/DFS flood fill from it, marking every node reachable through the adjacency list as visited. Because the flood fill consumes an entire component in one go, the outer loop will skip all of that component's other nodes (they're already visited) and only trigger a fresh increment when it reaches a genuinely new, disconnected part of the graph. By the end of the loop, the counter equals the number of connected components.",
+      "language": "javascript",
+      "code": "function countComponents(n, edges) {\n  const adj = Array.from({ length: n }, () => []);\n  for (const [a, b] of edges) {\n    adj[a].push(b);\n    adj[b].push(a);\n  }\n\n  const visited = new Array(n).fill(false);\n  let count = 0;\n\n  for (let i = 0; i < n; i++) {\n    if (visited[i]) continue;\n\n    count++;\n    const stack = [i];\n    visited[i] = true;\n\n    while (stack.length) {\n      const node = stack.pop();\n      for (const neighbor of adj[node]) {\n        if (!visited[neighbor]) {\n          visited[neighbor] = true;\n          stack.push(neighbor);\n        }\n      }\n    }\n  }\n\n  return count;\n}",
+      "timeComplexity": "O(V+E) — building the adjacency list is O(E), and every node/edge is visited at most once across all the flood fills combined.",
+      "spaceComplexity": "O(V+E) — the adjacency list plus the visited array and DFS stack."
+    },
+    "functionName": "countComponents",
+    "starterCode": "function countComponents(n, edges) {\n  // your code here\n}",
+    "testCases": [
+      {
+        "args": [5, [[0, 1], [1, 2], [3, 4]]],
+        "expected": 2
+      },
+      {
+        "args": [5, [[0, 1], [1, 2], [2, 3], [3, 4]]],
+        "expected": 1
+      },
+      {
+        "args": [5, []],
+        "expected": 5
+      },
+      {
+        "args": [1, []],
+        "expected": 1
+      }
+    ]
+  }
+]

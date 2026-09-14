@@ -1,1 +1,159 @@
-[]
+[
+  {
+    "key": "gas-station",
+    "number": 88,
+    "title": "Gas Station",
+    "difficulty": "Medium",
+    "statement": "There are `n` gas stations arranged in a circle, numbered `0` to `n-1`. You have a car that starts with an empty tank at some gas station. You're given two integer arrays `gas` and `cost`, where `gas[i]` is the amount of fuel available at station `i`, and `cost[i]` is the amount of fuel needed to travel from station `i` to station `i+1` (the tank has unlimited capacity).\n\nReturn the starting gas station's index if you can travel around the circuit once in the clockwise direction without running out of fuel. If no such starting station exists, return `-1`. It is guaranteed that if a solution exists, it is unique.",
+    "examples": [
+      {
+        "input": "gas = [1,2,3,4,5], cost = [3,4,5,1,2]",
+        "output": "3",
+        "explanation": "Starting at station 3 with an empty tank: pick up 4, travel to station 4 (cost 1, tank=3); pick up 5 (tank=8), travel to station 0 (cost 2, tank=6); pick up 1 (tank=7), travel to station 1 (cost 3, tank=4); pick up 2 (tank=6), travel to station 2 (cost 4, tank=2); pick up 3 (tank=5), travel to station 3 (cost 5, tank=0). The circuit completes exactly."
+      },
+      {
+        "input": "gas = [2,3,4], cost = [3,4,3]",
+        "output": "-1",
+        "explanation": "The total gas (9) is less than the total cost (10), so no starting point can complete the circuit."
+      }
+    ],
+    "constraints": [
+      "n == gas.length == cost.length",
+      "1 <= n <= 10^5",
+      "0 <= gas[i], cost[i] <= 10^4"
+    ],
+    "hints": [
+      "Trying every possible starting station and simulating the whole trip is O(n^2) — is there a way to tell a start point is hopeless without fully simulating it?",
+      "If the total gas available is less than the total cost across the whole circuit, no starting point can possibly work — check that first.",
+      "Walk through the stations once, tracking a running fuel surplus. The moment it goes negative starting from your current candidate, that candidate (and every station tried since the last reset) is disqualified — the very next station becomes the new candidate."
+    ],
+    "solution": {
+      "approach": "First, note that if total `gas` is less than total `cost` across the whole circuit, completing it is impossible no matter where you start — so the answer is -1 whenever that sum is negative. Otherwise, exactly one valid starting station exists, and it can be found in a single pass: track a running `currentSurplus` (gas minus cost accumulated since the current candidate start). Whenever `currentSurplus` dips below zero, it means every station from the current candidate up through the station that caused the deficit cannot be a valid start (starting at any of them would run out of fuel at or before this point) — so the candidate resets to the very next station, and the running surplus resets to zero. By the end of the pass, if the total surplus was non-negative, the last candidate recorded is guaranteed to be the unique valid start.",
+      "language": "javascript",
+      "code": "function canCompleteCircuit(gas, cost) {\n  let totalSurplus = 0;\n  let currentSurplus = 0;\n  let start = 0;\n\n  for (let i = 0; i < gas.length; i++) {\n    const diff = gas[i] - cost[i];\n    totalSurplus += diff;\n    currentSurplus += diff;\n\n    if (currentSurplus < 0) {\n      start = i + 1;\n      currentSurplus = 0;\n    }\n  }\n\n  return totalSurplus >= 0 ? start : -1;\n}",
+      "timeComplexity": "O(n) — a single pass over the stations.",
+      "spaceComplexity": "O(1) — only a few running totals are tracked."
+    },
+    "functionName": "canCompleteCircuit",
+    "starterCode": "function canCompleteCircuit(gas, cost) {\n  // your code here\n}",
+    "testCases": [
+      {
+        "args": [
+          [
+            1,
+            2,
+            3,
+            4,
+            5
+          ],
+          [
+            3,
+            4,
+            5,
+            1,
+            2
+          ]
+        ],
+        "expected": 3
+      },
+      {
+        "args": [
+          [
+            2,
+            3,
+            4
+          ],
+          [
+            3,
+            4,
+            3
+          ]
+        ],
+        "expected": -1
+      },
+      {
+        "args": [
+          [
+            5
+          ],
+          [
+            4
+          ]
+        ],
+        "expected": 0
+      }
+    ]
+  },
+  {
+    "key": "jump-game-ii",
+    "number": 89,
+    "title": "Jump Game II",
+    "difficulty": "Medium",
+    "statement": "You are given a 0-indexed array of integers `nums` of length `n`. You start at index `0`. Each element `nums[i]` represents the maximum jump length from index `i` — from index `i`, you can jump to any index in the range `[i + 1, i + nums[i]]`.\n\nReturn the minimum number of jumps needed to reach index `n - 1`. You can assume it is always possible to reach the last index.",
+    "examples": [
+      {
+        "input": "nums = [2,3,1,1,4]",
+        "output": "2",
+        "explanation": "Jump 1 step from index 0 to index 1, then 3 steps from index 1 to the last index (4)."
+      },
+      {
+        "input": "nums = [2,3,0,1,4]",
+        "output": "2"
+      }
+    ],
+    "constraints": [
+      "1 <= nums.length <= 10^4",
+      "0 <= nums[i] <= 1000",
+      "It's guaranteed that you can reach nums[n - 1]."
+    ],
+    "hints": [
+      "Trying every possible sequence of jumps is exponential — but you don't actually need to decide the exact path, just how many 'rounds' of jumps are needed.",
+      "Think of it like a level-by-level (BFS) expansion: from everywhere reachable with your current jump count, what's the farthest index reachable with one more jump?",
+      "Track the current jump's reachable boundary and the farthest boundary seen while scanning up to it. The moment your scan reaches the current boundary, that's forced to cost one more jump — update the boundary to the farthest reach found so far and keep going."
+    ],
+    "solution": {
+      "approach": "This can be solved greedily by thinking in terms of 'jump ranges' rather than simulating individual jumps. `currentEnd` marks the farthest index reachable using the jumps taken so far, and `farthest` tracks the farthest index reachable using one additional jump from anywhere within the current range. Scan through the array (stopping before the last index, since no jump is needed once it's reached): at each index, update `farthest` to the best reach possible from that index. Whenever the scan reaches `currentEnd` — meaning every option within the current jump count has been considered — that forces exactly one more jump to be taken, so increment the jump counter and extend `currentEnd` to `farthest`. Because this only tracks what's reachable, never which specific index to land on, it greedily finds the minimum number of jumps without ever needing to backtrack.",
+      "language": "javascript",
+      "code": "function jump(nums) {\n  let jumps = 0;\n  let currentEnd = 0;\n  let farthest = 0;\n\n  for (let i = 0; i < nums.length - 1; i++) {\n    farthest = Math.max(farthest, i + nums[i]);\n\n    if (i === currentEnd) {\n      jumps++;\n      currentEnd = farthest;\n    }\n  }\n\n  return jumps;\n}",
+      "timeComplexity": "O(n) — a single pass over the array.",
+      "spaceComplexity": "O(1) — only a few running variables are tracked."
+    },
+    "functionName": "jump",
+    "starterCode": "function jump(nums) {\n  // your code here\n}",
+    "testCases": [
+      {
+        "args": [
+          [
+            2,
+            3,
+            1,
+            1,
+            4
+          ]
+        ],
+        "expected": 2
+      },
+      {
+        "args": [
+          [
+            2,
+            3,
+            0,
+            1,
+            4
+          ]
+        ],
+        "expected": 2
+      },
+      {
+        "args": [
+          [
+            1,
+            2
+          ]
+        ],
+        "expected": 1
+      }
+    ]
+  }
+]
