@@ -1,0 +1,81 @@
+.dsa-runner {
+  margin: 12px 0 20px;
+}
+
+.dsa-runner-editor {
+  border: 1px solid #30363d;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.dsa-runner-controls {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.dsa-runner-summary {
+  font-weight: 600;
+}
+
+.dsa-runner-custom {
+  margin-top: 12px;
+  padding: 12px 14px;
+  border-radius: 8px;
+  border: 1px dashed #30363d;
+  background: #161b22;
+}
+
+.dsa-runner-custom-label {
+  display: block;
+  font-size: 12px;
+  margin-bottom: 6px;
+}
+
+.dsa-runner-custom-row {
+  display: flex;
+  gap: 8px;
+}
+
+.dsa-runner-custom-row .ant-input {
+  font-family: Menlo, Monaco, Consolas, monospace;
+}
+
+.dsa-runner-case {
+  margin-top: 10px;
+  padding: 10px 14px;
+  border-radius: 8px;
+  border: 1px solid #30363d;
+  background: #161b22;
+}
+
+.dsa-runner-case-pass {
+  border-color: #2f8d46;
+}
+
+.dsa-runner-case-fail {
+  border-color: #b33a3a;
+}
+
+.dsa-runner-case pre {
+  margin: 6px 0 0;
+  white-space: pre-wrap;
+  color: #ff7b72;
+}
+
+.dsa-runner-case-row {
+  display: flex;
+  gap: 8px;
+  font-size: 13px;
+  margin-top: 4px;
+  color: #9198a1;
+}
+
+.dsa-runner-case-row code {
+  color: #e6edf3;
+  background: #0d1117;
+  padding: 1px 6px;
+  border-radius: 4px;
+  word-break: break-all;
+}

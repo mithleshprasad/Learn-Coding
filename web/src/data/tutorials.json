@@ -45,6 +45,15 @@
     "to": "/tutorials/mongodb"
   },
   {
+    "key": "dsa-practice",
+    "title": "DSA Practice",
+    "description": "~90 must-do cross-company questions with hints, solutions, and a runnable judge.",
+    "accent": "linear-gradient(135deg, #0d1117, #123047)",
+    "language": "javascript",
+    "code": "function twoSum(nums, target) {\n  const seen = new Map();\n  // ...\n}",
+    "to": "/dsa-practice"
+  },
+  {
     "key": "hr",
     "title": "HR Question",
     "description": "Prepare for HR interviews with top questions and answers.",

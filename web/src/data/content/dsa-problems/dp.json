@@ -1,0 +1,533 @@
+[
+  {
+    "key": "climbing-stairs",
+    "number": 75,
+    "title": "Climbing Stairs",
+    "difficulty": "Easy",
+    "statement": "You are climbing a staircase that takes `n` steps to reach the top. Each time you can climb either `1` or `2` steps.\n\nIn how many distinct ways can you climb to the top?",
+    "examples": [
+      {
+        "input": "n = 2",
+        "output": "2",
+        "explanation": "There are two ways: 1 step + 1 step, or 2 steps."
+      },
+      {
+        "input": "n = 3",
+        "output": "3",
+        "explanation": "The ways are: 1+1+1, 1+2, and 2+1."
+      }
+    ],
+    "constraints": ["1 <= n <= 45"],
+    "hints": [
+      "Try to write out the number of ways for n = 1, 2, 3, 4 by hand. Do you notice a pattern connecting `ways(n)` to smaller values of n?",
+      "Think about the very last step you take to reach step `n` — it's either a single step from step `n-1`, or a double step from step `n-2`. How does that let you build `ways(n)` from `ways(n-1)` and `ways(n-2)`?",
+      "`ways(n) = ways(n-1) + ways(n-2)`, the same recurrence as Fibonacci. Compute it bottom-up with two running variables instead of recursing, to avoid recomputation."
+    ],
+    "solution": {
+      "approach": "Let `dp[i]` be the number of distinct ways to reach step `i`. To land on step `i`, the last move was either a 1-step from `i-1` or a 2-step from `i-2`, so every way of reaching `i-1` or `i-2` extends into exactly one way of reaching `i`: `dp[i] = dp[i-1] + dp[i-2]`. The base cases are `dp[1] = 1` (one way: a single step) and `dp[2] = 2` (step 1+1, or step 2). Building the table bottom-up from these bases up to `n` avoids the exponential blowup of the naive recursive solution, which recomputes the same subproblems repeatedly. Since each `dp[i]` only depends on the previous two values, we can collapse the table to two rolling variables for O(1) space.",
+      "language": "javascript",
+      "code": "function climbStairs(n) {\n  if (n <= 2) return n;\n\n  let prev2 = 1; // ways to reach step (i - 2), starts as ways to reach step 1\n  let prev1 = 2; // ways to reach step (i - 1), starts as ways to reach step 2\n\n  for (let i = 3; i <= n; i++) {\n    const curr = prev1 + prev2;\n    prev2 = prev1;\n    prev1 = curr;\n  }\n\n  return prev1;\n}",
+      "timeComplexity": "O(n) — one pass from 3 to n computing each value once.",
+      "spaceComplexity": "O(1) — only two rolling variables are kept instead of a full DP array."
+    },
+    "functionName": "climbStairs",
+    "starterCode": "function climbStairs(n) {\n  // your code here\n}",
+    "testCases": [
+      { "args": [1], "expected": 1 },
+      { "args": [2], "expected": 2 },
+      { "args": [3], "expected": 3 },
+      { "args": [5], "expected": 8 }
+    ]
+  },
+  {
+    "key": "house-robber",
+    "number": 76,
+    "title": "House Robber",
+    "difficulty": "Medium",
+    "statement": "You are a professional robber planning to rob houses along a street. Each house has a certain amount of money stashed, given in the array `nums`. Adjacent houses have connected security systems — if two adjacent houses are robbed on the same night, the alarm triggers automatically.\n\nGiven `nums`, return the maximum amount of money you can rob tonight without robbing two adjacent houses.",
+    "examples": [
+      {
+        "input": "nums = [1,2,3,1]",
+        "output": "4",
+        "explanation": "Rob house 0 (money = 1) and house 2 (money = 3), total = 1 + 3 = 4."
+      },
+      {
+        "input": "nums = [2,7,9,3,1]",
+        "output": "12",
+        "explanation": "Rob house 0 (2), house 2 (9), and house 4 (1), total = 2 + 9 + 1 = 12."
+      }
+    ],
+    "constraints": ["1 <= nums.length <= 100", "0 <= nums[i] <= 400"],
+    "hints": [
+      "Trying every subset of non-adjacent houses is exponential. What's the best amount you can rob using only the first `i` houses?",
+      "For house `i`, you either skip it (best is whatever you had for the first `i-1` houses) or rob it (best is `nums[i]` plus the best for the first `i-2` houses, since house `i-1` is now off-limits). Take the max of those two options.",
+      "`dp[i] = max(dp[i-1], dp[i-2] + nums[i])`. Since `dp[i]` only needs the previous two values, you can roll them into two variables instead of a full array."
+    ],
+    "solution": {
+      "approach": "Define `dp[i]` as the maximum money obtainable considering only houses `0..i`. At house `i` you have two choices: skip it and keep `dp[i-1]`, or rob it and add `nums[i]` to `dp[i-2]` (since house `i-1` can't also be robbed). So `dp[i] = max(dp[i-1], dp[i-2] + nums[i])`, with base cases of 0 for 'no houses'. Scanning left to right and keeping only the last two values (`prevMax`, `currMax`) gives an O(1)-space solution: at each house, compute the candidate `prevMax + num` (rob this house), compare against `currMax` (skip it), and roll the window forward.",
+      "language": "javascript",
+      "code": "function rob(nums) {\n  let prevMax = 0; // best total using houses up to i-2\n  let currMax = 0; // best total using houses up to i-1\n\n  for (const num of nums) {\n    const robThis = prevMax + num;\n    const temp = Math.max(currMax, robThis);\n    prevMax = currMax;\n    currMax = temp;\n  }\n\n  return currMax;\n}",
+      "timeComplexity": "O(n) — single pass over the houses.",
+      "spaceComplexity": "O(1) — only two rolling variables track the DP state."
+    },
+    "functionName": "rob",
+    "starterCode": "function rob(nums) {\n  // your code here\n}",
+    "testCases": [
+      { "args": [[1, 2, 3, 1]], "expected": 4 },
+      { "args": [[2, 7, 9, 3, 1]], "expected": 12 },
+      { "args": [[5]], "expected": 5 },
+      { "args": [[2, 1]], "expected": 2 }
+    ]
+  },
+  {
+    "key": "house-robber-ii",
+    "number": 77,
+    "title": "House Robber II",
+    "difficulty": "Medium",
+    "statement": "You are a professional robber planning to rob houses along a street, but this time the houses are arranged in a **circle** — the first house and the last house are adjacent to each other. As before, adjacent houses have connected security systems, so you cannot rob two adjacent houses on the same night.\n\nGiven `nums`, return the maximum amount of money you can rob tonight without triggering an alarm.",
+    "examples": [
+      {
+        "input": "nums = [2,3,2]",
+        "output": "3",
+        "explanation": "Robbing house 0 (2) and house 2 (2) is not allowed since they're adjacent in the circle. The best is robbing house 1 (3) alone."
+      },
+      {
+        "input": "nums = [1,2,3,1]",
+        "output": "4",
+        "explanation": "Rob house 0 (1) and house 2 (3), total = 4. House 3 is adjacent to house 0 in the circle so it's skipped."
+      }
+    ],
+    "constraints": ["1 <= nums.length <= 100", "0 <= nums[i] <= 1000"],
+    "hints": [
+      "This is House Robber, except house 0 and house n-1 are now adjacent. What breaks if you reuse the straight-line solution directly?",
+      "In any valid selection, house 0 and house n-1 can't both be robbed. So the answer is confined to one of two scenarios: houses come from the range that excludes the last house, or from the range that excludes the first house.",
+      "Run the linear House Robber DP twice — once on `nums[0..n-2]` and once on `nums[1..n-1]` — and return the larger of the two results. Handle `n == 1` as a special case since both slices would otherwise be empty."
+    ],
+    "solution": {
+      "approach": "The circular constraint only ever rules out one pairing: house 0 and house n-1 can never both be chosen. That means an optimal solution either never robs the last house, or never robs the first house — dropping that single wrap-around edge lets the plain House Robber DP handle either remaining line freely. So compute the linear House Robber answer twice: once over `nums[0 .. n-2]` (last house excluded) and once over `nums[1 .. n-1]` (first house excluded), and take the max of the two. Each linear pass uses the same `dp[i] = max(dp[i-1], dp[i-2] + nums[i])` recurrence as House Robber, rolled into two variables. The single-house case is handled separately since both slices would otherwise be empty.",
+      "language": "javascript",
+      "code": "function rob(nums) {\n  const n = nums.length;\n  if (n === 1) return nums[0];\n\n  const robLinear = (houses) => {\n    let prevMax = 0;\n    let currMax = 0;\n    for (const num of houses) {\n      const temp = Math.max(currMax, prevMax + num);\n      prevMax = currMax;\n      currMax = temp;\n    }\n    return currMax;\n  };\n\n  return Math.max(\n    robLinear(nums.slice(0, n - 1)), // exclude the last house\n    robLinear(nums.slice(1))         // exclude the first house\n  );\n}",
+      "timeComplexity": "O(n) — two linear passes over slices of the array.",
+      "spaceComplexity": "O(n) — for the two array slices; the DP itself only needs O(1) extra space (this could be reduced to O(1) total by iterating with index bounds instead of slicing)."
+    },
+    "functionName": "rob",
+    "starterCode": "function rob(nums) {\n  // your code here\n}",
+    "testCases": [
+      { "args": [[2, 3, 2]], "expected": 3 },
+      { "args": [[1, 2, 3, 1]], "expected": 4 },
+      { "args": [[5]], "expected": 5 },
+      { "args": [[1, 2]], "expected": 2 }
+    ]
+  },
+  {
+    "key": "coin-change",
+    "number": 78,
+    "title": "Coin Change",
+    "difficulty": "Medium",
+    "statement": "You are given an integer array `coins` representing coins of different denominations, and an integer `amount` representing a total amount of money.\n\nReturn the fewest number of coins needed to make up that amount. If the amount cannot be made up by any combination of the coins, return `-1`. You may assume an unlimited supply of each coin.",
+    "examples": [
+      {
+        "input": "coins = [1,2,5], amount = 11",
+        "output": "3",
+        "explanation": "11 = 5 + 5 + 1, using 3 coins."
+      },
+      {
+        "input": "coins = [2], amount = 3",
+        "output": "-1",
+        "explanation": "No combination of 2's can ever sum to an odd amount like 3."
+      }
+    ],
+    "constraints": ["1 <= coins.length <= 12", "1 <= coins[i] <= 2^31 - 1", "0 <= amount <= 10^4"],
+    "hints": [
+      "Greedily always picking the largest coin doesn't work for arbitrary denominations — find a counterexample, then think about trying every coin at every amount instead.",
+      "Define the minimum number of coins needed to make every amount from 0 up to the target, building smaller amounts first. What's the best way to make amount `a` if you already knew the best way to make every smaller amount?",
+      "`dp[a] = 1 + min(dp[a - coin])` over every coin that fits (`coin <= a`). Initialize `dp[0] = 0` and everything else as 'impossible' (infinity) until proven reachable."
+    ],
+    "solution": {
+      "approach": "Let `dp[a]` be the fewest coins needed to make amount `a`, with `dp[0] = 0` as the base case (zero coins needed for zero amount). For each amount `a` from `1` to `amount`, try every coin denomination that's small enough to use (`coin <= a`): if using that coin, the remaining amount `a - coin` needs `dp[a - coin]` coins, so this coin choice costs `dp[a - coin] + 1` total. `dp[a]` is the minimum of that quantity over all usable coins. Amounts that stay unreachable keep the sentinel value `Infinity`. This bottom-up order guarantees `dp[a - coin]` is already finalized by the time it's needed, since `a - coin < a`. At the end, `dp[amount]` is the answer, or `-1` if it's still `Infinity`.",
+      "language": "javascript",
+      "code": "function coinChange(coins, amount) {\n  const dp = new Array(amount + 1).fill(Infinity);\n  dp[0] = 0;\n\n  for (let a = 1; a <= amount; a++) {\n    for (const coin of coins) {\n      if (coin <= a && dp[a - coin] + 1 < dp[a]) {\n        dp[a] = dp[a - coin] + 1;\n      }\n    }\n  }\n\n  return dp[amount] === Infinity ? -1 : dp[amount];\n}",
+      "timeComplexity": "O(amount * coins.length) — for each amount we try every coin once.",
+      "spaceComplexity": "O(amount) — the dp array has one entry per amount from 0 to `amount`."
+    },
+    "functionName": "coinChange",
+    "starterCode": "function coinChange(coins, amount) {\n  // your code here\n}",
+    "testCases": [
+      { "args": [[1, 2, 5], 11], "expected": 3 },
+      { "args": [[2], 3], "expected": -1 },
+      { "args": [[1], 0], "expected": 0 },
+      { "args": [[1, 3, 4, 5], 7], "expected": 2 }
+    ]
+  },
+  {
+    "key": "longest-increasing-subsequence",
+    "number": 79,
+    "title": "Longest Increasing Subsequence",
+    "difficulty": "Medium",
+    "statement": "Given an integer array `nums`, return the length of the longest **strictly increasing subsequence**.\n\nA subsequence is a sequence derived from the array by deleting zero or more elements without changing the order of the remaining elements.",
+    "examples": [
+      {
+        "input": "nums = [10,9,2,5,3,7,101,18]",
+        "output": "4",
+        "explanation": "The longest increasing subsequence is [2,3,7,101], length 4."
+      },
+      {
+        "input": "nums = [0,1,0,3,2,3]",
+        "output": "4",
+        "explanation": "The longest increasing subsequence is [0,1,2,3], length 4."
+      }
+    ],
+    "constraints": ["1 <= nums.length <= 2500", "-10^4 <= nums[i] <= 10^4"],
+    "hints": [
+      "Checking every subsequence is exponential (2^n). Instead, think about the longest increasing subsequence that *ends exactly at* each index.",
+      "For index `i`, look back at every earlier index `j`. If `nums[j] < nums[i]`, then the subsequence ending at `j` can be extended by `nums[i]`. What's the best extension across all valid `j`?",
+      "`dp[i] = 1 + max(dp[j])` over every `j < i` with `nums[j] < nums[i]` (or just `1` if no such `j` exists). The answer is the maximum value in the whole `dp` array, not just `dp[n-1]`, since the longest subsequence can end anywhere."
+    ],
+    "solution": {
+      "approach": "Define `dp[i]` as the length of the longest increasing subsequence that ends exactly at index `i` (so `nums[i]` is always its last element). The base case is `dp[i] = 1` for every `i`, since each element is trivially a subsequence of length 1 by itself. To fill in `dp[i]`, look at every earlier index `j < i`: if `nums[j] < nums[i]`, the subsequence ending at `j` can be extended by appending `nums[i]`, giving a candidate length of `dp[j] + 1`. Taking the best such candidate (or staying at 1 if no earlier element is smaller) gives `dp[i] = max(1, max over valid j of dp[j] + 1)`. Because the overall longest increasing subsequence can end at any index, the final answer is `max(dp)` over the whole array, not just its last entry. This runs in O(n^2); it can be improved to O(n log n) with a patience-sorting technique that tracks the smallest possible tail value for each achievable subsequence length, but the O(n^2) tabulation is the clearest starting point.",
+      "language": "javascript",
+      "code": "function lengthOfLIS(nums) {\n  const n = nums.length;\n  if (n === 0) return 0;\n\n  const dp = new Array(n).fill(1);\n  let longest = 1;\n\n  for (let i = 1; i < n; i++) {\n    for (let j = 0; j < i; j++) {\n      if (nums[j] < nums[i]) {\n        dp[i] = Math.max(dp[i], dp[j] + 1);\n      }\n    }\n    longest = Math.max(longest, dp[i]);\n  }\n\n  return longest;\n}",
+      "timeComplexity": "O(n^2) — for each index i we scan all earlier indices j.",
+      "spaceComplexity": "O(n) — the dp array holds one entry per index."
+    },
+    "functionName": "lengthOfLIS",
+    "starterCode": "function lengthOfLIS(nums) {\n  // your code here\n}",
+    "testCases": [
+      { "args": [[10, 9, 2, 5, 3, 7, 101, 18]], "expected": 4 },
+      { "args": [[0, 1, 0, 3, 2, 3]], "expected": 4 },
+      { "args": [[7, 7, 7, 7, 7, 7, 7]], "expected": 1 },
+      { "args": [[1]], "expected": 1 }
+    ]
+  },
+  {
+    "key": "longest-common-subsequence",
+    "number": 80,
+    "title": "Longest Common Subsequence",
+    "difficulty": "Medium",
+    "statement": "Given two strings `text1` and `text2`, return the length of their longest common subsequence. If there is no common subsequence, return `0`.\n\nA subsequence of a string is a new string generated from the original string with some characters (possibly none) deleted without changing the relative order of the remaining characters. A **common subsequence** of two strings is a subsequence that is common to both strings.",
+    "examples": [
+      {
+        "input": "text1 = \"abcde\", text2 = \"ace\"",
+        "output": "3",
+        "explanation": "The longest common subsequence is \"ace\", length 3."
+      },
+      {
+        "input": "text1 = \"abc\", text2 = \"def\"",
+        "output": "0",
+        "explanation": "There is no common subsequence between the two strings."
+      }
+    ],
+    "constraints": ["1 <= text1.length, text2.length <= 1000", "text1 and text2 consist of only lowercase English characters."],
+    "hints": [
+      "Comparing every subsequence of one string against every subsequence of the other is exponential. Think in terms of prefixes of both strings instead.",
+      "Define the LCS length between the first `i` characters of `text1` and the first `j` characters of `text2`. If the last characters of those prefixes match, they must belong together in the LCS. If they don't match, what two smaller subproblems could still contain the answer?",
+      "`dp[i][j] = dp[i-1][j-1] + 1` if `text1[i-1] === text2[j-1]`, otherwise `dp[i][j] = max(dp[i-1][j], dp[i][j-1])`. Row 0 and column 0 are all zero (an empty prefix has no common subsequence with anything)."
+    ],
+    "solution": {
+      "approach": "Build a 2D table where `dp[i][j]` is the length of the longest common subsequence between the first `i` characters of `text1` and the first `j` characters of `text2`. Row 0 and column 0 are all zero, since any subsequence compared against an empty string has length 0. For `i, j >= 1`, compare the two characters `text1[i-1]` and `text2[j-1]` (the last characters of these prefixes): if they match, they can both extend whatever LCS existed between the prefixes without those characters, so `dp[i][j] = dp[i-1][j-1] + 1`. If they don't match, the LCS can't use both characters, so the best is whichever is larger between dropping the last character of `text1` (`dp[i-1][j]`) or dropping the last character of `text2` (`dp[i][j-1]`): `dp[i][j] = max(dp[i-1][j], dp[i][j-1])`. Filling the table row by row, the final answer is `dp[m][n]`.",
+      "language": "javascript",
+      "code": "function longestCommonSubsequence(text1, text2) {\n  const m = text1.length;\n  const n = text2.length;\n  const dp = Array.from({ length: m + 1 }, () => new Array(n + 1).fill(0));\n\n  for (let i = 1; i <= m; i++) {\n    for (let j = 1; j <= n; j++) {\n      if (text1[i - 1] === text2[j - 1]) {\n        dp[i][j] = dp[i - 1][j - 1] + 1;\n      } else {\n        dp[i][j] = Math.max(dp[i - 1][j], dp[i][j - 1]);\n      }\n    }\n  }\n\n  return dp[m][n];\n}",
+      "timeComplexity": "O(m * n) — one entry computed per pair of prefix lengths.",
+      "spaceComplexity": "O(m * n) — the full 2D table (could be reduced to O(min(m, n)) by keeping only two rows)."
+    },
+    "functionName": "longestCommonSubsequence",
+    "starterCode": "function longestCommonSubsequence(text1, text2) {\n  // your code here\n}",
+    "testCases": [
+      { "args": ["abcde", "ace"], "expected": 3 },
+      { "args": ["abc", "abc"], "expected": 3 },
+      { "args": ["abc", "def"], "expected": 0 },
+      { "args": ["", "abc"], "expected": 0 }
+    ]
+  },
+  {
+    "key": "word-break",
+    "number": 81,
+    "title": "Word Break",
+    "difficulty": "Medium",
+    "statement": "Given a string `s` and a dictionary of strings `wordDict`, return `true` if `s` can be segmented into a space-separated sequence of one or more dictionary words.\n\nNote that the same word in the dictionary may be reused multiple times in the segmentation.",
+    "examples": [
+      {
+        "input": "s = \"leetcode\", wordDict = [\"leet\",\"code\"]",
+        "output": "true",
+        "explanation": "\"leetcode\" can be segmented as \"leet code\"."
+      },
+      {
+        "input": "s = \"catsandog\", wordDict = [\"cats\",\"dog\",\"sand\",\"and\",\"cat\"]",
+        "output": "false",
+        "explanation": "No combination of dictionary words reconstructs \"catsandog\"."
+      }
+    ],
+    "constraints": [
+      "1 <= s.length <= 300",
+      "1 <= wordDict.length <= 1000",
+      "1 <= wordDict[i].length <= 20",
+      "s and wordDict[i] consist of only lowercase English letters.",
+      "All the strings of wordDict are unique."
+    ],
+    "hints": [
+      "Trying every way to split the string is exponential. Think about whether each *prefix* of `s` — not the whole string at once — can be built from dictionary words.",
+      "Define `canBreak(i)` as whether the prefix `s[0..i)` is fully breakable into dictionary words. If some earlier prefix `s[0..j)` is breakable and the remaining chunk `s[j..i)` is itself a dictionary word, then `s[0..i)` is breakable too.",
+      "`dp[i] = true` if there exists some `j < i` with `dp[j] === true` and `s.slice(j, i)` in the dictionary. `dp[0] = true` (the empty prefix needs no words). The answer is `dp[s.length]`."
+    ],
+    "solution": {
+      "approach": "Define `dp[i]` as whether the prefix `s[0..i)` (the first `i` characters) can be fully segmented into dictionary words, with the base case `dp[0] = true` since the empty prefix trivially requires zero words. For each length `i` from 1 to `s.length`, try every possible split point `j` from 0 to `i - 1`: if `dp[j]` is true (the prefix up to `j` is breakable) and the remaining substring `s.slice(j, i)` is itself a dictionary word, then the prefix up to `i` is also breakable, so `dp[i] = true`. Putting the dictionary into a Set first makes each membership check O(1) average instead of scanning the whole list. The final answer is `dp[s.length]` — whether the entire string is breakable.",
+      "language": "javascript",
+      "code": "function wordBreak(s, wordDict) {\n  const words = new Set(wordDict);\n  const n = s.length;\n  const dp = new Array(n + 1).fill(false);\n  dp[0] = true;\n\n  for (let i = 1; i <= n; i++) {\n    for (let j = 0; j < i; j++) {\n      if (dp[j] && words.has(s.slice(j, i))) {\n        dp[i] = true;\n        break;\n      }\n    }\n  }\n\n  return dp[n];\n}",
+      "timeComplexity": "O(n^2) — for each prefix length i we try every split point j, plus O(k) for the substring slice/hash (k = average word length).",
+      "spaceComplexity": "O(n) — the dp array, plus O(sum of word lengths) for the dictionary Set."
+    },
+    "functionName": "wordBreak",
+    "starterCode": "function wordBreak(s, wordDict) {\n  // your code here\n}",
+    "testCases": [
+      { "args": ["leetcode", ["leet", "code"]], "expected": true },
+      { "args": ["applepenapple", ["apple", "pen"]], "expected": true },
+      { "args": ["catsandog", ["cats", "dog", "sand", "and", "cat"]], "expected": false },
+      { "args": ["a", ["a"]], "expected": true }
+    ]
+  },
+  {
+    "key": "combination-sum-iv",
+    "number": 82,
+    "title": "Combination Sum IV",
+    "difficulty": "Medium",
+    "statement": "Given an array of **distinct** positive integers `nums` and a target integer `target`, return the number of possible combinations that add up to `target`.\n\nThe same number may be chosen from `nums` an unlimited number of times. Two combinations are different if the **order** in which the numbers are chosen is different (so this is really counting ordered sequences, not sets).",
+    "examples": [
+      {
+        "input": "nums = [1,2,3], target = 4",
+        "output": "7",
+        "explanation": "The 7 ordered combinations are: (1,1,1,1), (1,1,2), (1,2,1), (1,3), (2,1,1), (2,2), (3,1)."
+      },
+      {
+        "input": "nums = [9], target = 3",
+        "output": "0",
+        "explanation": "No combination of 9's can ever sum to 3."
+      }
+    ],
+    "constraints": [
+      "1 <= nums.length <= 200",
+      "1 <= nums[i] <= 1000",
+      "All the elements of nums are unique.",
+      "1 <= target <= 1000"
+    ],
+    "hints": [
+      "Because order matters, this is different from Coin Change's 'minimum coins' framing — you're counting *sequences*, so the same set of numbers in a different order counts separately. Brute-force enumeration of sequences is exponential.",
+      "Think about the number of ways to build each total from 0 up to `target`. For a given total `t`, what's the connection between the ways to reach `t` and the ways to reach smaller totals?",
+      "`dp[t] = sum of dp[t - num]` over every `num` in `nums` with `num <= t`. `dp[0] = 1` (there's exactly one way to make 0: choose nothing). Because the outer loop is over totals and the inner loop is over nums, every ordering gets counted, which is exactly what makes this different from a 'count subsets' knapsack."
+    ],
+    "solution": {
+      "approach": "Define `dp[t]` as the number of ordered combinations of numbers from `nums` that sum to `t`, with base case `dp[0] = 1` (the single empty combination sums to 0). For each total `t` from 1 up to `target`, consider every number in `nums` as a possible *last* number placed in the combination: if `num <= t`, then every combination summing to `t - num` can be extended by appending `num` at the end, contributing `dp[t - num]` new combinations. Summing this contribution over all usable numbers gives `dp[t] = sum(dp[t - num] for num in nums if num <= t)`. Crucially, iterating totals in the outer loop and numbers in the inner loop (rather than the reverse, which is how you'd count unordered subsets) is what makes every permutation get counted separately, matching the problem's requirement that order matters. The final answer is `dp[target]`.",
+      "language": "javascript",
+      "code": "function combinationSum4(nums, target) {\n  const dp = new Array(target + 1).fill(0);\n  dp[0] = 1;\n\n  for (let t = 1; t <= target; t++) {\n    for (const num of nums) {\n      if (num <= t) {\n        dp[t] += dp[t - num];\n      }\n    }\n  }\n\n  return dp[target];\n}",
+      "timeComplexity": "O(target * nums.length) — for each total we try every number once.",
+      "spaceComplexity": "O(target) — the dp array has one entry per total from 0 to target."
+    },
+    "functionName": "combinationSum4",
+    "starterCode": "function combinationSum4(nums, target) {\n  // your code here\n}",
+    "testCases": [
+      { "args": [[1, 2, 3], 4], "expected": 7 },
+      { "args": [[9], 3], "expected": 0 },
+      { "args": [[1, 2, 3], 1], "expected": 1 },
+      { "args": [[1, 2, 3], 6], "expected": 24 }
+    ]
+  },
+  {
+    "key": "decode-ways",
+    "number": 83,
+    "title": "Decode Ways",
+    "difficulty": "Medium",
+    "statement": "A message containing letters from `A` to `Z` can be encoded into numbers using the mapping `'A' -> \"1\"`, `'B' -> \"2\"`, ..., `'Z' -> \"26\"`.\n\nGiven a string `s` containing only digits, return the number of ways to decode it. If the entire string cannot be decoded in any way, return `0`.\n\nNote that a leading zero makes a substring invalid on its own — for example \"06\" cannot be mapped to \"F\" because \"6\" is different from \"06\".",
+    "examples": [
+      {
+        "input": "s = \"12\"",
+        "output": "2",
+        "explanation": "\"12\" can be decoded as \"AB\" (1 2) or \"L\" (12)."
+      },
+      {
+        "input": "s = \"226\"",
+        "output": "3",
+        "explanation": "\"226\" can be decoded as \"BZ\" (2 26), \"VF\" (22 6), or \"BBF\" (2 2 6)."
+      }
+    ],
+    "constraints": ["1 <= s.length <= 100", "s consists of digits and may contain leading zero(s)."],
+    "hints": [
+      "At each position, you're deciding whether to decode one digit alone or two digits together — trying every split explicitly blows up exponentially without reusing overlapping work.",
+      "Think about the number of ways to decode the prefix of `s` up to index `i`. How does it relate to the number of ways to decode the prefix ending one digit earlier, and two digits earlier?",
+      "`dp[i] = dp[i-1]` (if the single digit `s[i-1]` is '1'-'9', i.e. not '0') `+ dp[i-2]` (if the two-digit chunk `s[i-2..i)` is between '10' and '26'). `dp[0] = 1` (empty prefix), and watch out for `dp[1]` when `s[0] === '0'`, which should be 0."
+    ],
+    "solution": {
+      "approach": "Define `dp[i]` as the number of ways to decode the prefix `s[0..i)` of length `i`. The base case `dp[0] = 1` represents the empty prefix having exactly one (trivial) decoding. For each position `i` from 1 to `s.length`, there are two ways the prefix could have been extended to length `i`: by decoding the single digit `s[i-1]` as its own letter, which is only valid if that digit is not `'0'` (since `'0'` isn't a valid letter code by itself) — contributing `dp[i-1]` ways; or by decoding the two-digit chunk `s[i-2..i)` as a single letter, which is only valid if that chunk falls between `10` and `26` inclusive — contributing `dp[i-2]` ways. Summing whichever of these are valid gives `dp[i]`. If neither is valid at some position, `dp[i]` stays `0`, and that zero then propagates forward (since later terms depend on it), correctly reporting the whole string as undecodable from that point on. The final answer is `dp[s.length]`.",
+      "language": "javascript",
+      "code": "function numDecodings(s) {\n  const n = s.length;\n  if (n === 0) return 0;\n\n  const dp = new Array(n + 1).fill(0);\n  dp[0] = 1;\n  dp[1] = s[0] !== '0' ? 1 : 0;\n\n  for (let i = 2; i <= n; i++) {\n    const oneDigit = Number(s.slice(i - 1, i));\n    const twoDigit = Number(s.slice(i - 2, i));\n\n    if (oneDigit >= 1) {\n      dp[i] += dp[i - 1];\n    }\n    if (twoDigit >= 10 && twoDigit <= 26) {\n      dp[i] += dp[i - 2];\n    }\n  }\n\n  return dp[n];\n}",
+      "timeComplexity": "O(n) — one pass over the string, constant work per position.",
+      "spaceComplexity": "O(n) — the dp array (can be reduced to O(1) with two rolling variables)."
+    },
+    "functionName": "numDecodings",
+    "starterCode": "function numDecodings(s) {\n  // your code here\n}",
+    "testCases": [
+      { "args": ["12"], "expected": 2 },
+      { "args": ["226"], "expected": 3 },
+      { "args": ["06"], "expected": 0 },
+      { "args": ["10"], "expected": 1 }
+    ]
+  },
+  {
+    "key": "unique-paths",
+    "number": 84,
+    "title": "Unique Paths",
+    "difficulty": "Medium",
+    "statement": "There is a robot on an `m x n` grid. The robot starts at the top-left corner (`grid[0][0]`) and wants to reach the bottom-right corner (`grid[m-1][n-1]`). The robot can only move either **down** or **right** at any point in time.\n\nGiven the two integers `m` and `n`, return the number of possible unique paths the robot can take to reach the bottom-right corner.",
+    "examples": [
+      {
+        "input": "m = 3, n = 7",
+        "output": "28",
+        "explanation": "There are 28 distinct down/right paths from the top-left to the bottom-right of a 3x7 grid."
+      },
+      {
+        "input": "m = 3, n = 2",
+        "output": "3",
+        "explanation": "The paths are: Right,Down,Down / Down,Right,Down / Down,Down,Right."
+      }
+    ],
+    "constraints": ["1 <= m, n <= 100", "The answer is guaranteed to be less than or equal to 2 * 10^9."],
+    "hints": [
+      "Simulating every path with recursion/backtracking is exponential. Think about how many ways there are to reach each individual cell, instead of enumerating full paths.",
+      "The robot can only arrive at a cell from directly above or directly from the left. How does the number of ways to reach a cell relate to the number of ways to reach those two neighbors?",
+      "`dp[row][col] = dp[row-1][col] + dp[row][col-1]`. The entire first row and first column are all 1, since there's only one way to reach any cell along the top edge (all rights) or left edge (all downs)."
+    ],
+    "solution": {
+      "approach": "Define `dp[row][col]` as the number of unique paths from the top-left corner to cell `(row, col)`. Every cell in the first row can only be reached by always moving right, and every cell in the first column can only be reached by always moving down, so both the entire first row and first column are initialized to `1`. For any other cell, the robot must have arrived either from directly above (`dp[row-1][col]`) or directly from the left (`dp[row][col-1]`), and since those are the only two ways in, the counts simply add: `dp[row][col] = dp[row-1][col] + dp[row][col-1]`. Filling the table row by row, the final answer is `dp[m-1][n-1]`. Since each row of the table only depends on the row directly above it, the implementation below keeps just a single rolling 1D array of length `n` and updates it in place, which is equivalent to the full 2D table but uses less memory.",
+      "language": "javascript",
+      "code": "function uniquePaths(m, n) {\n  const dp = new Array(n).fill(1); // first row: exactly one way to reach every cell\n\n  for (let row = 1; row < m; row++) {\n    for (let col = 1; col < n; col++) {\n      dp[col] += dp[col - 1]; // dp[col] currently holds \"paths from above\"; add \"paths from the left\"\n    }\n  }\n\n  return dp[n - 1];\n}",
+      "timeComplexity": "O(m * n) — every cell of the grid is visited once.",
+      "spaceComplexity": "O(n) — a single rolling row of length n (reduced from the O(m * n) full 2D table)."
+    },
+    "functionName": "uniquePaths",
+    "starterCode": "function uniquePaths(m, n) {\n  // your code here\n}",
+    "testCases": [
+      { "args": [3, 7], "expected": 28 },
+      { "args": [3, 2], "expected": 3 },
+      { "args": [1, 1], "expected": 1 },
+      { "args": [3, 3], "expected": 6 }
+    ]
+  },
+  {
+    "key": "jump-game",
+    "number": 85,
+    "title": "Jump Game",
+    "difficulty": "Medium",
+    "statement": "You are given an integer array `nums`. You start positioned at the first index, and each element `nums[i]` represents the maximum jump length from that position.\n\nReturn `true` if you can reach the last index, or `false` otherwise.",
+    "examples": [
+      {
+        "input": "nums = [2,3,1,1,4]",
+        "output": "true",
+        "explanation": "Jump 1 step from index 0 to 1, then 3 steps to reach the last index."
+      },
+      {
+        "input": "nums = [3,2,1,0,4]",
+        "output": "false",
+        "explanation": "No matter which path is taken, index 3 (value 0) is unavoidable and strands you there."
+      }
+    ],
+    "constraints": ["1 <= nums.length <= 10^4", "0 <= nums[i] <= 10^5"],
+    "hints": [
+      "Trying every sequence of jumps recursively/exhaustively is exponential. Think of it as a reachability question instead: which indices can be reached at all?",
+      "As you scan left to right, track the farthest index reachable so far using everything seen up to the current position. If you ever reach a position beyond what's currently reachable, what does that mean?",
+      "Keep `maxReach`, updated as `max(maxReach, i + nums[i])` at each index `i` you can actually stand on. If at any point `i > maxReach`, index `i` (and everything after) is unreachable — return false immediately. If you finish the scan without that happening, the last index was reachable."
+    ],
+    "solution": {
+      "approach": "Think of `canReach[i]` as whether index `i` is reachable at all from the start — that's the underlying DP question. Rather than storing a boolean for every index, track a single running value `maxReach`: the farthest index reachable using only positions already confirmed reachable. Scan left to right; at each index `i`, first check whether `i` is even reachable — if `i > maxReach`, every position from here on is unreachable, so return `false` immediately. Otherwise `i` is reachable, so update `maxReach = max(maxReach, i + nums[i])`, folding in how far a jump from `i` could reach. This is a forward DP where each state only needs the single best value carried forward from all previous states, collapsing what would otherwise be an O(n) reachability array into one rolling variable. If the scan completes without ever finding an unreachable index, the last index was reachable, so return `true`.",
+      "language": "javascript",
+      "code": "function canJump(nums) {\n  let maxReach = 0;\n\n  for (let i = 0; i < nums.length; i++) {\n    if (i > maxReach) return false;\n    maxReach = Math.max(maxReach, i + nums[i]);\n  }\n\n  return true;\n}",
+      "timeComplexity": "O(n) — a single left-to-right pass over the array.",
+      "spaceComplexity": "O(1) — only one running variable (`maxReach`) is kept."
+    },
+    "functionName": "canJump",
+    "starterCode": "function canJump(nums) {\n  // your code here\n}",
+    "testCases": [
+      { "args": [[2, 3, 1, 1, 4]], "expected": true },
+      { "args": [[3, 2, 1, 0, 4]], "expected": false },
+      { "args": [[0]], "expected": true },
+      { "args": [[1, 0, 1, 0]], "expected": false }
+    ]
+  },
+  {
+    "key": "edit-distance",
+    "number": 86,
+    "title": "Edit Distance",
+    "difficulty": "Hard",
+    "statement": "Given two strings `word1` and `word2`, return the minimum number of operations required to convert `word1` to `word2`.\n\nYou have three operations available on `word1`: **insert** a character, **delete** a character, or **replace** a character.",
+    "examples": [
+      {
+        "input": "word1 = \"horse\", word2 = \"ros\"",
+        "output": "3",
+        "explanation": "horse -> rorse (replace 'h' with 'r') -> rose (delete 'r') -> ros (delete 'e')."
+      },
+      {
+        "input": "word1 = \"intention\", word2 = \"execution\"",
+        "output": "5",
+        "explanation": "intention -> inention (delete 't') -> enention (replace 'i' with 'e') -> exention (replace 'n' with 'x') -> exection (replace 'n' with 'c') -> execution (insert 'u')."
+      }
+    ],
+    "constraints": ["0 <= word1.length, word2.length <= 500", "word1 and word2 consist of lowercase English letters."],
+    "hints": [
+      "Comparing whole strings directly doesn't decompose cleanly — think about the minimum edits needed to convert *prefixes* of `word1` into prefixes of `word2`.",
+      "If the last characters of the two prefixes already match, no operation is needed there — the cost is the same as converting the prefixes without those last characters. If they don't match, which single edit (insert, delete, or replace) gets you to a strictly smaller subproblem?",
+      "`dp[i][j] = dp[i-1][j-1]` if `word1[i-1] === word2[j-1]`, else `dp[i][j] = 1 + min(dp[i-1][j], dp[i][j-1], dp[i-1][j-1])` (delete, insert, replace respectively). The base cases `dp[i][0] = i` and `dp[0][j] = j` handle converting to/from an empty string purely by insertions or deletions."
+    ],
+    "solution": {
+      "approach": "Define `dp[i][j]` as the minimum number of operations to convert the first `i` characters of `word1` into the first `j` characters of `word2`. The base cases handle one string being empty: `dp[i][0] = i` (delete all `i` characters of `word1` to reach empty) and `dp[0][j] = j` (insert all `j` characters of `word2` from empty). For `i, j >= 1`, compare the last characters `word1[i-1]` and `word2[j-1]`: if they're equal, no operation is spent on them, so `dp[i][j] = dp[i-1][j-1]`. If they differ, one operation is required, and it's the best of three choices: **delete** `word1[i-1]` (reduce to subproblem `dp[i-1][j]`), **insert** to match `word2[j-1]` (reduce to `dp[i][j-1]`), or **replace** `word1[i-1]` with `word2[j-1]` (reduce to `dp[i-1][j-1]`) — take the minimum of those three, plus 1 for the operation itself. Filling the table row by row, the final answer is `dp[m][n]`.",
+      "language": "javascript",
+      "code": "function minDistance(word1, word2) {\n  const m = word1.length;\n  const n = word2.length;\n  const dp = Array.from({ length: m + 1 }, () => new Array(n + 1).fill(0));\n\n  for (let i = 0; i <= m; i++) dp[i][0] = i;\n  for (let j = 0; j <= n; j++) dp[0][j] = j;\n\n  for (let i = 1; i <= m; i++) {\n    for (let j = 1; j <= n; j++) {\n      if (word1[i - 1] === word2[j - 1]) {\n        dp[i][j] = dp[i - 1][j - 1];\n      } else {\n        dp[i][j] = 1 + Math.min(\n          dp[i - 1][j],     // delete from word1\n          dp[i][j - 1],     // insert into word1\n          dp[i - 1][j - 1]  // replace in word1\n        );\n      }\n    }\n  }\n\n  return dp[m][n];\n}",
+      "timeComplexity": "O(m * n) — one entry computed per pair of prefix lengths.",
+      "spaceComplexity": "O(m * n) — the full 2D table (could be reduced to O(min(m, n)) by keeping only two rows)."
+    },
+    "functionName": "minDistance",
+    "starterCode": "function minDistance(word1, word2) {\n  // your code here\n}",
+    "testCases": [
+      { "args": ["horse", "ros"], "expected": 3 },
+      { "args": ["intention", "execution"], "expected": 5 },
+      { "args": ["", ""], "expected": 0 },
+      { "args": ["a", ""], "expected": 1 }
+    ]
+  },
+  {
+    "key": "partition-equal-subset-sum",
+    "number": 87,
+    "title": "Partition Equal Subset Sum",
+    "difficulty": "Medium",
+    "statement": "Given an integer array `nums`, return `true` if it can be partitioned into two subsets such that the sum of the elements in both subsets is equal, or `false` otherwise.",
+    "examples": [
+      {
+        "input": "nums = [1,5,11,5]",
+        "output": "true",
+        "explanation": "The array can be partitioned as [1, 5, 5] and [11], both summing to 11."
+      },
+      {
+        "input": "nums = [1,2,3,5]",
+        "output": "false",
+        "explanation": "The array cannot be partitioned into two equal-sum subsets."
+      }
+    ],
+    "constraints": ["1 <= nums.length <= 200", "1 <= nums[i] <= 100"],
+    "hints": [
+      "If the total sum of the array is odd, an equal split is immediately impossible — check that first. Otherwise, trying every subset directly is exponential.",
+      "If the total sum is even, the problem reduces to: does some subset of `nums` sum to exactly `total / 2`? (If one such subset exists, everything else automatically forms the other, equal-sum half.) This is the classic 0/1 knapsack 'subset sum' question.",
+      "Track which sums from `0` to `target` are achievable using the elements processed so far, as a boolean array. For each number, iterate achievable sums **from target down to that number** (not upward) so each number is only used once — this is the standard 0/1 knapsack space-optimization trick."
+    ],
+    "solution": {
+      "approach": "First, if the total sum of `nums` is odd, no equal-sum split can exist, so return `false` immediately. Otherwise the problem reduces to: can some subset of `nums` sum to exactly `target = total / 2`? (Whatever subset achieves that, the remaining elements automatically sum to the other half.) This is the classic 0/1 knapsack subset-sum question. Define `dp[s]` as whether sum `s` is achievable using a subset of the numbers processed so far, with `dp[0] = true` (the empty subset achieves sum 0). Process the numbers one at a time; for each `num`, update the achievable sums by scanning `s` from `target` down to `num` and setting `dp[s] = true` whenever `dp[s - num]` was already true — this means 'the subset achieving `s - num` can be extended by `num` to also achieve `s`'. Scanning **downward** is essential: it guarantees each `num` is only counted once per achievable sum (0/1 knapsack), rather than being reused arbitrarily like in Coin Change's unlimited-supply variant. After processing every number, `dp[target]` tells us whether an equal-sum subset exists.",
+      "language": "javascript",
+      "code": "function canPartition(nums) {\n  const total = nums.reduce((sum, num) => sum + num, 0);\n  if (total % 2 !== 0) return false;\n\n  const target = total / 2;\n  const dp = new Array(target + 1).fill(false);\n  dp[0] = true;\n\n  for (const num of nums) {\n    for (let s = target; s >= num; s--) {\n      if (dp[s - num]) dp[s] = true;\n    }\n  }\n\n  return dp[target];\n}",
+      "timeComplexity": "O(n * target) — for each number we scan up to `target` possible sums, where target = total sum / 2.",
+      "spaceComplexity": "O(target) — the boolean dp array of achievable sums."
+    },
+    "functionName": "canPartition",
+    "starterCode": "function canPartition(nums) {\n  // your code here\n}",
+    "testCases": [
+      { "args": [[1, 5, 11, 5]], "expected": true },
+      { "args": [[1, 2, 3, 5]], "expected": false },
+      { "args": [[1, 1]], "expected": true },
+      { "args": [[1]], "expected": false }
+    ]
+  }
+]

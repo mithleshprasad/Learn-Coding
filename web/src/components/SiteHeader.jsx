@@ -30,6 +30,7 @@ const staticLinks = [
   { key: 'topics', label: 'Topics', to: '/#topics' },
   { key: 'testimonials', label: 'Testimonials', to: '/#testimonials' },
   { key: 'code-editor', label: 'Code Editor', to: '/code-editor' },
+  { key: 'dsa-practice', label: 'DSA Practice', to: '/dsa-practice' },
 ];
 
 export default function SiteHeader() {

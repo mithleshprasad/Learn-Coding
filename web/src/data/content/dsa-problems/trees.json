@@ -1,0 +1,1057 @@
+[
+  {
+    "key": "invert-binary-tree",
+    "number": 43,
+    "title": "Invert Binary Tree",
+    "difficulty": "Easy",
+    "statement": "Given the `root` of a binary tree, invert the tree, and return its root.\n\nInverting a binary tree means: for every node, swap its left and right children.",
+    "examples": [
+      {
+        "input": "root = [4,2,7,1,3,6,9]",
+        "output": "[4,7,2,9,6,3,1]"
+      },
+      {
+        "input": "root = [2,1,3]",
+        "output": "[2,3,1]"
+      },
+      {
+        "input": "root = []",
+        "output": "[]"
+      }
+    ],
+    "constraints": [
+      "The number of nodes in the tree is in the range [0, 100].",
+      "-100 <= Node.val <= 100"
+    ],
+    "hints": [
+      "Think about what needs to happen at a single node first, then figure out how to apply that to the whole tree.",
+      "Swapping the left and right children of the root alone isn't enough — every node's children need to be swapped, all the way down.",
+      "Recursively invert the left and right subtrees first, then swap the (already-inverted) results onto the current node's left/right pointers."
+    ],
+    "solution": {
+      "approach": "Recursively invert the left and right subtrees, then swap them onto the current node. Since the recursion inverts every subtree bottom-up (each call returns an already-fully-inverted subtree), swapping the two inverted results at each node correctly flips the entire tree. The base case is a null node, which is trivially its own inversion.",
+      "language": "javascript",
+      "code": "function invertTree(root) {\n  if (!root) return null;\n\n  const invertedLeft = invertTree(root.left);\n  const invertedRight = invertTree(root.right);\n\n  root.left = invertedRight;\n  root.right = invertedLeft;\n\n  return root;\n}",
+      "timeComplexity": "O(n) — every node is visited exactly once.",
+      "spaceComplexity": "O(h) — recursion stack depth equals the tree height (worst case O(n) for a skewed tree)."
+    },
+    "functionName": "invertTreeJudge",
+    "starterCode": "class TreeNode {\n  constructor(val, left = null, right = null) {\n    this.val = val;\n    this.left = left;\n    this.right = right;\n  }\n}\n\nfunction arrayToTree(arr) {\n  if (!arr.length || arr[0] === null) return null;\n  const root = new TreeNode(arr[0]);\n  const queue = [root];\n  let i = 1;\n  while (queue.length && i < arr.length) {\n    const node = queue.shift();\n    if (arr[i] !== null && arr[i] !== undefined) {\n      node.left = new TreeNode(arr[i]);\n      queue.push(node.left);\n    }\n    i++;\n    if (i < arr.length && arr[i] !== null && arr[i] !== undefined) {\n      node.right = new TreeNode(arr[i]);\n      queue.push(node.right);\n    }\n    i++;\n  }\n  return root;\n}\n\nfunction treeToArray(root) {\n  if (!root) return [];\n  const out = [];\n  const queue = [root];\n  while (queue.length) {\n    const node = queue.shift();\n    if (node) {\n      out.push(node.val);\n      queue.push(node.left);\n      queue.push(node.right);\n    } else {\n      out.push(null);\n    }\n  }\n  while (out.length && out[out.length - 1] === null) out.pop();\n  return out;\n}\n\nfunction invertTree(root) {\n  // your code here\n}\n\nfunction invertTreeJudge(arr) {\n  return treeToArray(invertTree(arrayToTree(arr)));\n}",
+    "testCases": [
+      {
+        "args": [
+          [
+            4,
+            2,
+            7,
+            1,
+            3,
+            6,
+            9
+          ]
+        ],
+        "expected": [
+          4,
+          7,
+          2,
+          9,
+          6,
+          3,
+          1
+        ]
+      },
+      {
+        "args": [
+          [
+            2,
+            1,
+            3
+          ]
+        ],
+        "expected": [
+          2,
+          3,
+          1
+        ]
+      },
+      {
+        "args": [
+          []
+        ],
+        "expected": []
+      }
+    ]
+  },
+  {
+    "key": "maximum-depth-of-binary-tree",
+    "number": 44,
+    "title": "Maximum Depth of Binary Tree",
+    "difficulty": "Easy",
+    "statement": "Given the `root` of a binary tree, return its maximum depth.\n\nA binary tree's maximum depth is the number of nodes along the longest path from the root node down to the farthest leaf node.",
+    "examples": [
+      {
+        "input": "root = [3,9,20,null,null,15,7]",
+        "output": "3"
+      },
+      {
+        "input": "root = [1,null,2]",
+        "output": "2"
+      },
+      {
+        "input": "root = []",
+        "output": "0"
+      }
+    ],
+    "constraints": [
+      "The number of nodes in the tree is in the range [0, 10^4].",
+      "-100 <= Node.val <= 100"
+    ],
+    "hints": [
+      "The depth of a tree depends entirely on the depths of its two subtrees — is there a smaller version of the same problem hiding inside each subtree?",
+      "If you knew the max depth of the left subtree and the max depth of the right subtree, how would you combine them into the depth of the whole tree?",
+      "Recursively compute `1 + max(depth(left), depth(right))`, with an empty tree having depth 0 as the base case."
+    ],
+    "solution": {
+      "approach": "Classic tree recursion: the depth of a null node is 0. Otherwise, the depth of a node is one more than the larger of its two subtrees' depths. Recursing this way naturally bottoms out at the leaves and builds the answer back up.",
+      "language": "javascript",
+      "code": "function maxDepth(root) {\n  if (!root) return 0;\n  return 1 + Math.max(maxDepth(root.left), maxDepth(root.right));\n}",
+      "timeComplexity": "O(n) — every node is visited exactly once.",
+      "spaceComplexity": "O(h) — recursion stack depth equals the tree height."
+    },
+    "functionName": "maxDepthJudge",
+    "starterCode": "class TreeNode {\n  constructor(val, left = null, right = null) {\n    this.val = val;\n    this.left = left;\n    this.right = right;\n  }\n}\n\nfunction arrayToTree(arr) {\n  if (!arr.length || arr[0] === null) return null;\n  const root = new TreeNode(arr[0]);\n  const queue = [root];\n  let i = 1;\n  while (queue.length && i < arr.length) {\n    const node = queue.shift();\n    if (arr[i] !== null && arr[i] !== undefined) {\n      node.left = new TreeNode(arr[i]);\n      queue.push(node.left);\n    }\n    i++;\n    if (i < arr.length && arr[i] !== null && arr[i] !== undefined) {\n      node.right = new TreeNode(arr[i]);\n      queue.push(node.right);\n    }\n    i++;\n  }\n  return root;\n}\n\nfunction treeToArray(root) {\n  if (!root) return [];\n  const out = [];\n  const queue = [root];\n  while (queue.length) {\n    const node = queue.shift();\n    if (node) {\n      out.push(node.val);\n      queue.push(node.left);\n      queue.push(node.right);\n    } else {\n      out.push(null);\n    }\n  }\n  while (out.length && out[out.length - 1] === null) out.pop();\n  return out;\n}\n\nfunction maxDepth(root) {\n  // your code here\n}\n\nfunction maxDepthJudge(arr) {\n  return maxDepth(arrayToTree(arr));\n}",
+    "testCases": [
+      {
+        "args": [
+          [
+            3,
+            9,
+            20,
+            null,
+            null,
+            15,
+            7
+          ]
+        ],
+        "expected": 3
+      },
+      {
+        "args": [
+          [
+            1,
+            null,
+            2
+          ]
+        ],
+        "expected": 2
+      },
+      {
+        "args": [
+          []
+        ],
+        "expected": 0
+      }
+    ]
+  },
+  {
+    "key": "same-tree",
+    "number": 45,
+    "title": "Same Tree",
+    "difficulty": "Easy",
+    "statement": "Given the roots of two binary trees `p` and `q`, write a function to check if they are the same or not.\n\nTwo binary trees are considered the same if they are structurally identical, and the nodes have the same value at each corresponding position.",
+    "examples": [
+      {
+        "input": "p = [1,2,3], q = [1,2,3]",
+        "output": "true"
+      },
+      {
+        "input": "p = [1,2], q = [1,null,2]",
+        "output": "false",
+        "explanation": "Same values, but the shapes differ — 2 is a left child in p and a right child in q."
+      }
+    ],
+    "constraints": [
+      "The number of nodes in both trees is in the range [0, 100].",
+      "-10^4 <= Node.val <= 10^4"
+    ],
+    "hints": [
+      "Two trees match only if the root values match AND both subtrees match — this naturally breaks into a recursive check.",
+      "Handle the null cases carefully first: what if both roots are null? What if only one is?",
+      "Compare `p.val === q.val`, then recursively require `isSameTree(p.left, q.left)` and `isSameTree(p.right, q.right)` to both hold."
+    ],
+    "solution": {
+      "approach": "Compare the two trees node by node with a recursion that mirrors their shape. If both current nodes are null, that part of the trees matches. If exactly one is null (or their values differ), the trees diverge here and we can return false immediately. Otherwise, the trees match at this node only if both the left subtrees match each other AND both the right subtrees match each other.",
+      "language": "javascript",
+      "code": "function isSameTree(p, q) {\n  if (!p && !q) return true;\n  if (!p || !q) return false;\n  if (p.val !== q.val) return false;\n  return isSameTree(p.left, q.left) && isSameTree(p.right, q.right);\n}",
+      "timeComplexity": "O(min(m, n)) — recursion stops as soon as a mismatch or a null is found; worst case visits every node of the smaller tree.",
+      "spaceComplexity": "O(min(h1, h2)) — recursion stack depth bounded by the shallower tree's height."
+    },
+    "functionName": "isSameTreeJudge",
+    "starterCode": "class TreeNode {\n  constructor(val, left = null, right = null) {\n    this.val = val;\n    this.left = left;\n    this.right = right;\n  }\n}\n\nfunction arrayToTree(arr) {\n  if (!arr.length || arr[0] === null) return null;\n  const root = new TreeNode(arr[0]);\n  const queue = [root];\n  let i = 1;\n  while (queue.length && i < arr.length) {\n    const node = queue.shift();\n    if (arr[i] !== null && arr[i] !== undefined) {\n      node.left = new TreeNode(arr[i]);\n      queue.push(node.left);\n    }\n    i++;\n    if (i < arr.length && arr[i] !== null && arr[i] !== undefined) {\n      node.right = new TreeNode(arr[i]);\n      queue.push(node.right);\n    }\n    i++;\n  }\n  return root;\n}\n\nfunction treeToArray(root) {\n  if (!root) return [];\n  const out = [];\n  const queue = [root];\n  while (queue.length) {\n    const node = queue.shift();\n    if (node) {\n      out.push(node.val);\n      queue.push(node.left);\n      queue.push(node.right);\n    } else {\n      out.push(null);\n    }\n  }\n  while (out.length && out[out.length - 1] === null) out.pop();\n  return out;\n}\n\nfunction isSameTree(p, q) {\n  // your code here\n}\n\nfunction isSameTreeJudge(arr1, arr2) {\n  return isSameTree(arrayToTree(arr1), arrayToTree(arr2));\n}",
+    "testCases": [
+      {
+        "args": [
+          [
+            1,
+            2,
+            3
+          ],
+          [
+            1,
+            2,
+            3
+          ]
+        ],
+        "expected": true
+      },
+      {
+        "args": [
+          [
+            1,
+            2
+          ],
+          [
+            1,
+            null,
+            2
+          ]
+        ],
+        "expected": false
+      },
+      {
+        "args": [
+          [
+            1,
+            2,
+            1
+          ],
+          [
+            1,
+            1,
+            2
+          ]
+        ],
+        "expected": false
+      }
+    ]
+  },
+  {
+    "key": "subtree-of-another-tree",
+    "number": 46,
+    "title": "Subtree of Another Tree",
+    "difficulty": "Easy",
+    "statement": "Given the roots of two binary trees `root` and `subRoot`, return `true` if there is a subtree of `root` with the same structure and node values as `subRoot`, and `false` otherwise.\n\nA subtree of a binary tree `tree` is a tree that consists of a node in `tree` and all of this node's descendants. The tree `tree` could also be considered as a subtree of itself.",
+    "examples": [
+      {
+        "input": "root = [3,4,5,1,2], subRoot = [4,1,2]",
+        "output": "true"
+      },
+      {
+        "input": "root = [3,4,5,1,2,null,null,null,null,0], subRoot = [4,1,2]",
+        "output": "false",
+        "explanation": "The node valued 4 in root has an extra descendant (0) that subRoot doesn't have, so it's not an exact match."
+      }
+    ],
+    "constraints": [
+      "The number of nodes in root is in the range [1, 2000].",
+      "The number of nodes in subRoot is in the range [1, 1000].",
+      "-10^4 <= root.val, subRoot.val <= 10^4"
+    ],
+    "hints": [
+      "You already know how to check whether two whole trees are identical (isSameTree) — can you reuse that as a building block?",
+      "The subtree could be rooted anywhere in `root`, not just at the top — you need to try every node of `root` as a potential match point.",
+      "Walk `root` node by node; at each node, run an isSameTree-style check against `subRoot`. If any node matches exactly, return true."
+    ],
+    "solution": {
+      "approach": "Reuse the same-tree comparison as a helper: two trees are identical if their roots' values match and both pairs of subtrees are identical. Then walk `root`, and at every node ask 'does the tree rooted here look identical to subRoot?' using that helper. If any node in `root` produces an exact match, `subRoot` is indeed a subtree; if we exhaust every node without a match, it isn't.",
+      "language": "javascript",
+      "code": "function isSubtree(root, subRoot) {\n  if (!subRoot) return true;\n  if (!root) return false;\n  if (isIdentical(root, subRoot)) return true;\n  return isSubtree(root.left, subRoot) || isSubtree(root.right, subRoot);\n}\n\nfunction isIdentical(a, b) {\n  if (!a && !b) return true;\n  if (!a || !b) return false;\n  if (a.val !== b.val) return false;\n  return isIdentical(a.left, b.left) && isIdentical(a.right, b.right);\n}",
+      "timeComplexity": "O(m * n) — in the worst case, an isIdentical check (O(n)) is attempted at each of the m nodes of root.",
+      "spaceComplexity": "O(m + n) — recursion stack depth across both traversals in the worst case."
+    },
+    "functionName": "isSubtreeJudge",
+    "starterCode": "class TreeNode {\n  constructor(val, left = null, right = null) {\n    this.val = val;\n    this.left = left;\n    this.right = right;\n  }\n}\n\nfunction arrayToTree(arr) {\n  if (!arr.length || arr[0] === null) return null;\n  const root = new TreeNode(arr[0]);\n  const queue = [root];\n  let i = 1;\n  while (queue.length && i < arr.length) {\n    const node = queue.shift();\n    if (arr[i] !== null && arr[i] !== undefined) {\n      node.left = new TreeNode(arr[i]);\n      queue.push(node.left);\n    }\n    i++;\n    if (i < arr.length && arr[i] !== null && arr[i] !== undefined) {\n      node.right = new TreeNode(arr[i]);\n      queue.push(node.right);\n    }\n    i++;\n  }\n  return root;\n}\n\nfunction treeToArray(root) {\n  if (!root) return [];\n  const out = [];\n  const queue = [root];\n  while (queue.length) {\n    const node = queue.shift();\n    if (node) {\n      out.push(node.val);\n      queue.push(node.left);\n      queue.push(node.right);\n    } else {\n      out.push(null);\n    }\n  }\n  while (out.length && out[out.length - 1] === null) out.pop();\n  return out;\n}\n\nfunction isSubtree(root, subRoot) {\n  // your code here\n}\n\nfunction isIdentical(a, b) {\n  // your code here\n}\n\nfunction isSubtreeJudge(rootArr, subRootArr) {\n  return isSubtree(arrayToTree(rootArr), arrayToTree(subRootArr));\n}",
+    "testCases": [
+      {
+        "args": [
+          [
+            3,
+            4,
+            5,
+            1,
+            2
+          ],
+          [
+            4,
+            1,
+            2
+          ]
+        ],
+        "expected": true
+      },
+      {
+        "args": [
+          [
+            3,
+            4,
+            5,
+            1,
+            2,
+            null,
+            null,
+            null,
+            null,
+            0
+          ],
+          [
+            4,
+            1,
+            2
+          ]
+        ],
+        "expected": false
+      },
+      {
+        "args": [
+          [
+            1
+          ],
+          [
+            1
+          ]
+        ],
+        "expected": true
+      }
+    ]
+  },
+  {
+    "key": "lowest-common-ancestor-of-bst",
+    "number": 47,
+    "title": "Lowest Common Ancestor of a Binary Search Tree",
+    "difficulty": "Medium",
+    "statement": "Given a binary search tree (BST), find the lowest common ancestor (LCA) node of two given nodes in the BST.\n\nThe lowest common ancestor is defined between two nodes `p` and `q` as the lowest node in the tree that has both `p` and `q` as descendants (where we allow **a node to be a descendant of itself**).",
+    "examples": [
+      {
+        "input": "root = [6,2,8,0,4,7,9,null,null,3,5], p = 2, q = 8",
+        "output": "6",
+        "explanation": "The LCA of nodes 2 and 8 is 6."
+      },
+      {
+        "input": "root = [6,2,8,0,4,7,9,null,null,3,5], p = 2, q = 4",
+        "output": "2",
+        "explanation": "The LCA of nodes 2 and 4 is 2, since a node can be a descendant of itself."
+      }
+    ],
+    "constraints": [
+      "The number of nodes in the tree is in the range [2, 10^5].",
+      "-10^9 <= Node.val <= 10^9",
+      "All Node.val are unique.",
+      "p != q",
+      "p and q will both exist in the BST."
+    ],
+    "hints": [
+      "A generic binary tree LCA needs to search both subtrees at every node — but this is a BST, so node values carry ordering information you're not using yet.",
+      "At any node, compare its value to both `p` and `q`. If both targets are smaller, the LCA can't be here or to the right — where must it be?",
+      "Walk down from the root: if both p and q are less than the current node, go left; if both are greater, go right; the first node where they split (or match) is the LCA."
+    ],
+    "solution": {
+      "approach": "Exploit the BST ordering property instead of a generic two-subtree search. Starting at the root, compare `p.val` and `q.val` against the current node's value. If both are smaller, the LCA must be in the left subtree (both targets live there), so descend left. If both are larger, descend right. As soon as they're not both on the same side — one is smaller-or-equal and the other larger-or-equal, or one of them equals the current node's value — the current node is exactly the split point where the two paths diverge, so it's the LCA.",
+      "language": "javascript",
+      "code": "function lowestCommonAncestor(root, p, q) {\n  let node = root;\n  while (node) {\n    if (p.val < node.val && q.val < node.val) {\n      node = node.left;\n    } else if (p.val > node.val && q.val > node.val) {\n      node = node.right;\n    } else {\n      return node;\n    }\n  }\n  return null;\n}",
+      "timeComplexity": "O(h) — walks straight down one path, where h is the tree height (O(log n) if balanced, O(n) worst case).",
+      "spaceComplexity": "O(1) — iterative, no extra data structures."
+    },
+    "functionName": "lowestCommonAncestorJudge",
+    "starterCode": "class TreeNode {\n  constructor(val, left = null, right = null) {\n    this.val = val;\n    this.left = left;\n    this.right = right;\n  }\n}\n\nfunction arrayToTree(arr) {\n  if (!arr.length || arr[0] === null) return null;\n  const root = new TreeNode(arr[0]);\n  const queue = [root];\n  let i = 1;\n  while (queue.length && i < arr.length) {\n    const node = queue.shift();\n    if (arr[i] !== null && arr[i] !== undefined) {\n      node.left = new TreeNode(arr[i]);\n      queue.push(node.left);\n    }\n    i++;\n    if (i < arr.length && arr[i] !== null && arr[i] !== undefined) {\n      node.right = new TreeNode(arr[i]);\n      queue.push(node.right);\n    }\n    i++;\n  }\n  return root;\n}\n\nfunction treeToArray(root) {\n  if (!root) return [];\n  const out = [];\n  const queue = [root];\n  while (queue.length) {\n    const node = queue.shift();\n    if (node) {\n      out.push(node.val);\n      queue.push(node.left);\n      queue.push(node.right);\n    } else {\n      out.push(null);\n    }\n  }\n  while (out.length && out[out.length - 1] === null) out.pop();\n  return out;\n}\n\nfunction lowestCommonAncestor(root, p, q) {\n  // your code here\n}\n\nfunction findNode(root, val) {\n  if (!root) return null;\n  if (root.val === val) return root;\n  return val < root.val ? findNode(root.left, val) : findNode(root.right, val);\n}\n\nfunction lowestCommonAncestorJudge(arr, pVal, qVal) {\n  const root = arrayToTree(arr);\n  const p = findNode(root, pVal);\n  const q = findNode(root, qVal);\n  const result = lowestCommonAncestor(root, p, q);\n  return result ? result.val : null;\n}",
+    "testCases": [
+      {
+        "args": [
+          [
+            6,
+            2,
+            8,
+            0,
+            4,
+            7,
+            9,
+            null,
+            null,
+            3,
+            5
+          ],
+          2,
+          8
+        ],
+        "expected": 6
+      },
+      {
+        "args": [
+          [
+            6,
+            2,
+            8,
+            0,
+            4,
+            7,
+            9,
+            null,
+            null,
+            3,
+            5
+          ],
+          2,
+          4
+        ],
+        "expected": 2
+      },
+      {
+        "args": [
+          [
+            6,
+            2,
+            8,
+            0,
+            4,
+            7,
+            9,
+            null,
+            null,
+            3,
+            5
+          ],
+          0,
+          5
+        ],
+        "expected": 2
+      }
+    ]
+  },
+  {
+    "key": "binary-tree-level-order-traversal",
+    "number": 48,
+    "title": "Binary Tree Level Order Traversal",
+    "difficulty": "Medium",
+    "statement": "Given the `root` of a binary tree, return the level order traversal of its nodes' values (i.e., from left to right, level by level).",
+    "examples": [
+      {
+        "input": "root = [3,9,20,null,null,15,7]",
+        "output": "[[3],[9,20],[15,7]]"
+      },
+      {
+        "input": "root = [1]",
+        "output": "[[1]]"
+      },
+      {
+        "input": "root = []",
+        "output": "[]"
+      }
+    ],
+    "constraints": [
+      "The number of nodes in the tree is in the range [0, 2000].",
+      "-1000 <= Node.val <= 1000"
+    ],
+    "hints": [
+      "A plain recursive DFS visits nodes in the wrong order for this — you need to process the tree level by level, breadth-first.",
+      "A queue is the natural fit for breadth-first traversal: process all nodes currently in the queue as 'this level' before moving to the next.",
+      "On each iteration, snapshot the current queue's size, pop exactly that many nodes (collecting their values as one level), and push their children for the next round."
+    ],
+    "solution": {
+      "approach": "Breadth-first search using a queue, processing one full level at a time. Start with a queue containing just the root. On each iteration, take every node currently in the queue (this is 'the current level'), record their values, and collect their non-null children into the queue for the next iteration. Repeating until the queue empties naturally produces the levels in order.",
+      "language": "javascript",
+      "code": "function levelOrder(root) {\n  if (!root) return [];\n\n  const result = [];\n  let queue = [root];\n\n  while (queue.length) {\n    const level = [];\n    const next = [];\n    for (const node of queue) {\n      level.push(node.val);\n      if (node.left) next.push(node.left);\n      if (node.right) next.push(node.right);\n    }\n    result.push(level);\n    queue = next;\n  }\n\n  return result;\n}",
+      "timeComplexity": "O(n) — every node is visited and enqueued/dequeued exactly once.",
+      "spaceComplexity": "O(n) — the queue can hold up to a full level of nodes (up to n/2 in the worst case), plus the output."
+    },
+    "functionName": "levelOrderJudge",
+    "starterCode": "class TreeNode {\n  constructor(val, left = null, right = null) {\n    this.val = val;\n    this.left = left;\n    this.right = right;\n  }\n}\n\nfunction arrayToTree(arr) {\n  if (!arr.length || arr[0] === null) return null;\n  const root = new TreeNode(arr[0]);\n  const queue = [root];\n  let i = 1;\n  while (queue.length && i < arr.length) {\n    const node = queue.shift();\n    if (arr[i] !== null && arr[i] !== undefined) {\n      node.left = new TreeNode(arr[i]);\n      queue.push(node.left);\n    }\n    i++;\n    if (i < arr.length && arr[i] !== null && arr[i] !== undefined) {\n      node.right = new TreeNode(arr[i]);\n      queue.push(node.right);\n    }\n    i++;\n  }\n  return root;\n}\n\nfunction treeToArray(root) {\n  if (!root) return [];\n  const out = [];\n  const queue = [root];\n  while (queue.length) {\n    const node = queue.shift();\n    if (node) {\n      out.push(node.val);\n      queue.push(node.left);\n      queue.push(node.right);\n    } else {\n      out.push(null);\n    }\n  }\n  while (out.length && out[out.length - 1] === null) out.pop();\n  return out;\n}\n\nfunction levelOrder(root) {\n  // your code here\n}\n\nfunction levelOrderJudge(arr) {\n  return levelOrder(arrayToTree(arr));\n}",
+    "testCases": [
+      {
+        "args": [
+          [
+            3,
+            9,
+            20,
+            null,
+            null,
+            15,
+            7
+          ]
+        ],
+        "expected": [
+          [
+            3
+          ],
+          [
+            9,
+            20
+          ],
+          [
+            15,
+            7
+          ]
+        ]
+      },
+      {
+        "args": [
+          [
+            1
+          ]
+        ],
+        "expected": [
+          [
+            1
+          ]
+        ]
+      },
+      {
+        "args": [
+          []
+        ],
+        "expected": []
+      }
+    ]
+  },
+  {
+    "key": "validate-binary-search-tree",
+    "number": 49,
+    "title": "Validate Binary Search Tree",
+    "difficulty": "Medium",
+    "statement": "Given the `root` of a binary tree, determine if it is a valid binary search tree (BST).\n\nA valid BST is defined as follows:\n\n- The left subtree of a node contains only nodes with values **strictly less than** the node's value.\n- The right subtree of a node contains only nodes with values **strictly greater than** the node's value.\n- Both the left and right subtrees must also be binary search trees.",
+    "examples": [
+      {
+        "input": "root = [2,1,3]",
+        "output": "true"
+      },
+      {
+        "input": "root = [5,1,4,null,null,3,6]",
+        "output": "false",
+        "explanation": "The root node's value is 5 but its right child's value is 4."
+      }
+    ],
+    "constraints": [
+      "The number of nodes in the tree is in the range [1, 10^4].",
+      "-2^31 <= Node.val <= 2^31 - 1"
+    ],
+    "hints": [
+      "Checking only 'is left.val < node.val < right.val' at each node isn't enough — a node deep in the left subtree could still violate the ancestor several levels up.",
+      "Every node actually has a valid *range* it must fall within, inherited from all of its ancestors, not just its immediate parent.",
+      "Recurse with a `(min, max)` bound that narrows as you descend: going left tightens the max to the parent's value, going right tightens the min."
+    ],
+    "solution": {
+      "approach": "A node isn't valid just because it's greater than its immediate left child and less than its immediate right child — it must respect the bounds set by *every* ancestor above it. So recurse with an allowed range `(min, max)` that starts as `(-Infinity, Infinity)` at the root. When descending left, the max tightens to the parent's value (everything in the left subtree must be less than it); when descending right, the min tightens to the parent's value. If any node falls outside its inherited range, the tree is invalid.",
+      "language": "javascript",
+      "code": "function isValidBST(root, min = -Infinity, max = Infinity) {\n  if (!root) return true;\n  if (root.val <= min || root.val >= max) return false;\n  return (\n    isValidBST(root.left, min, root.val) &&\n    isValidBST(root.right, root.val, max)\n  );\n}",
+      "timeComplexity": "O(n) — every node is visited exactly once.",
+      "spaceComplexity": "O(h) — recursion stack depth equals the tree height."
+    },
+    "functionName": "isValidBSTJudge",
+    "starterCode": "class TreeNode {\n  constructor(val, left = null, right = null) {\n    this.val = val;\n    this.left = left;\n    this.right = right;\n  }\n}\n\nfunction arrayToTree(arr) {\n  if (!arr.length || arr[0] === null) return null;\n  const root = new TreeNode(arr[0]);\n  const queue = [root];\n  let i = 1;\n  while (queue.length && i < arr.length) {\n    const node = queue.shift();\n    if (arr[i] !== null && arr[i] !== undefined) {\n      node.left = new TreeNode(arr[i]);\n      queue.push(node.left);\n    }\n    i++;\n    if (i < arr.length && arr[i] !== null && arr[i] !== undefined) {\n      node.right = new TreeNode(arr[i]);\n      queue.push(node.right);\n    }\n    i++;\n  }\n  return root;\n}\n\nfunction treeToArray(root) {\n  if (!root) return [];\n  const out = [];\n  const queue = [root];\n  while (queue.length) {\n    const node = queue.shift();\n    if (node) {\n      out.push(node.val);\n      queue.push(node.left);\n      queue.push(node.right);\n    } else {\n      out.push(null);\n    }\n  }\n  while (out.length && out[out.length - 1] === null) out.pop();\n  return out;\n}\n\nfunction isValidBST(root, min = -Infinity, max = Infinity) {\n  // your code here\n}\n\nfunction isValidBSTJudge(arr) {\n  return isValidBST(arrayToTree(arr));\n}",
+    "testCases": [
+      {
+        "args": [
+          [
+            2,
+            1,
+            3
+          ]
+        ],
+        "expected": true
+      },
+      {
+        "args": [
+          [
+            5,
+            1,
+            4,
+            null,
+            null,
+            3,
+            6
+          ]
+        ],
+        "expected": false
+      },
+      {
+        "args": [
+          [
+            10,
+            5,
+            15,
+            null,
+            null,
+            6,
+            20
+          ]
+        ],
+        "expected": false
+      }
+    ]
+  },
+  {
+    "key": "kth-smallest-element-in-bst",
+    "number": 50,
+    "title": "Kth Smallest Element in a BST",
+    "difficulty": "Medium",
+    "statement": "Given the `root` of a binary search tree, and an integer `k`, return the `k`-th smallest value (1-indexed) among all the values of the nodes in the tree.",
+    "examples": [
+      {
+        "input": "root = [3,1,4,null,2], k = 1",
+        "output": "1"
+      },
+      {
+        "input": "root = [5,3,6,2,4,null,null,1], k = 3",
+        "output": "3"
+      }
+    ],
+    "constraints": [
+      "The number of nodes in the tree is n.",
+      "1 <= k <= n <= 10^4",
+      "0 <= Node.val <= 10^4"
+    ],
+    "hints": [
+      "Collecting every value into an array and sorting works, but there's a traversal order that visits BST nodes in already-sorted order — no sorting needed.",
+      "An in-order traversal (left, node, right) of a BST visits nodes in strictly increasing order.",
+      "Do an in-order traversal and just count nodes as you visit them; stop and return as soon as your count reaches k, without necessarily visiting the whole tree."
+    ],
+    "solution": {
+      "approach": "An in-order traversal (left subtree, then node, then right subtree) of a BST visits values in strictly increasing order — that's the defining property of a BST. So instead of collecting all values and sorting, do an iterative in-order traversal with an explicit stack, counting nodes as they're visited, and stop as soon as the count reaches `k`. This can short-circuit before visiting the whole tree when `k` is small.",
+      "language": "javascript",
+      "code": "function kthSmallest(root, k) {\n  const stack = [];\n  let node = root;\n  let count = 0;\n\n  while (stack.length || node) {\n    while (node) {\n      stack.push(node);\n      node = node.left;\n    }\n    node = stack.pop();\n    count++;\n    if (count === k) return node.val;\n    node = node.right;\n  }\n\n  return -1;\n}",
+      "timeComplexity": "O(h + k) — descends the height h to find the first node, then visits k nodes in order.",
+      "spaceComplexity": "O(h) — the explicit stack holds at most one path's worth of nodes."
+    },
+    "functionName": "kthSmallestJudge",
+    "starterCode": "class TreeNode {\n  constructor(val, left = null, right = null) {\n    this.val = val;\n    this.left = left;\n    this.right = right;\n  }\n}\n\nfunction arrayToTree(arr) {\n  if (!arr.length || arr[0] === null) return null;\n  const root = new TreeNode(arr[0]);\n  const queue = [root];\n  let i = 1;\n  while (queue.length && i < arr.length) {\n    const node = queue.shift();\n    if (arr[i] !== null && arr[i] !== undefined) {\n      node.left = new TreeNode(arr[i]);\n      queue.push(node.left);\n    }\n    i++;\n    if (i < arr.length && arr[i] !== null && arr[i] !== undefined) {\n      node.right = new TreeNode(arr[i]);\n      queue.push(node.right);\n    }\n    i++;\n  }\n  return root;\n}\n\nfunction treeToArray(root) {\n  if (!root) return [];\n  const out = [];\n  const queue = [root];\n  while (queue.length) {\n    const node = queue.shift();\n    if (node) {\n      out.push(node.val);\n      queue.push(node.left);\n      queue.push(node.right);\n    } else {\n      out.push(null);\n    }\n  }\n  while (out.length && out[out.length - 1] === null) out.pop();\n  return out;\n}\n\nfunction kthSmallest(root, k) {\n  // your code here\n}\n\nfunction kthSmallestJudge(arr, k) {\n  return kthSmallest(arrayToTree(arr), k);\n}",
+    "testCases": [
+      {
+        "args": [
+          [
+            3,
+            1,
+            4,
+            null,
+            2
+          ],
+          1
+        ],
+        "expected": 1
+      },
+      {
+        "args": [
+          [
+            5,
+            3,
+            6,
+            2,
+            4,
+            null,
+            null,
+            1
+          ],
+          3
+        ],
+        "expected": 3
+      },
+      {
+        "args": [
+          [
+            3,
+            1,
+            4,
+            null,
+            2
+          ],
+          2
+        ],
+        "expected": 2
+      }
+    ]
+  },
+  {
+    "key": "construct-binary-tree-from-preorder-and-inorder-traversal",
+    "number": 51,
+    "title": "Construct Binary Tree from Preorder and Inorder Traversal",
+    "difficulty": "Medium",
+    "statement": "Given two integer arrays `preorder` and `inorder` where `preorder` is the preorder traversal of a binary tree and `inorder` is the inorder traversal of the same tree, construct and return the binary tree.",
+    "examples": [
+      {
+        "input": "preorder = [3,9,20,15,7], inorder = [9,3,15,20,7]",
+        "output": "[3,9,20,null,null,15,7]"
+      },
+      {
+        "input": "preorder = [1], inorder = [1]",
+        "output": "[1]"
+      }
+    ],
+    "constraints": [
+      "1 <= preorder.length <= 3000",
+      "inorder.length == preorder.length",
+      "-3000 <= preorder[i], inorder[i] <= 3000",
+      "preorder and inorder consist of unique values.",
+      "Every value of inorder also appears in preorder.",
+      "preorder is guaranteed to be the preorder traversal of the tree.",
+      "inorder is guaranteed to be the inorder traversal of the tree."
+    ],
+    "hints": [
+      "Remember what each traversal tells you: preorder always visits the root first, and inorder puts everything smaller-in-subtree-position to the left of the root and everything else to the right.",
+      "The first element of `preorder` is always the root of whatever subtree you're currently building. Once you know the root, where does it sit in `inorder`, and why does that matter?",
+      "Find the root's position in `inorder` — everything to its left is the left subtree's inorder sequence, everything to its right is the right subtree's. Recurse on those slices, consuming `preorder` left to right as you go."
+    ],
+    "solution": {
+      "approach": "Preorder always lists the root of a subtree first, so the next unused element of `preorder` is always the root of the subtree currently being built. Once we know that root's value, its position in the `inorder` slice tells us exactly how many nodes belong to its left subtree (everything before it in that slice) versus its right subtree (everything after). So: pop the next value off `preorder` to create the current node, look up its index in `inorder` (a hash map makes this O(1)), recursively build the left subtree from the inorder range before that index, then recursively build the right subtree from the range after it — since `preorder` is consumed in a single shared left-to-right pointer, the recursive calls naturally pick up the correct next roots in order.",
+      "language": "javascript",
+      "code": "function buildTree(preorder, inorder) {\n  const inorderIndex = new Map();\n  inorder.forEach((val, idx) => inorderIndex.set(val, idx));\n  let preIdx = 0;\n\n  function build(inLeft, inRight) {\n    if (inLeft > inRight) return null;\n\n    const rootVal = preorder[preIdx++];\n    const root = new TreeNode(rootVal);\n    const mid = inorderIndex.get(rootVal);\n\n    root.left = build(inLeft, mid - 1);\n    root.right = build(mid + 1, inRight);\n\n    return root;\n  }\n\n  return build(0, inorder.length - 1);\n}",
+      "timeComplexity": "O(n) — each node is created once, and the hash map gives O(1) lookups of each root's inorder index.",
+      "spaceComplexity": "O(n) — the hash map and the recursion stack (up to O(n) deep for a skewed tree)."
+    },
+    "functionName": "buildTreeJudge",
+    "starterCode": "class TreeNode {\n  constructor(val, left = null, right = null) {\n    this.val = val;\n    this.left = left;\n    this.right = right;\n  }\n}\n\nfunction arrayToTree(arr) {\n  if (!arr.length || arr[0] === null) return null;\n  const root = new TreeNode(arr[0]);\n  const queue = [root];\n  let i = 1;\n  while (queue.length && i < arr.length) {\n    const node = queue.shift();\n    if (arr[i] !== null && arr[i] !== undefined) {\n      node.left = new TreeNode(arr[i]);\n      queue.push(node.left);\n    }\n    i++;\n    if (i < arr.length && arr[i] !== null && arr[i] !== undefined) {\n      node.right = new TreeNode(arr[i]);\n      queue.push(node.right);\n    }\n    i++;\n  }\n  return root;\n}\n\nfunction treeToArray(root) {\n  if (!root) return [];\n  const out = [];\n  const queue = [root];\n  while (queue.length) {\n    const node = queue.shift();\n    if (node) {\n      out.push(node.val);\n      queue.push(node.left);\n      queue.push(node.right);\n    } else {\n      out.push(null);\n    }\n  }\n  while (out.length && out[out.length - 1] === null) out.pop();\n  return out;\n}\n\nfunction buildTree(preorder, inorder) {\n  // your code here\n}\n\nfunction buildTreeJudge(preorder, inorder) {\n  return treeToArray(buildTree(preorder, inorder));\n}",
+    "testCases": [
+      {
+        "args": [
+          [
+            3,
+            9,
+            20,
+            15,
+            7
+          ],
+          [
+            9,
+            3,
+            15,
+            20,
+            7
+          ]
+        ],
+        "expected": [
+          3,
+          9,
+          20,
+          null,
+          null,
+          15,
+          7
+        ]
+      },
+      {
+        "args": [
+          [
+            1
+          ],
+          [
+            1
+          ]
+        ],
+        "expected": [
+          1
+        ]
+      },
+      {
+        "args": [
+          [
+            1,
+            2,
+            3
+          ],
+          [
+            2,
+            1,
+            3
+          ]
+        ],
+        "expected": [
+          1,
+          2,
+          3
+        ]
+      }
+    ]
+  },
+  {
+    "key": "binary-tree-maximum-path-sum",
+    "number": 52,
+    "title": "Binary Tree Maximum Path Sum",
+    "difficulty": "Hard",
+    "statement": "A **path** in a binary tree is a sequence of nodes where each pair of adjacent nodes in the sequence has an edge connecting them. A node can only appear in the sequence **at most once**. The path does not need to pass through the root.\n\nThe **path sum** of a path is the sum of the node's values in the path.\n\nGiven the `root` of a binary tree, return the maximum path sum of any **non-empty** path.",
+    "examples": [
+      {
+        "input": "root = [1,2,3]",
+        "output": "6",
+        "explanation": "The optimal path is 2 -> 1 -> 3 with a sum of 2 + 1 + 3 = 6."
+      },
+      {
+        "input": "root = [-10,9,20,null,null,15,7]",
+        "output": "42",
+        "explanation": "The optimal path is 15 -> 20 -> 7 with a sum of 15 + 20 + 7 = 42."
+      }
+    ],
+    "constraints": [
+      "The number of nodes in the tree is in the range [1, 3 * 10^4].",
+      "-1000 <= Node.val <= 1000"
+    ],
+    "hints": [
+      "A path can bend at a node — going up into one child and down into the other — which means the best path isn't necessarily a straight root-to-leaf line.",
+      "For any single node, distinguish between two different things: the best path that 'bends' at this node (usable only once, by whichever ancestor is above it), versus the best straight extension this node can contribute upward to its parent.",
+      "Recursively compute, for each node, the best downward single-branch sum it can offer its parent (`node.val + max(0, bestLeft, bestRight)`), while separately tracking a global maximum over `node.val + bestLeft + bestRight` (the 'bend here' case) as you go — clamp negative branch contributions to 0 since a branch that hurts the sum should just be dropped."
+    ],
+    "solution": {
+      "approach": "The key insight is that a node can be the 'peak' of a path only once — a path either passes straight through a node continuing to one side, or it bends at that node using both children. So define a helper that, for each node, returns the best sum of a single downward path starting at that node (going into at most one child) — this is the only shape usable by an ancestor further up. While computing that, also consider the 'bent' path through this node using both children (`node.val + leftGain + rightGain`) and track the best such value seen anywhere as a global answer. Negative subtree contributions are clamped to 0 with `Math.max(gain, 0)`, since including a negative branch would only hurt — better to not extend the path into it at all.",
+      "language": "javascript",
+      "code": "function maxPathSum(root) {\n  let best = -Infinity;\n\n  function helper(node) {\n    if (!node) return 0;\n\n    const leftGain = Math.max(helper(node.left), 0);\n    const rightGain = Math.max(helper(node.right), 0);\n\n    best = Math.max(best, node.val + leftGain + rightGain);\n\n    return node.val + Math.max(leftGain, rightGain);\n  }\n\n  helper(root);\n  return best;\n}",
+      "timeComplexity": "O(n) — every node is visited exactly once.",
+      "spaceComplexity": "O(h) — recursion stack depth equals the tree height."
+    },
+    "functionName": "maxPathSumJudge",
+    "starterCode": "class TreeNode {\n  constructor(val, left = null, right = null) {\n    this.val = val;\n    this.left = left;\n    this.right = right;\n  }\n}\n\nfunction arrayToTree(arr) {\n  if (!arr.length || arr[0] === null) return null;\n  const root = new TreeNode(arr[0]);\n  const queue = [root];\n  let i = 1;\n  while (queue.length && i < arr.length) {\n    const node = queue.shift();\n    if (arr[i] !== null && arr[i] !== undefined) {\n      node.left = new TreeNode(arr[i]);\n      queue.push(node.left);\n    }\n    i++;\n    if (i < arr.length && arr[i] !== null && arr[i] !== undefined) {\n      node.right = new TreeNode(arr[i]);\n      queue.push(node.right);\n    }\n    i++;\n  }\n  return root;\n}\n\nfunction treeToArray(root) {\n  if (!root) return [];\n  const out = [];\n  const queue = [root];\n  while (queue.length) {\n    const node = queue.shift();\n    if (node) {\n      out.push(node.val);\n      queue.push(node.left);\n      queue.push(node.right);\n    } else {\n      out.push(null);\n    }\n  }\n  while (out.length && out[out.length - 1] === null) out.pop();\n  return out;\n}\n\nfunction maxPathSum(root) {\n  // your code here\n}\n\nfunction maxPathSumJudge(arr) {\n  return maxPathSum(arrayToTree(arr));\n}",
+    "testCases": [
+      {
+        "args": [
+          [
+            1,
+            2,
+            3
+          ]
+        ],
+        "expected": 6
+      },
+      {
+        "args": [
+          [
+            -10,
+            9,
+            20,
+            null,
+            null,
+            15,
+            7
+          ]
+        ],
+        "expected": 42
+      },
+      {
+        "args": [
+          [
+            -3
+          ]
+        ],
+        "expected": -3
+      }
+    ]
+  },
+  {
+    "key": "serialize-and-deserialize-binary-tree",
+    "number": 53,
+    "title": "Serialize and Deserialize Binary Tree",
+    "difficulty": "Hard",
+    "statement": "Design an algorithm to serialize and deserialize a binary tree. Serialization is the process of converting a data structure into a sequence of bits so that it can be stored or transmitted, and later reconstructed in the same or another computer environment.\n\nDesign an algorithm to serialize and deserialize a binary tree. There is no restriction on how your serialization/deserialization algorithm should work; you just need to ensure that a binary tree can be serialized to a string, and this string can be deserialized back to the original tree structure.",
+    "examples": [
+      {
+        "input": "root = [1,2,3,null,null,4,5]",
+        "output": "[1,2,3,null,null,4,5]",
+        "explanation": "Serializing then deserializing reproduces a tree with the same structure and values as the original."
+      },
+      {
+        "input": "root = []",
+        "output": "[]"
+      }
+    ],
+    "constraints": [
+      "The number of nodes in the tree is in the range [0, 10^4].",
+      "-1000 <= Node.val <= 1000"
+    ],
+    "hints": [
+      "You need enough information in the string to reconstruct the exact shape of the tree, not just its values — a plain level-order list of values alone loses structural information unless you also mark missing children explicitly.",
+      "A preorder traversal (node, then left, then right) that also emits an explicit marker for every null child carries exactly enough information to rebuild the tree unambiguously, with no extra bookkeeping needed.",
+      "Serialize with a preorder DFS, writing each value (or a sentinel like '#' for null) separated by commas. Deserialize by reading tokens in that same order with a shared index/pointer, rebuilding recursively: read a token, and if it's the null sentinel return null, otherwise create a node and recursively fill its left then right from the same stream."
+    ],
+    "solution": {
+      "approach": "Serialize the tree with a preorder DFS (node, then left subtree, then right subtree), explicitly writing a sentinel token (`'#'`) whenever a child is null. Because preorder always visits a subtree's root before its children, and every null is explicitly recorded, the resulting sequence unambiguously determines the tree's shape — no lengths or extra markers are needed. To deserialize, split the string back into tokens and walk them with a single shared index: read the next token, and if it's the sentinel, that spot is null; otherwise create a node with that value and recursively consume tokens to build its left subtree, then its right subtree, in that same preorder order.",
+      "language": "javascript",
+      "code": "function serialize(root) {\n  const vals = [];\n\n  function dfs(node) {\n    if (!node) {\n      vals.push('#');\n      return;\n    }\n    vals.push(String(node.val));\n    dfs(node.left);\n    dfs(node.right);\n  }\n\n  dfs(root);\n  return vals.join(',');\n}\n\nfunction deserialize(data) {\n  const vals = data.split(',');\n  let idx = 0;\n\n  function build() {\n    const token = vals[idx++];\n    if (token === '#') return null;\n    const node = new TreeNode(Number(token));\n    node.left = build();\n    node.right = build();\n    return node;\n  }\n\n  return build();\n}",
+      "timeComplexity": "O(n) for both serialize and deserialize — each node (and each null) is processed exactly once.",
+      "spaceComplexity": "O(n) — the token array/string plus O(h) recursion stack."
+    },
+    "functionName": "codecJudge",
+    "starterCode": "class TreeNode {\n  constructor(val, left = null, right = null) {\n    this.val = val;\n    this.left = left;\n    this.right = right;\n  }\n}\n\nfunction arrayToTree(arr) {\n  if (!arr.length || arr[0] === null) return null;\n  const root = new TreeNode(arr[0]);\n  const queue = [root];\n  let i = 1;\n  while (queue.length && i < arr.length) {\n    const node = queue.shift();\n    if (arr[i] !== null && arr[i] !== undefined) {\n      node.left = new TreeNode(arr[i]);\n      queue.push(node.left);\n    }\n    i++;\n    if (i < arr.length && arr[i] !== null && arr[i] !== undefined) {\n      node.right = new TreeNode(arr[i]);\n      queue.push(node.right);\n    }\n    i++;\n  }\n  return root;\n}\n\nfunction treeToArray(root) {\n  if (!root) return [];\n  const out = [];\n  const queue = [root];\n  while (queue.length) {\n    const node = queue.shift();\n    if (node) {\n      out.push(node.val);\n      queue.push(node.left);\n      queue.push(node.right);\n    } else {\n      out.push(null);\n    }\n  }\n  while (out.length && out[out.length - 1] === null) out.pop();\n  return out;\n}\n\nfunction serialize(root) {\n  // your code here\n}\n\nfunction deserialize(data) {\n  // your code here\n}\n\nfunction codecJudge(arr) {\n  const tree = arrayToTree(arr);\n  const data = serialize(tree);\n  const restored = deserialize(data);\n  return treeToArray(restored);\n}",
+    "testCases": [
+      {
+        "args": [
+          [
+            1,
+            2,
+            3,
+            null,
+            null,
+            4,
+            5
+          ]
+        ],
+        "expected": [
+          1,
+          2,
+          3,
+          null,
+          null,
+          4,
+          5
+        ]
+      },
+      {
+        "args": [
+          []
+        ],
+        "expected": []
+      },
+      {
+        "args": [
+          [
+            1
+          ]
+        ],
+        "expected": [
+          1
+        ]
+      }
+    ]
+  },
+  {
+    "key": "diameter-of-binary-tree",
+    "number": 54,
+    "title": "Diameter of Binary Tree",
+    "difficulty": "Easy",
+    "statement": "Given the `root` of a binary tree, return the length of the **diameter** of the tree.\n\nThe diameter of a binary tree is the length of the longest path between any two nodes in a tree. This path may or may not pass through the `root`.\n\nThe length of a path between two nodes is represented by the number of edges between them.",
+    "examples": [
+      {
+        "input": "root = [1,2,3,4,5]",
+        "output": "3",
+        "explanation": "The longest path is [4,2,1,3] or [5,2,1,3], with a length of 3 edges."
+      },
+      {
+        "input": "root = [1,2]",
+        "output": "1"
+      }
+    ],
+    "constraints": [
+      "The number of nodes in the tree is in the range [1, 10^4].",
+      "-100 <= Node.val <= 100"
+    ],
+    "hints": [
+      "The longest path doesn't have to pass through the root — it could be entirely contained within one subtree.",
+      "For any given node, the longest path that bends at that node is made of the depths of its left and right subtrees added together — you already know how to compute subtree depth.",
+      "While computing each node's depth recursively, also update a running global maximum of `leftDepth + rightDepth` at every node — that's the diameter passing through (bending at) that node."
+    ],
+    "solution": {
+      "approach": "The diameter is the longest path between any two nodes, and every such path 'bends' at exactly one node (or is a straight line down from one node, which is the degenerate bend-at-yourself case). So compute subtree depth recursively as usual, but at every node also check `leftDepth + rightDepth` — the length of the path that bends at this node — and keep a running maximum across the whole recursion. The depth function itself still returns `1 + max(leftDepth, rightDepth)` for its parent to use, but the diameter answer is tracked separately as a side effect of the same traversal.",
+      "language": "javascript",
+      "code": "function diameterOfBinaryTree(root) {\n  let diameter = 0;\n\n  function depth(node) {\n    if (!node) return 0;\n    const left = depth(node.left);\n    const right = depth(node.right);\n    diameter = Math.max(diameter, left + right);\n    return 1 + Math.max(left, right);\n  }\n\n  depth(root);\n  return diameter;\n}",
+      "timeComplexity": "O(n) — every node is visited exactly once.",
+      "spaceComplexity": "O(h) — recursion stack depth equals the tree height."
+    },
+    "functionName": "diameterOfBinaryTreeJudge",
+    "starterCode": "class TreeNode {\n  constructor(val, left = null, right = null) {\n    this.val = val;\n    this.left = left;\n    this.right = right;\n  }\n}\n\nfunction arrayToTree(arr) {\n  if (!arr.length || arr[0] === null) return null;\n  const root = new TreeNode(arr[0]);\n  const queue = [root];\n  let i = 1;\n  while (queue.length && i < arr.length) {\n    const node = queue.shift();\n    if (arr[i] !== null && arr[i] !== undefined) {\n      node.left = new TreeNode(arr[i]);\n      queue.push(node.left);\n    }\n    i++;\n    if (i < arr.length && arr[i] !== null && arr[i] !== undefined) {\n      node.right = new TreeNode(arr[i]);\n      queue.push(node.right);\n    }\n    i++;\n  }\n  return root;\n}\n\nfunction treeToArray(root) {\n  if (!root) return [];\n  const out = [];\n  const queue = [root];\n  while (queue.length) {\n    const node = queue.shift();\n    if (node) {\n      out.push(node.val);\n      queue.push(node.left);\n      queue.push(node.right);\n    } else {\n      out.push(null);\n    }\n  }\n  while (out.length && out[out.length - 1] === null) out.pop();\n  return out;\n}\n\nfunction diameterOfBinaryTree(root) {\n  // your code here\n}\n\nfunction diameterOfBinaryTreeJudge(arr) {\n  return diameterOfBinaryTree(arrayToTree(arr));\n}",
+    "testCases": [
+      {
+        "args": [
+          [
+            1,
+            2,
+            3,
+            4,
+            5
+          ]
+        ],
+        "expected": 3
+      },
+      {
+        "args": [
+          [
+            1,
+            2
+          ]
+        ],
+        "expected": 1
+      },
+      {
+        "args": [
+          []
+        ],
+        "expected": 0
+      }
+    ]
+  },
+  {
+    "key": "balanced-binary-tree",
+    "number": 55,
+    "title": "Balanced Binary Tree",
+    "difficulty": "Easy",
+    "statement": "Given a binary tree, determine if it is **height-balanced**.\n\nA height-balanced binary tree is defined as a binary tree in which the left and right subtrees of every node differ in height by no more than 1.",
+    "examples": [
+      {
+        "input": "root = [3,9,20,null,null,15,7]",
+        "output": "true"
+      },
+      {
+        "input": "root = [1,2,2,3,3,null,null,4,4]",
+        "output": "false",
+        "explanation": "The subtree rooted at the second-level node 2 has left/right heights differing by more than 1."
+      }
+    ],
+    "constraints": [
+      "The number of nodes in the tree is in the range [0, 5000].",
+      "-10^4 <= Node.val <= 10^4"
+    ],
+    "hints": [
+      "Computing height and checking balance separately for every node leads to an O(n^2) solution — is there a way to check balance while computing height in a single pass?",
+      "As soon as you discover that any subtree is unbalanced, the whole tree is unbalanced — you don't need to keep computing exact heights past that point.",
+      "Have the height function return a sentinel value like -1 the instant it detects an imbalance anywhere below it, and propagate that sentinel straight up through the recursion instead of a real height."
+    ],
+    "solution": {
+      "approach": "Compute height and check the balance condition in the same bottom-up recursion instead of two separate passes (which would be O(n^2) in the worst case). The helper returns a subtree's real height normally, but the moment it detects an imbalance anywhere — either in a child's returned value, or between the two children's heights at the current node — it returns a sentinel `-1` instead. That sentinel then propagates straight up through every ancestor without further height math, since any node holding a `-1` from a child already knows the whole tree is unbalanced and should also return `-1` immediately.",
+      "language": "javascript",
+      "code": "function isBalanced(root) {\n  function check(node) {\n    if (!node) return 0;\n\n    const left = check(node.left);\n    if (left === -1) return -1;\n\n    const right = check(node.right);\n    if (right === -1) return -1;\n\n    if (Math.abs(left - right) > 1) return -1;\n\n    return 1 + Math.max(left, right);\n  }\n\n  return check(root) !== -1;\n}",
+      "timeComplexity": "O(n) — each node is visited once, since imbalance short-circuits without extra passes.",
+      "spaceComplexity": "O(h) — recursion stack depth equals the tree height."
+    },
+    "functionName": "isBalancedJudge",
+    "starterCode": "class TreeNode {\n  constructor(val, left = null, right = null) {\n    this.val = val;\n    this.left = left;\n    this.right = right;\n  }\n}\n\nfunction arrayToTree(arr) {\n  if (!arr.length || arr[0] === null) return null;\n  const root = new TreeNode(arr[0]);\n  const queue = [root];\n  let i = 1;\n  while (queue.length && i < arr.length) {\n    const node = queue.shift();\n    if (arr[i] !== null && arr[i] !== undefined) {\n      node.left = new TreeNode(arr[i]);\n      queue.push(node.left);\n    }\n    i++;\n    if (i < arr.length && arr[i] !== null && arr[i] !== undefined) {\n      node.right = new TreeNode(arr[i]);\n      queue.push(node.right);\n    }\n    i++;\n  }\n  return root;\n}\n\nfunction treeToArray(root) {\n  if (!root) return [];\n  const out = [];\n  const queue = [root];\n  while (queue.length) {\n    const node = queue.shift();\n    if (node) {\n      out.push(node.val);\n      queue.push(node.left);\n      queue.push(node.right);\n    } else {\n      out.push(null);\n    }\n  }\n  while (out.length && out[out.length - 1] === null) out.pop();\n  return out;\n}\n\nfunction isBalanced(root) {\n  // your code here\n}\n\nfunction isBalancedJudge(arr) {\n  return isBalanced(arrayToTree(arr));\n}",
+    "testCases": [
+      {
+        "args": [
+          [
+            3,
+            9,
+            20,
+            null,
+            null,
+            15,
+            7
+          ]
+        ],
+        "expected": true
+      },
+      {
+        "args": [
+          [
+            1,
+            2,
+            2,
+            3,
+            3,
+            null,
+            null,
+            4,
+            4
+          ]
+        ],
+        "expected": false
+      },
+      {
+        "args": [
+          []
+        ],
+        "expected": true
+      }
+    ]
+  }
+]

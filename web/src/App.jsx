@@ -26,6 +26,7 @@ const KnnVisualizer = lazy(() => import('./pages/KnnVisualizer.jsx'));
 const LinearRegressionVisualizer = lazy(() => import('./pages/LinearRegressionVisualizer.jsx'));
 
 const CodeEditorPage = lazy(() => import('./pages/CodeEditorPage.jsx'));
+const DsaPractice = lazy(() => import('./pages/DsaPractice.jsx'));
 
 function RouteFallback() {
   return (
@@ -63,6 +64,7 @@ export default function App() {
         <Route path="/visualizers/linear-regression" element={<LinearRegressionVisualizer />} />
 
         <Route path="/code-editor" element={<CodeEditorPage />} />
+        <Route path="/dsa-practice" element={<DsaPractice />} />
 
         <Route path="*" element={<Home />} />
       </Routes>

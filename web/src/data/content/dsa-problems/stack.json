@@ -1,0 +1,469 @@
+[
+  {
+    "key": "valid-parentheses",
+    "number": 34,
+    "title": "Valid Parentheses",
+    "difficulty": "Easy",
+    "statement": "Given a string `s` containing just the characters `(`, `)`, `{`, `}`, `[` and `]`, determine if the input string is valid.\n\nAn input string is valid if:\n1. Open brackets are closed by the same type of bracket.\n2. Open brackets are closed in the correct order.\n3. Every close bracket has a corresponding open bracket of the same type.",
+    "examples": [
+      {
+        "input": "s = \"()\"",
+        "output": "true"
+      },
+      {
+        "input": "s = \"()[]{}\"",
+        "output": "true"
+      },
+      {
+        "input": "s = \"(]\"",
+        "output": "false"
+      },
+      {
+        "input": "s = \"([)]\"",
+        "output": "false",
+        "explanation": "The brackets are not closed in the correct order."
+      }
+    ],
+    "constraints": [
+      "1 <= s.length <= 10^4",
+      "s consists only of the characters '()[]{}'."
+    ],
+    "hints": [
+      "Think about what makes `([)]` invalid but `([])` valid — order matters, not just having a matching count of each bracket type.",
+      "You need to know, at any point, what the most recently opened (and not-yet-closed) bracket was. What data structure naturally gives you 'the most recent unmatched thing'?",
+      "Push every opening bracket onto a stack. On a closing bracket, it must match whatever is on top of the stack (pop and compare) — if it doesn't match, or the stack is empty, the string is invalid. At the end, the string is valid only if the stack is empty."
+    ],
+    "solution": {
+      "approach": "Use a stack to track unmatched opening brackets. Scan the string left to right: push any opening bracket. On a closing bracket, pop the stack and check that it's the matching opening bracket — if the stack is empty or the popped bracket doesn't match, the string is invalid immediately. After the scan, the string is valid only if the stack ended up empty (no unmatched opens remain).",
+      "language": "javascript",
+      "code": "function isValid(s) {\n  const stack = [];\n  const pairs = { ')': '(', ']': '[', '}': '{' };\n\n  for (const ch of s) {\n    if (ch === '(' || ch === '[' || ch === '{') {\n      stack.push(ch);\n    } else {\n      if (stack.pop() !== pairs[ch]) return false;\n    }\n  }\n\n  return stack.length === 0;\n}",
+      "timeComplexity": "O(n) — a single pass over the string; each character does O(1) stack work.",
+      "spaceComplexity": "O(n) — worst case (all opening brackets) the stack holds every character."
+    },
+    "functionName": "isValid",
+    "starterCode": "function isValid(s) {\n  // your code here\n}",
+    "testCases": [
+      {
+        "args": [
+          "()"
+        ],
+        "expected": true
+      },
+      {
+        "args": [
+          "()[]{}"
+        ],
+        "expected": true
+      },
+      {
+        "args": [
+          "(]"
+        ],
+        "expected": false
+      },
+      {
+        "args": [
+          "([)]"
+        ],
+        "expected": false
+      },
+      {
+        "args": [
+          "{[]}"
+        ],
+        "expected": true
+      },
+      {
+        "args": [
+          ""
+        ],
+        "expected": true
+      }
+    ]
+  },
+  {
+    "key": "min-stack",
+    "number": 35,
+    "title": "Min Stack",
+    "difficulty": "Medium",
+    "statement": "Design a stack that supports `push`, `pop`, `top`, and retrieving the minimum element, all in **O(1)** time.\n\nImplement the `MinStack` class:\n- `MinStack()` initializes the stack object.\n- `push(val)` pushes the element `val` onto the stack.\n- `pop()` removes the element on top of the stack.\n- `top()` gets the top element of the stack.\n- `getMin()` retrieves the minimum element in the stack.\n\nYou must implement a solution with O(1) time complexity for each function.",
+    "examples": [
+      {
+        "input": "[\"MinStack\",\"push\",\"push\",\"push\",\"getMin\",\"pop\",\"top\",\"getMin\"]\n[[],[-2],[0],[-3],[],[],[],[]]",
+        "output": "[null,null,null,null,-3,null,0,-2]",
+        "explanation": "push(-2), push(0), push(-3); getMin() -> -3; pop() removes -3; top() -> 0; getMin() -> -2."
+      }
+    ],
+    "constraints": [
+      "-2^31 <= val <= 2^31 - 1",
+      "pop, top and getMin will always be called on a non-empty stack.",
+      "At most 3 * 10^4 calls will be made to push, pop, top, and getMin."
+    ],
+    "hints": [
+      "Recomputing the minimum by scanning the whole stack on every `getMin()` call works, but that's O(n) per call, not O(1).",
+      "The minimum can change every time you push or pop — what if each stack entry remembered what the minimum was at the moment it was pushed?",
+      "Store pairs `[value, minSoFar]` instead of plain values. When pushing, the new minSoFar is `min(val, current top's minSoFar)`. `getMin()` then just reads the minSoFar of whatever is on top — and popping automatically 'restores' the previous minimum for free."
+    ],
+    "solution": {
+      "approach": "Instead of a plain value stack, store each element alongside the minimum of the stack up through that point: `[value, minSoFar]`. When pushing a new value, compute `minSoFar = Math.min(value, previous top's minSoFar)` (or just `value` if the stack was empty) and push the pair. Now `getMin()` is just reading the second element of the top pair, and `pop()` naturally 'reverts' to the correct previous minimum since it was already recorded on the new top — no recomputation needed anywhere.",
+      "language": "javascript",
+      "code": "class MinStack {\n  constructor() {\n    this.stack = []; // entries: [value, minSoFar]\n  }\n\n  push(val) {\n    const minSoFar = this.stack.length === 0\n      ? val\n      : Math.min(val, this.stack[this.stack.length - 1][1]);\n    this.stack.push([val, minSoFar]);\n  }\n\n  pop() {\n    this.stack.pop();\n  }\n\n  top() {\n    return this.stack[this.stack.length - 1][0];\n  }\n\n  getMin() {\n    return this.stack[this.stack.length - 1][1];\n  }\n}",
+      "timeComplexity": "O(1) for every operation — push, pop, top, and getMin each do constant work.",
+      "spaceComplexity": "O(n) — each pushed value carries one extra number (its running minimum)."
+    },
+    "functionName": "minStackJudge",
+    "starterCode": "class MinStack {\n  constructor() {\n    // your code here\n  }\n\n  push(val) {\n    // your code here\n  }\n\n  pop() {\n    // your code here\n  }\n\n  top() {\n    // your code here\n  }\n\n  getMin() {\n    // your code here\n  }\n}\n\nfunction minStackJudge(ops, argsList) {\n  const results = [];\n  let obj = null;\n  for (let i = 0; i < ops.length; i++) {\n    const op = ops[i];\n    const opArgs = argsList[i];\n    if (op === \"MinStack\") {\n      obj = new MinStack();\n      results.push(null);\n    } else if (op === \"push\") {\n      obj.push(opArgs[0]);\n      results.push(null);\n    } else if (op === \"pop\") {\n      obj.pop();\n      results.push(null);\n    } else if (op === \"top\") {\n      results.push(obj.top());\n    } else if (op === \"getMin\") {\n      results.push(obj.getMin());\n    }\n  }\n  return results;\n}",
+    "testCases": [
+      {
+        "args": [
+          [
+            "MinStack",
+            "push",
+            "push",
+            "push",
+            "getMin",
+            "pop",
+            "top",
+            "getMin"
+          ],
+          [
+            [],
+            [
+              -2
+            ],
+            [
+              0
+            ],
+            [
+              -3
+            ],
+            [],
+            [],
+            [],
+            []
+          ]
+        ],
+        "expected": [
+          null,
+          null,
+          null,
+          null,
+          -3,
+          null,
+          0,
+          -2
+        ]
+      },
+      {
+        "args": [
+          [
+            "MinStack",
+            "push",
+            "getMin",
+            "push",
+            "getMin",
+            "pop",
+            "getMin"
+          ],
+          [
+            [],
+            [
+              5
+            ],
+            [],
+            [
+              3
+            ],
+            [],
+            [],
+            []
+          ]
+        ],
+        "expected": [
+          null,
+          null,
+          5,
+          null,
+          3,
+          null,
+          5
+        ]
+      },
+      {
+        "args": [
+          [
+            "MinStack",
+            "push",
+            "top",
+            "getMin"
+          ],
+          [
+            [],
+            [
+              7
+            ],
+            [],
+            []
+          ]
+        ],
+        "expected": [
+          null,
+          null,
+          7,
+          7
+        ]
+      }
+    ]
+  },
+  {
+    "key": "evaluate-reverse-polish-notation",
+    "number": 36,
+    "title": "Evaluate Reverse Polish Notation",
+    "difficulty": "Medium",
+    "statement": "You are given an array of strings `tokens` representing an arithmetic expression in **Reverse Polish Notation** (postfix notation).\n\nEvaluate the expression and return an integer representing its value.\n\nValid operators are `+`, `-`, `*`, and `/`. Each operand may be an integer or another expression's result. Division between two integers should truncate toward zero. There will not be division by zero, and the expression is guaranteed to always be valid.",
+    "examples": [
+      {
+        "input": "tokens = [\"2\",\"1\",\"+\",\"3\",\"*\"]",
+        "output": "9",
+        "explanation": "(2 + 1) * 3 = 9."
+      },
+      {
+        "input": "tokens = [\"4\",\"13\",\"5\",\"/\",\"+\"]",
+        "output": "6",
+        "explanation": "4 + (13 / 5) = 4 + 2 = 6 (integer division truncates)."
+      },
+      {
+        "input": "tokens = [\"10\",\"6\",\"9\",\"3\",\"+\",\"-11\",\"*\",\"/\",\"*\",\"17\",\"+\",\"5\",\"+\"]",
+        "output": "22"
+      }
+    ],
+    "constraints": [
+      "1 <= tokens.length <= 10^4",
+      "tokens[i] is either an operator ('+', '-', '*', '/') or an integer in the range [-200, 200]."
+    ],
+    "hints": [
+      "In postfix notation, an operator always applies to the two operands that came immediately before it — so you need to remember operands until their operator shows up.",
+      "A stack is a natural fit: numbers get remembered until needed, and 'the two most recent operands' is exactly what a stack's top two elements give you.",
+      "Scan left to right. Push numbers. When you hit an operator, pop the top two values (the second-popped is the left-hand operand), apply the operator, and push the result back — by the end, exactly one value remains on the stack."
+    ],
+    "solution": {
+      "approach": "Process tokens left to right using a stack. Whenever a token is a number, push it. Whenever it's an operator, pop the two most recent values — call them `b` (popped first, the right operand) and `a` (popped second, the left operand) — apply the operator as `a OP b`, and push the result back onto the stack. Because RPN guarantees every operator's operands have already appeared, the stack always has enough values when an operator is reached. After processing every token, exactly one value remains: the final result. Integer division uses `Math.trunc` to truncate toward zero (JavaScript's `/` and `Math.floor` don't truncate negative results toward zero the way this problem requires).",
+      "language": "javascript",
+      "code": "function evalRPN(tokens) {\n  const stack = [];\n  const operators = new Set(['+', '-', '*', '/']);\n\n  for (const token of tokens) {\n    if (!operators.has(token)) {\n      stack.push(Number(token));\n      continue;\n    }\n    const b = stack.pop();\n    const a = stack.pop();\n    switch (token) {\n      case '+': stack.push(a + b); break;\n      case '-': stack.push(a - b); break;\n      case '*': stack.push(a * b); break;\n      case '/': stack.push(Math.trunc(a / b)); break;\n    }\n  }\n\n  return stack.pop();\n}",
+      "timeComplexity": "O(n) — each token is processed once with O(1) stack work.",
+      "spaceComplexity": "O(n) — worst case (all operands before any operator) the stack holds every number."
+    },
+    "functionName": "evalRPN",
+    "starterCode": "function evalRPN(tokens) {\n  // your code here\n}",
+    "testCases": [
+      {
+        "args": [
+          [
+            "2",
+            "1",
+            "+",
+            "3",
+            "*"
+          ]
+        ],
+        "expected": 9
+      },
+      {
+        "args": [
+          [
+            "4",
+            "13",
+            "5",
+            "/",
+            "+"
+          ]
+        ],
+        "expected": 6
+      },
+      {
+        "args": [
+          [
+            "10",
+            "6",
+            "9",
+            "3",
+            "+",
+            "-11",
+            "*",
+            "/",
+            "*",
+            "17",
+            "+",
+            "5",
+            "+"
+          ]
+        ],
+        "expected": 22
+      }
+    ]
+  },
+  {
+    "key": "daily-temperatures",
+    "number": 37,
+    "title": "Daily Temperatures",
+    "difficulty": "Medium",
+    "statement": "Given an array of integers `temperatures` representing daily temperatures, return an array `answer` such that `answer[i]` is the number of days you have to wait after day `i` to get a warmer temperature. If there is no future day for which this is possible, set `answer[i]` to `0` instead.",
+    "examples": [
+      {
+        "input": "temperatures = [73,74,75,71,69,72,76,73]",
+        "output": "[1,1,4,2,1,1,0,0]"
+      },
+      {
+        "input": "temperatures = [30,40,50,60]",
+        "output": "[1,1,1,0]"
+      },
+      {
+        "input": "temperatures = [30,60,90]",
+        "output": "[1,1,0]"
+      }
+    ],
+    "constraints": [
+      "1 <= temperatures.length <= 10^5",
+      "30 <= temperatures[i] <= 100"
+    ],
+    "hints": [
+      "For each day, scanning forward to find the next warmer day is O(n) per day, O(n^2) overall — too slow for the input size.",
+      "As you scan left to right, keep track of the days whose 'next warmer day' you haven't found yet. When you hit a warmer temperature, it resolves ALL of those pending days at once, not just the most recent one.",
+      "Keep a stack of indices whose answer is still unknown, with temperatures decreasing from bottom to top. At each new day, pop and resolve every stack index whose temperature is lower than today's, then push today's index."
+    ],
+    "solution": {
+      "approach": "Maintain a stack of indices for days that are still 'waiting' for a warmer day, kept so that their temperatures decrease from the bottom of the stack to the top. For each new day `i`, while the top of the stack has a lower temperature than today's, pop it and resolve it: `answer[poppedIndex] = i - poppedIndex`. Then push `i`. Every index is pushed once and popped at most once, so this amortizes to linear time even though there's a nested-looking while loop.",
+      "language": "javascript",
+      "code": "function dailyTemperatures(temperatures) {\n  const n = temperatures.length;\n  const answer = new Array(n).fill(0);\n  const stack = []; // indices, with decreasing temperatures\n\n  for (let i = 0; i < n; i++) {\n    while (stack.length > 0 && temperatures[i] > temperatures[stack[stack.length - 1]]) {\n      const idx = stack.pop();\n      answer[idx] = i - idx;\n    }\n    stack.push(i);\n  }\n\n  return answer;\n}",
+      "timeComplexity": "O(n) — each index is pushed once and popped at most once, so the total work across all iterations of the inner while loop is O(n).",
+      "spaceComplexity": "O(n) — for the answer array and, worst case, the stack."
+    },
+    "functionName": "dailyTemperatures",
+    "starterCode": "function dailyTemperatures(temperatures) {\n  // your code here\n}",
+    "testCases": [
+      {
+        "args": [
+          [
+            73,
+            74,
+            75,
+            71,
+            69,
+            72,
+            76,
+            73
+          ]
+        ],
+        "expected": [
+          1,
+          1,
+          4,
+          2,
+          1,
+          1,
+          0,
+          0
+        ]
+      },
+      {
+        "args": [
+          [
+            30,
+            40,
+            50,
+            60
+          ]
+        ],
+        "expected": [
+          1,
+          1,
+          1,
+          0
+        ]
+      },
+      {
+        "args": [
+          [
+            30,
+            60,
+            90
+          ]
+        ],
+        "expected": [
+          1,
+          1,
+          0
+        ]
+      }
+    ]
+  },
+  {
+    "key": "largest-rectangle-in-histogram",
+    "number": 38,
+    "title": "Largest Rectangle in Histogram",
+    "difficulty": "Hard",
+    "statement": "Given an array of integers `heights` representing the histogram's bar heights, where each bar has width 1, return the area of the largest rectangle that can be formed within the histogram.",
+    "examples": [
+      {
+        "input": "heights = [2,1,5,6,2,3]",
+        "output": "10",
+        "explanation": "The largest rectangle has height 5 and spans the two bars of height 5 and 6, giving area 5 * 2 = 10."
+      },
+      {
+        "input": "heights = [2,4]",
+        "output": "4"
+      }
+    ],
+    "constraints": [
+      "1 <= heights.length <= 10^5",
+      "0 <= heights[i] <= 10^4"
+    ],
+    "hints": [
+      "Checking every pair of left/right boundaries directly is O(n^2) — too slow for the input size.",
+      "For each bar, the largest rectangle that uses it as the SHORTEST bar extends as far left and right as neighboring bars stay at least as tall. You need, for every bar, the nearest shorter bar on each side.",
+      "Use a stack of indices with increasing heights. When you encounter a bar shorter than the stack's top, that top bar can't extend any further right — pop it and compute its max rectangle using the current index as the right boundary and the new stack top as the left boundary."
+    ],
+    "solution": {
+      "approach": "Maintain a stack of indices whose bar heights are increasing from bottom to top. Scan through the bars (with one extra virtual bar of height 0 appended at the end to flush the stack). Whenever the current bar is shorter than the bar at the top of the stack, that top bar can no longer grow to the right, so pop it and finalize its rectangle: its height is `heights[popped]`, and its width spans from just after the new stack top to just before the current index (or from index 0 if the stack is now empty). Track the maximum area seen. Because each index is pushed once and popped once, this runs in linear time despite computing, for every bar, the full width it could stretch to as the shortest bar in its rectangle.",
+      "language": "javascript",
+      "code": "function largestRectangleArea(heights) {\n  const stack = []; // indices, with increasing heights\n  let maxArea = 0;\n  const n = heights.length;\n\n  for (let i = 0; i <= n; i++) {\n    const h = i === n ? 0 : heights[i];\n    while (stack.length > 0 && h < heights[stack[stack.length - 1]]) {\n      const height = heights[stack.pop()];\n      const width = stack.length === 0 ? i : i - stack[stack.length - 1] - 1;\n      maxArea = Math.max(maxArea, height * width);\n    }\n    stack.push(i);\n  }\n\n  return maxArea;\n}",
+      "timeComplexity": "O(n) — each index is pushed once and popped at most once from the stack.",
+      "spaceComplexity": "O(n) — for the stack, worst case when heights are strictly increasing."
+    },
+    "functionName": "largestRectangleArea",
+    "starterCode": "function largestRectangleArea(heights) {\n  // your code here\n}",
+    "testCases": [
+      {
+        "args": [
+          [
+            2,
+            1,
+            5,
+            6,
+            2,
+            3
+          ]
+        ],
+        "expected": 10
+      },
+      {
+        "args": [
+          [
+            2,
+            4
+          ]
+        ],
+        "expected": 4
+      },
+      {
+        "args": [
+          [
+            1,
+            1
+          ]
+        ],
+        "expected": 2
+      }
+    ]
+  }
+]

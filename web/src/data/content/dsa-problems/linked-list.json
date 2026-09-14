@@ -1,0 +1,930 @@
+[
+  {
+    "key": "reverse-linked-list",
+    "number": 25,
+    "title": "Reverse Linked List",
+    "difficulty": "Easy",
+    "statement": "Given the `head` of a singly linked list, reverse the list and return the new head.",
+    "examples": [
+      {
+        "input": "head = [1,2,3,4,5]",
+        "output": "[5,4,3,2,1]"
+      },
+      {
+        "input": "head = [1,2]",
+        "output": "[2,1]"
+      },
+      {
+        "input": "head = []",
+        "output": "[]"
+      }
+    ],
+    "constraints": [
+      "0 <= list length <= 5000",
+      "-5000 <= Node.val <= 5000"
+    ],
+    "hints": [
+      "You can't just reverse an array — you need to actually relink each node's `next` pointer.",
+      "Walk the list once, keeping track of the previous node as you go.",
+      "At each node, save `next` before overwriting it, point `current.next` back to `prev`, then advance both pointers."
+    ],
+    "solution": {
+      "approach": "Iterate with two pointers, `prev` (starts null) and `current` (starts at head). At each step, save `current.next` in a temp variable, reassign `current.next = prev`, then shift `prev = current` and `current = temp`. When `current` becomes null, every node's pointer has been flipped and `prev` holds the new head.",
+      "language": "javascript",
+      "code": "function reverseList(head) {\n  let prev = null;\n  let current = head;\n  while (current) {\n    const next = current.next;\n    current.next = prev;\n    prev = current;\n    current = next;\n  }\n  return prev;\n}",
+      "timeComplexity": "O(n) — a single pass over the list.",
+      "spaceComplexity": "O(1) — only two pointers are used, regardless of list length."
+    },
+    "functionName": "reverseListJudge",
+    "starterCode": "class ListNode {\n  constructor(val, next = null) {\n    this.val = val;\n    this.next = next;\n  }\n}\n\nfunction arrayToList(arr) {\n  let head = null, tail = null;\n  for (const v of arr) {\n    const node = new ListNode(v);\n    if (!head) head = tail = node; else { tail.next = node; tail = node; }\n  }\n  return head;\n}\n\nfunction listToArray(node) {\n  const out = [];\n  while (node) { out.push(node.val); node = node.next; }\n  return out;\n}\n\nfunction reverseList(head) {\n  // your code here\n}\n\nfunction reverseListJudge(arr) {\n  return listToArray(reverseList(arrayToList(arr)));\n}",
+    "testCases": [
+      {
+        "args": [
+          [
+            1,
+            2,
+            3,
+            4,
+            5
+          ]
+        ],
+        "expected": [
+          5,
+          4,
+          3,
+          2,
+          1
+        ]
+      },
+      {
+        "args": [
+          [
+            1,
+            2
+          ]
+        ],
+        "expected": [
+          2,
+          1
+        ]
+      },
+      {
+        "args": [
+          []
+        ],
+        "expected": []
+      },
+      {
+        "args": [
+          [
+            1
+          ]
+        ],
+        "expected": [
+          1
+        ]
+      }
+    ]
+  },
+  {
+    "key": "merge-two-sorted-lists",
+    "number": 26,
+    "title": "Merge Two Sorted Lists",
+    "difficulty": "Easy",
+    "statement": "You are given the heads of two sorted linked lists `list1` and `list2`, each in non-decreasing order.\n\nMerge the two lists into a single sorted list by splicing together the existing nodes, and return the head of the merged list.",
+    "examples": [
+      {
+        "input": "list1 = [1,2,4], list2 = [1,3,4]",
+        "output": "[1,1,2,3,4,4]"
+      },
+      {
+        "input": "list1 = [], list2 = []",
+        "output": "[]"
+      },
+      {
+        "input": "list1 = [], list2 = [0]",
+        "output": "[0]"
+      }
+    ],
+    "constraints": [
+      "0 <= list1.length, list2.length <= 50",
+      "-100 <= Node.val <= 100",
+      "Both `list1` and `list2` are sorted in non-decreasing order."
+    ],
+    "hints": [
+      "Creating a brand-new list and copying values is wasteful — you can reuse the existing nodes.",
+      "A dummy head node before the result list avoids annoying special-casing of the first node you attach.",
+      "Walk both lists with two pointers, always attaching the smaller current node to the result and advancing only that pointer; when one list runs out, attach the remainder of the other directly."
+    ],
+    "solution": {
+      "approach": "Use a dummy node to anchor the result list and a `curr` pointer that always points at its tail. Compare the heads of `list1` and `list2`; splice whichever node is smaller onto `curr.next`, advance that list's pointer, and advance `curr`. Once one list is exhausted, the other is already sorted, so attach it wholesale to `curr.next`. Returning `dummy.next` skips the placeholder.",
+      "language": "javascript",
+      "code": "function mergeTwoLists(list1, list2) {\n  const dummy = new ListNode(0);\n  let curr = dummy;\n\n  while (list1 && list2) {\n    if (list1.val <= list2.val) {\n      curr.next = list1;\n      list1 = list1.next;\n    } else {\n      curr.next = list2;\n      list2 = list2.next;\n    }\n    curr = curr.next;\n  }\n\n  curr.next = list1 || list2;\n  return dummy.next;\n}",
+      "timeComplexity": "O(n + m) — each node from both lists is visited exactly once.",
+      "spaceComplexity": "O(1) — nodes are relinked in place; no new nodes are allocated."
+    },
+    "functionName": "mergeTwoListsJudge",
+    "starterCode": "class ListNode {\n  constructor(val, next = null) {\n    this.val = val;\n    this.next = next;\n  }\n}\n\nfunction arrayToList(arr) {\n  let head = null, tail = null;\n  for (const v of arr) {\n    const node = new ListNode(v);\n    if (!head) head = tail = node; else { tail.next = node; tail = node; }\n  }\n  return head;\n}\n\nfunction listToArray(node) {\n  const out = [];\n  while (node) { out.push(node.val); node = node.next; }\n  return out;\n}\n\nfunction mergeTwoLists(list1, list2) {\n  // your code here\n}\n\nfunction mergeTwoListsJudge(arr1, arr2) {\n  return listToArray(mergeTwoLists(arrayToList(arr1), arrayToList(arr2)));\n}",
+    "testCases": [
+      {
+        "args": [
+          [
+            1,
+            2,
+            4
+          ],
+          [
+            1,
+            3,
+            4
+          ]
+        ],
+        "expected": [
+          1,
+          1,
+          2,
+          3,
+          4,
+          4
+        ]
+      },
+      {
+        "args": [
+          [],
+          []
+        ],
+        "expected": []
+      },
+      {
+        "args": [
+          [],
+          [
+            0
+          ]
+        ],
+        "expected": [
+          0
+        ]
+      }
+    ]
+  },
+  {
+    "key": "linked-list-cycle",
+    "number": 27,
+    "title": "Linked List Cycle",
+    "difficulty": "Easy",
+    "statement": "Given the `head` of a linked list, determine if the list has a cycle in it.\n\nA cycle exists if some node in the list can be reached again by continuously following `next` pointers. Internally, `pos` denotes the index of the node the tail connects to (`-1` if there is no cycle) — `pos` is only used to construct the test list and is not passed to your function.\n\nReturn `true` if the list has a cycle, otherwise `false`.",
+    "examples": [
+      {
+        "input": "head = [3,2,0,-4], pos = 1",
+        "output": "true",
+        "explanation": "The tail (-4) connects back to the node at index 1 (value 2), forming a cycle."
+      },
+      {
+        "input": "head = [1,2], pos = 0",
+        "output": "true",
+        "explanation": "The tail connects back to the first node."
+      },
+      {
+        "input": "head = [1], pos = -1",
+        "output": "false",
+        "explanation": "There is no cycle."
+      }
+    ],
+    "constraints": [
+      "0 <= list length <= 10^4",
+      "-10^5 <= Node.val <= 10^5",
+      "pos is -1 or a valid index in the list."
+    ],
+    "hints": [
+      "You could try marking visited nodes (e.g. with a Set), but that costs O(n) extra space — can you do it in O(1) space?",
+      "Think about two runners on a track moving at different speeds — what happens if the track has a loop?",
+      "Use a slow pointer that moves one step at a time and a fast pointer that moves two steps at a time. If there's a cycle, the fast pointer will eventually lap the slow one and they'll meet."
+    ],
+    "solution": {
+      "approach": "Floyd's cycle detection (the 'tortoise and hare' algorithm). Advance `slow` by one node and `fast` by two nodes on each iteration. If there is no cycle, `fast` reaches the end (`null`) and we return false. If there is a cycle, `fast` will eventually re-enter the loop and, because it gains on `slow` by one node per step, it is guaranteed to eventually land on the exact same node as `slow` — at which point we return true.",
+      "language": "javascript",
+      "code": "function hasCycle(head) {\n  let slow = head;\n  let fast = head;\n\n  while (fast && fast.next) {\n    slow = slow.next;\n    fast = fast.next.next;\n    if (slow === fast) return true;\n  }\n\n  return false;\n}",
+      "timeComplexity": "O(n) — in the worst case the fast pointer traverses the list (plus at most one extra loop) a constant number of times.",
+      "spaceComplexity": "O(1) — only two pointers are used."
+    },
+    "functionName": "hasCycleJudge",
+    "starterCode": "class ListNode {\n  constructor(val, next = null) {\n    this.val = val;\n    this.next = next;\n  }\n}\n\nfunction arrayToList(arr) {\n  let head = null, tail = null;\n  for (const v of arr) {\n    const node = new ListNode(v);\n    if (!head) head = tail = node; else { tail.next = node; tail = node; }\n  }\n  return head;\n}\n\nfunction listToArray(node) {\n  const out = [];\n  while (node) { out.push(node.val); node = node.next; }\n  return out;\n}\n\nfunction arrayToListWithCycle(arr, pos) {\n  if (arr.length === 0) return null;\n  const nodes = arr.map((v) => new ListNode(v));\n  for (let i = 0; i < nodes.length - 1; i++) {\n    nodes[i].next = nodes[i + 1];\n  }\n  if (pos >= 0 && pos < nodes.length) {\n    nodes[nodes.length - 1].next = nodes[pos];\n  }\n  return nodes[0];\n}\n\nfunction hasCycle(head) {\n  // your code here\n}\n\nfunction hasCycleJudge(arr, pos) {\n  return hasCycle(arrayToListWithCycle(arr, pos));\n}",
+    "testCases": [
+      {
+        "args": [
+          [
+            3,
+            2,
+            0,
+            -4
+          ],
+          1
+        ],
+        "expected": true
+      },
+      {
+        "args": [
+          [
+            1,
+            2
+          ],
+          0
+        ],
+        "expected": true
+      },
+      {
+        "args": [
+          [
+            1
+          ],
+          -1
+        ],
+        "expected": false
+      },
+      {
+        "args": [
+          [],
+          -1
+        ],
+        "expected": false
+      }
+    ]
+  },
+  {
+    "key": "remove-nth-node-from-end-of-list",
+    "number": 28,
+    "title": "Remove Nth Node From End of List",
+    "difficulty": "Medium",
+    "statement": "Given the `head` of a linked list, remove the `n`-th node from the end of the list and return its head.\n\nTry to do this in a single pass.",
+    "examples": [
+      {
+        "input": "head = [1,2,3,4,5], n = 2",
+        "output": "[1,2,3,5]"
+      },
+      {
+        "input": "head = [1], n = 1",
+        "output": "[]"
+      },
+      {
+        "input": "head = [1,2], n = 1",
+        "output": "[1]"
+      }
+    ],
+    "constraints": [
+      "The number of nodes in the list is in the range [1, 30].",
+      "0 <= Node.val <= 100",
+      "1 <= n <= number of nodes in the list"
+    ],
+    "hints": [
+      "The naive approach counts the list length first, then walks again to the right spot — that's two passes. Can you do it in one?",
+      "A dummy node before `head` sidesteps the special case where the node to remove is the head itself.",
+      "Advance a `fast` pointer `n` steps ahead of a `slow` pointer first, then move both together until `fast` hits the end — `slow` will land exactly one node before the target."
+    ],
+    "solution": {
+      "approach": "Prepend a dummy node so removing the actual head doesn't need special-casing. Advance `fast` from the dummy by `n` steps. Then advance both `fast` and `slow` one step at a time until `fast.next` is null — at that point `slow` is sitting right before the node to remove, because the gap between them stayed fixed at `n`. Splice it out with `slow.next = slow.next.next`.",
+      "language": "javascript",
+      "code": "function removeNthFromEnd(head, n) {\n  const dummy = new ListNode(0, head);\n  let fast = dummy;\n  let slow = dummy;\n\n  for (let i = 0; i < n; i++) {\n    fast = fast.next;\n  }\n\n  while (fast.next) {\n    fast = fast.next;\n    slow = slow.next;\n  }\n\n  slow.next = slow.next.next;\n  return dummy.next;\n}",
+      "timeComplexity": "O(n) — a single pass through the list (the initial n-step advance plus one shared walk).",
+      "spaceComplexity": "O(1) — only a dummy node and two pointers."
+    },
+    "functionName": "removeNthFromEndJudge",
+    "starterCode": "class ListNode {\n  constructor(val, next = null) {\n    this.val = val;\n    this.next = next;\n  }\n}\n\nfunction arrayToList(arr) {\n  let head = null, tail = null;\n  for (const v of arr) {\n    const node = new ListNode(v);\n    if (!head) head = tail = node; else { tail.next = node; tail = node; }\n  }\n  return head;\n}\n\nfunction listToArray(node) {\n  const out = [];\n  while (node) { out.push(node.val); node = node.next; }\n  return out;\n}\n\nfunction removeNthFromEnd(head, n) {\n  // your code here\n}\n\nfunction removeNthFromEndJudge(arr, n) {\n  return listToArray(removeNthFromEnd(arrayToList(arr), n));\n}",
+    "testCases": [
+      {
+        "args": [
+          [
+            1,
+            2,
+            3,
+            4,
+            5
+          ],
+          2
+        ],
+        "expected": [
+          1,
+          2,
+          3,
+          5
+        ]
+      },
+      {
+        "args": [
+          [
+            1
+          ],
+          1
+        ],
+        "expected": []
+      },
+      {
+        "args": [
+          [
+            1,
+            2
+          ],
+          1
+        ],
+        "expected": [
+          1
+        ]
+      }
+    ]
+  },
+  {
+    "key": "reorder-list",
+    "number": 29,
+    "title": "Reorder List",
+    "difficulty": "Medium",
+    "statement": "You are given the head of a singly linked list representing `L0 -> L1 -> ... -> Ln-1 -> Ln`.\n\nReorder the list in place to be: `L0 -> Ln -> L1 -> Ln-1 -> L2 -> Ln-2 -> ...`\n\nYou may not modify the values in the list's nodes — only the nodes' `next` pointers may be changed.",
+    "examples": [
+      {
+        "input": "head = [1,2,3,4]",
+        "output": "[1,4,2,3]"
+      },
+      {
+        "input": "head = [1,2,3,4,5]",
+        "output": "[1,5,2,4,3]"
+      },
+      {
+        "input": "head = [1]",
+        "output": "[1]"
+      }
+    ],
+    "constraints": [
+      "The number of nodes is in the range [1, 5 * 10^4].",
+      "1 <= Node.val <= 1000"
+    ],
+    "hints": [
+      "This pattern interleaves the first half with the reversed second half — you can't do it with a single forward pass alone.",
+      "Break the problem into three steps: locate the middle of the list, reverse the second half, then merge the two halves by alternating nodes.",
+      "Find the middle with slow/fast pointers, reverse everything after it in place (same technique as reversing a full list), then zip the two halves together node by node."
+    ],
+    "solution": {
+      "approach": "Split the work into three classic sub-routines. First, find the middle node with slow/fast pointers (slow ends up at the midpoint). Second, reverse the second half of the list starting right after the middle, using the standard iterative reversal. Third, merge the first half and the reversed second half by alternating: take one node from each side in turn and relink. Because the second half was reversed, alternating naturally produces `L0, Ln, L1, Ln-1, ...`.",
+      "language": "javascript",
+      "code": "function reorderList(head) {\n  if (!head || !head.next) return head;\n\n  // 1. Find the middle of the list\n  let slow = head;\n  let fast = head;\n  while (fast.next && fast.next.next) {\n    slow = slow.next;\n    fast = fast.next.next;\n  }\n\n  // 2. Reverse the second half\n  let second = slow.next;\n  slow.next = null;\n  let prev = null;\n  while (second) {\n    const next = second.next;\n    second.next = prev;\n    prev = second;\n    second = next;\n  }\n  let secondHead = prev;\n\n  // 3. Merge the two halves, alternating nodes\n  let first = head;\n  while (secondHead) {\n    const t1 = first.next;\n    const t2 = secondHead.next;\n    first.next = secondHead;\n    secondHead.next = t1;\n    first = t1;\n    secondHead = t2;\n  }\n\n  return head;\n}",
+      "timeComplexity": "O(n) — finding the middle, reversing, and merging are each a single linear pass.",
+      "spaceComplexity": "O(1) — the list is reordered in place using only pointers."
+    },
+    "functionName": "reorderListJudge",
+    "starterCode": "class ListNode {\n  constructor(val, next = null) {\n    this.val = val;\n    this.next = next;\n  }\n}\n\nfunction arrayToList(arr) {\n  let head = null, tail = null;\n  for (const v of arr) {\n    const node = new ListNode(v);\n    if (!head) head = tail = node; else { tail.next = node; tail = node; }\n  }\n  return head;\n}\n\nfunction listToArray(node) {\n  const out = [];\n  while (node) { out.push(node.val); node = node.next; }\n  return out;\n}\n\nfunction reorderList(head) {\n  // your code here\n}\n\nfunction reorderListJudge(arr) {\n  const head = arrayToList(arr);\n  reorderList(head);\n  return listToArray(head);\n}",
+    "testCases": [
+      {
+        "args": [
+          [
+            1,
+            2,
+            3,
+            4
+          ]
+        ],
+        "expected": [
+          1,
+          4,
+          2,
+          3
+        ]
+      },
+      {
+        "args": [
+          [
+            1,
+            2,
+            3,
+            4,
+            5
+          ]
+        ],
+        "expected": [
+          1,
+          5,
+          2,
+          4,
+          3
+        ]
+      },
+      {
+        "args": [
+          [
+            1
+          ]
+        ],
+        "expected": [
+          1
+        ]
+      },
+      {
+        "args": [
+          [
+            1,
+            2
+          ]
+        ],
+        "expected": [
+          1,
+          2
+        ]
+      }
+    ]
+  },
+  {
+    "key": "merge-k-sorted-lists",
+    "number": 30,
+    "title": "Merge K Sorted Lists",
+    "difficulty": "Hard",
+    "statement": "You are given an array `lists` of `k` linked lists, each sorted in non-decreasing order.\n\nMerge all the linked lists into one sorted linked list and return its head.",
+    "examples": [
+      {
+        "input": "lists = [[1,4,5],[1,3,4],[2,6]]",
+        "output": "[1,1,2,3,4,4,5,6]",
+        "explanation": "Merging the three lists produces one sorted list."
+      },
+      {
+        "input": "lists = []",
+        "output": "[]"
+      },
+      {
+        "input": "lists = [[]]",
+        "output": "[]"
+      }
+    ],
+    "constraints": [
+      "k == lists.length",
+      "0 <= k <= 10^4",
+      "0 <= lists[i].length <= 500",
+      "-10^4 <= lists[i][j] <= 10^4"
+    ],
+    "hints": [
+      "Merging all k lists by repeatedly scanning for the smallest head across all of them is O(k*n) — that's slow when k is large.",
+      "You already know how to merge two sorted lists in O(n + m). Can you repeatedly combine pairs of lists?",
+      "Merge the lists two at a time in rounds, like a tournament bracket: pair up the lists, merge each pair, and repeat on the resulting (roughly halved) set of lists until only one remains. This gives O(N log k) instead of O(N * k)."
+    ],
+    "solution": {
+      "approach": "Reuse the two-list merge routine, and apply it pairwise across the whole array in a divide-and-conquer fashion: merge list 0 with list 1, list 2 with list 3, and so on, producing about half as many lists. Repeat this pairing-and-merging process on the shrinking set of lists until only a single merged list remains. Each round does O(N) total work across all pairs, and there are O(log k) rounds, so the total cost is O(N log k) rather than the O(N*k) you'd get from merging lists one at a time into a running result.",
+      "language": "javascript",
+      "code": "function mergeTwoLists(l1, l2) {\n  const dummy = new ListNode(0);\n  let curr = dummy;\n  while (l1 && l2) {\n    if (l1.val <= l2.val) {\n      curr.next = l1;\n      l1 = l1.next;\n    } else {\n      curr.next = l2;\n      l2 = l2.next;\n    }\n    curr = curr.next;\n  }\n  curr.next = l1 || l2;\n  return dummy.next;\n}\n\nfunction mergeKLists(lists) {\n  if (!lists || lists.length === 0) return null;\n\n  while (lists.length > 1) {\n    const merged = [];\n    for (let i = 0; i < lists.length; i += 2) {\n      if (i + 1 < lists.length) {\n        merged.push(mergeTwoLists(lists[i], lists[i + 1]));\n      } else {\n        merged.push(lists[i]);\n      }\n    }\n    lists = merged;\n  }\n\n  return lists[0];\n}",
+      "timeComplexity": "O(N log k) — N is the total number of nodes across all lists; there are O(log k) merge rounds, and each round does O(N) total work.",
+      "spaceComplexity": "O(log k) — for the array of intermediate list references per round (nodes themselves are relinked, not copied); O(1) extra beyond that if you don't count the output."
+    },
+    "functionName": "mergeKListsJudge",
+    "starterCode": "class ListNode {\n  constructor(val, next = null) {\n    this.val = val;\n    this.next = next;\n  }\n}\n\nfunction arrayToList(arr) {\n  let head = null, tail = null;\n  for (const v of arr) {\n    const node = new ListNode(v);\n    if (!head) head = tail = node; else { tail.next = node; tail = node; }\n  }\n  return head;\n}\n\nfunction listToArray(node) {\n  const out = [];\n  while (node) { out.push(node.val); node = node.next; }\n  return out;\n}\n\nfunction mergeTwoLists(l1, l2) {\n  const dummy = new ListNode(0);\n  let curr = dummy;\n  while (l1 && l2) {\n    if (l1.val <= l2.val) {\n      curr.next = l1;\n      l1 = l1.next;\n    } else {\n      curr.next = l2;\n      l2 = l2.next;\n    }\n    curr = curr.next;\n  }\n  curr.next = l1 || l2;\n  return dummy.next;\n}\n\nfunction mergeKLists(lists) {\n  // your code here\n}\n\nfunction mergeKListsJudge(arrs) {\n  const lists = arrs.map(arrayToList);\n  return listToArray(mergeKLists(lists));\n}",
+    "testCases": [
+      {
+        "args": [
+          [
+            [
+              1,
+              4,
+              5
+            ],
+            [
+              1,
+              3,
+              4
+            ],
+            [
+              2,
+              6
+            ]
+          ]
+        ],
+        "expected": [
+          1,
+          1,
+          2,
+          3,
+          4,
+          4,
+          5,
+          6
+        ]
+      },
+      {
+        "args": [
+          []
+        ],
+        "expected": []
+      },
+      {
+        "args": [
+          [
+            []
+          ]
+        ],
+        "expected": []
+      }
+    ]
+  },
+  {
+    "key": "add-two-numbers",
+    "number": 31,
+    "title": "Add Two Numbers",
+    "difficulty": "Medium",
+    "statement": "You are given two non-empty linked lists, `l1` and `l2`, representing two non-negative integers. The digits are stored in **reverse order**, and each node contains a single digit.\n\nAdd the two numbers and return the sum as a linked list, also storing digits in reverse order. You may assume the two numbers do not contain any leading zero, except the number 0 itself.",
+    "examples": [
+      {
+        "input": "l1 = [2,4,3], l2 = [5,6,4]",
+        "output": "[7,0,8]",
+        "explanation": "342 + 465 = 807."
+      },
+      {
+        "input": "l1 = [0], l2 = [0]",
+        "output": "[0]"
+      },
+      {
+        "input": "l1 = [9,9,9,9,9,9,9], l2 = [9,9,9,9]",
+        "output": "[8,9,9,9,0,0,0,1]",
+        "explanation": "9999999 + 9999 = 10009998."
+      }
+    ],
+    "constraints": [
+      "The number of nodes in each list is in the range [1, 100].",
+      "0 <= Node.val <= 9",
+      "It is guaranteed that neither list has leading zeros (except the number 0 itself)."
+    ],
+    "hints": [
+      "This is just grade-school column addition, but with the digits already conveniently ordered least-significant-first.",
+      "Walk both lists simultaneously, adding corresponding digits plus a running carry, and build a new list of the results.",
+      "The lists can have different lengths, and a final carry can produce one extra digit — keep looping as long as either list still has nodes OR there's a leftover carry, treating a missing digit as 0."
+    ],
+    "solution": {
+      "approach": "Simulate elementary addition. Walk `l1` and `l2` together with a running `carry`, initialized to 0. At each step, sum the current digits (treating a missing node as 0) plus the carry, append `sum % 10` as the next result digit, and set `carry = Math.floor(sum / 10)` for the next step. Keep going as long as there are digits left in either list or a carry remains, so a final carry correctly produces an extra leading digit (e.g. 5 + 5 = [0,1]).",
+      "language": "javascript",
+      "code": "function addTwoNumbers(l1, l2) {\n  const dummy = new ListNode(0);\n  let curr = dummy;\n  let carry = 0;\n\n  while (l1 || l2 || carry) {\n    const sum = (l1 ? l1.val : 0) + (l2 ? l2.val : 0) + carry;\n    carry = Math.floor(sum / 10);\n    curr.next = new ListNode(sum % 10);\n    curr = curr.next;\n    if (l1) l1 = l1.next;\n    if (l2) l2 = l2.next;\n  }\n\n  return dummy.next;\n}",
+      "timeComplexity": "O(max(n, m)) — one pass across the longer of the two lists.",
+      "spaceComplexity": "O(max(n, m)) — for the newly built result list (which can have one extra digit for a final carry)."
+    },
+    "functionName": "addTwoNumbersJudge",
+    "starterCode": "class ListNode {\n  constructor(val, next = null) {\n    this.val = val;\n    this.next = next;\n  }\n}\n\nfunction arrayToList(arr) {\n  let head = null, tail = null;\n  for (const v of arr) {\n    const node = new ListNode(v);\n    if (!head) head = tail = node; else { tail.next = node; tail = node; }\n  }\n  return head;\n}\n\nfunction listToArray(node) {\n  const out = [];\n  while (node) { out.push(node.val); node = node.next; }\n  return out;\n}\n\nfunction addTwoNumbers(l1, l2) {\n  // your code here\n}\n\nfunction addTwoNumbersJudge(arr1, arr2) {\n  return listToArray(addTwoNumbers(arrayToList(arr1), arrayToList(arr2)));\n}",
+    "testCases": [
+      {
+        "args": [
+          [
+            2,
+            4,
+            3
+          ],
+          [
+            5,
+            6,
+            4
+          ]
+        ],
+        "expected": [
+          7,
+          0,
+          8
+        ]
+      },
+      {
+        "args": [
+          [
+            0
+          ],
+          [
+            0
+          ]
+        ],
+        "expected": [
+          0
+        ]
+      },
+      {
+        "args": [
+          [
+            9,
+            9,
+            9,
+            9,
+            9,
+            9,
+            9
+          ],
+          [
+            9,
+            9,
+            9,
+            9
+          ]
+        ],
+        "expected": [
+          8,
+          9,
+          9,
+          9,
+          0,
+          0,
+          0,
+          1
+        ]
+      }
+    ]
+  },
+  {
+    "key": "copy-list-with-random-pointer",
+    "number": 32,
+    "title": "Copy List with Random Pointer",
+    "difficulty": "Medium",
+    "statement": "A linked list is given such that each node contains an additional `random` pointer, which could point to any node in the list, or to `null`.\n\nConstruct a **deep copy** of the list. The deep copy should consist of exactly `n` brand-new nodes, where each new node has its `val` set to the value of its corresponding original node. Both the `next` and `random` pointers of the new nodes should point to new nodes in the copied list, such that the pointers in the original list and copied list represent the same list state. None of the pointers in the new list should point to nodes in the original list.\n\nFor example, if two nodes `x` and `y` in the original list are connected by `x.random === y`, then in the copied list `x_copy.random === y_copy`.",
+    "examples": [
+      {
+        "input": "head = [[7,null],[13,0],[11,4],[10,2],[1,0]]",
+        "output": "[[7,null],[13,0],[11,4],[10,2],[1,0]]",
+        "explanation": "Each pair is [val, index of the node random points to (or null)]."
+      },
+      {
+        "input": "head = [[1,1],[2,1]]",
+        "output": "[[1,1],[2,1]]"
+      },
+      {
+        "input": "head = [[3,null],[3,0],[3,null]]",
+        "output": "[[3,null],[3,0],[3,null]]"
+      }
+    ],
+    "constraints": [
+      "0 <= n <= 1000",
+      "-10^4 <= Node.val <= 10^4",
+      "Node.random is null or points to some node in the linked list."
+    ],
+    "hints": [
+      "You can copy `val` and `next` easily, but a naive copy leaves `random` pointing into the OLD list, not the new one.",
+      "The trouble is that a node's `random` target might not have been created yet when you first visit it. What if you could look up 'the copy of any original node' in O(1)?",
+      "Do it in two passes: first, create every new node and store a mapping from original node -> copy node (e.g. in a Map). Second, walk the original list again and use the map to wire up each copy's `next` and `random` pointers."
+    ],
+    "solution": {
+      "approach": "Use a `Map` from original node to its copy. First pass: walk the original list and create a bare copy (just `val`, no pointers yet) for every node, recording `map.set(original, copy)`. Second pass: walk the original list again; for each node, set its copy's `next` to `map.get(original.next)` (or null) and its copy's `random` to `map.get(original.random)` (or null). Because every copy already exists in the map by the time the second pass runs, both pointers can always be resolved correctly, even when `random` points forward to a node not yet 'reached' in list order.",
+      "language": "javascript",
+      "code": "function copyRandomList(head) {\n  if (!head) return null;\n\n  const map = new Map();\n  let curr = head;\n  while (curr) {\n    map.set(curr, new Node(curr.val));\n    curr = curr.next;\n  }\n\n  curr = head;\n  while (curr) {\n    map.get(curr).next = curr.next ? map.get(curr.next) : null;\n    map.get(curr).random = curr.random ? map.get(curr.random) : null;\n    curr = curr.next;\n  }\n\n  return map.get(head);\n}",
+      "timeComplexity": "O(n) — two linear passes over the list.",
+      "spaceComplexity": "O(n) — for the map and the n new nodes."
+    },
+    "functionName": "copyRandomListJudge",
+    "starterCode": "class Node {\n  constructor(val, next = null, random = null) {\n    this.val = val;\n    this.next = next;\n    this.random = random;\n  }\n}\n\n// Builds a list from pairs of [val, randomIndex] (randomIndex is null or an\n// index into the same array, matching LeetCode's serialization for this problem).\nfunction buildRandomList(pairs) {\n  if (pairs.length === 0) return null;\n  const nodes = pairs.map(([val]) => new Node(val));\n  for (let i = 0; i < nodes.length; i++) {\n    nodes[i].next = i + 1 < nodes.length ? nodes[i + 1] : null;\n    const randIdx = pairs[i][1];\n    nodes[i].random = randIdx === null || randIdx === undefined ? null : nodes[randIdx];\n  }\n  return nodes[0];\n}\n\n// Converts a list back into [val, randomIndex] pairs for comparison.\nfunction randomListToArray(head) {\n  const nodes = [];\n  const indexOf = new Map();\n  let node = head;\n  while (node) {\n    indexOf.set(node, nodes.length);\n    nodes.push(node);\n    node = node.next;\n  }\n  return nodes.map((n) => [n.val, n.random ? indexOf.get(n.random) : null]);\n}\n\nfunction copyRandomList(head) {\n  // your code here\n}\n\nfunction copyRandomListJudge(pairs) {\n  const head = buildRandomList(pairs);\n  const copied = copyRandomList(head);\n  return randomListToArray(copied);\n}",
+    "testCases": [
+      {
+        "args": [
+          [
+            [
+              7,
+              null
+            ],
+            [
+              13,
+              0
+            ],
+            [
+              11,
+              4
+            ],
+            [
+              10,
+              2
+            ],
+            [
+              1,
+              0
+            ]
+          ]
+        ],
+        "expected": [
+          [
+            7,
+            null
+          ],
+          [
+            13,
+            0
+          ],
+          [
+            11,
+            4
+          ],
+          [
+            10,
+            2
+          ],
+          [
+            1,
+            0
+          ]
+        ]
+      },
+      {
+        "args": [
+          [
+            [
+              1,
+              1
+            ],
+            [
+              2,
+              1
+            ]
+          ]
+        ],
+        "expected": [
+          [
+            1,
+            1
+          ],
+          [
+            2,
+            1
+          ]
+        ]
+      },
+      {
+        "args": [
+          []
+        ],
+        "expected": []
+      }
+    ]
+  },
+  {
+    "key": "lru-cache",
+    "number": 33,
+    "title": "LRU Cache",
+    "difficulty": "Medium",
+    "statement": "Design a data structure that follows the constraints of a **Least Recently Used (LRU) cache**.\n\nImplement the `LRUCache` class:\n- `LRUCache(capacity)` initializes the cache with positive size `capacity`.\n- `get(key)` returns the value of `key` if it exists, otherwise returns `-1`.\n- `put(key, value)` updates the value of `key` if it exists, otherwise adds the `key`-`value` pair. If inserting a new key causes the number of keys to exceed `capacity`, evict the **least recently used** key.\n\nBoth `get` and `put` must run in **O(1)** average time. A call to `get` or `put` counts as 'using' that key, making it the most recently used.",
+    "examples": [
+      {
+        "input": "[\"LRUCache\",\"put\",\"put\",\"get\",\"put\",\"get\",\"put\",\"get\",\"get\",\"get\"]\n[[2],[1,1],[2,2],[1],[3,3],[2],[4,4],[1],[3],[4]]",
+        "output": "[null,null,null,1,null,-1,null,-1,3,4]",
+        "explanation": "Capacity 2. put(1,1), put(2,2); get(1)->1 (1 now most recent); put(3,3) evicts 2 (least recent); get(2)->-1; put(4,4) evicts 1; get(1)->-1; get(3)->3; get(4)->4."
+      }
+    ],
+    "constraints": [
+      "1 <= capacity <= 3000",
+      "0 <= key, value <= 10^4",
+      "At most 2 * 10^5 calls total to get and put."
+    ],
+    "hints": [
+      "A plain object or Map gives O(1) lookups, but figuring out which key was used LEAST recently still means scanning everything — unless you also track order.",
+      "You need a structure that supports both O(1) key lookup AND O(1) 'move this item to the front / remove the item at the back'. A plain array can't do the second part in O(1).",
+      "Combine a hash map (key -> node) with a doubly linked list that keeps nodes ordered from most- to least-recently-used. On access, unlink the node and re-insert it at the front; when over capacity, unlink and delete the node just before the tail."
+    ],
+    "solution": {
+      "approach": "Maintain a hash map from key to a doubly-linked-list node, plus a doubly linked list with dummy `head` and `tail` sentinels so every real node always has a non-null `prev`/`next` to splice against. The list is kept ordered most-recently-used (right after `head`) to least-recently-used (right before `tail`). `get` looks the node up in O(1) via the map, unlinks it, and re-inserts it at the front (marking it most recent) before returning its value — or returns -1 if absent. `put` either updates an existing node's value and moves it to the front, or, for a new key, evicts the node just before `tail` (the true LRU entry) if the cache is at capacity, then creates and inserts a new node at the front. Every operation touches only a constant number of pointers and map entries, giving true O(1).",
+      "language": "javascript",
+      "code": "class DLinkedNode {\n  constructor(key = 0, val = 0) {\n    this.key = key;\n    this.val = val;\n    this.prev = null;\n    this.next = null;\n  }\n}\n\nclass LRUCache {\n  constructor(capacity) {\n    this.capacity = capacity;\n    this.map = new Map(); // key -> DLinkedNode\n    this.head = new DLinkedNode(); // sentinel, MRU side\n    this.tail = new DLinkedNode(); // sentinel, LRU side\n    this.head.next = this.tail;\n    this.tail.prev = this.head;\n  }\n\n  _remove(node) {\n    node.prev.next = node.next;\n    node.next.prev = node.prev;\n  }\n\n  _insertAtFront(node) {\n    node.next = this.head.next;\n    node.prev = this.head;\n    this.head.next.prev = node;\n    this.head.next = node;\n  }\n\n  get(key) {\n    if (!this.map.has(key)) return -1;\n    const node = this.map.get(key);\n    this._remove(node);\n    this._insertAtFront(node);\n    return node.val;\n  }\n\n  put(key, value) {\n    if (this.map.has(key)) {\n      const node = this.map.get(key);\n      node.val = value;\n      this._remove(node);\n      this._insertAtFront(node);\n      return;\n    }\n    if (this.map.size >= this.capacity) {\n      const lru = this.tail.prev;\n      this._remove(lru);\n      this.map.delete(lru.key);\n    }\n    const node = new DLinkedNode(key, value);\n    this.map.set(key, node);\n    this._insertAtFront(node);\n  }\n}",
+      "timeComplexity": "O(1) average per `get` or `put` — map lookup plus a constant number of pointer relinks.",
+      "spaceComplexity": "O(capacity) — the map and doubly linked list each hold at most `capacity` entries."
+    },
+    "functionName": "lruCacheJudge",
+    "starterCode": "class DLinkedNode {\n  constructor(key = 0, val = 0) {\n    this.key = key;\n    this.val = val;\n    this.prev = null;\n    this.next = null;\n  }\n}\n\nclass LRUCache {\n  constructor(capacity) {\n    // your code here\n  }\n\n  get(key) {\n    // your code here\n  }\n\n  put(key, value) {\n    // your code here\n  }\n}\n\nfunction lruCacheJudge(ops, argsList) {\n  const results = [];\n  let cache = null;\n  for (let i = 0; i < ops.length; i++) {\n    const op = ops[i];\n    const opArgs = argsList[i];\n    if (op === \"LRUCache\") {\n      cache = new LRUCache(opArgs[0]);\n      results.push(null);\n    } else if (op === \"put\") {\n      cache.put(opArgs[0], opArgs[1]);\n      results.push(null);\n    } else if (op === \"get\") {\n      results.push(cache.get(opArgs[0]));\n    }\n  }\n  return results;\n}",
+    "testCases": [
+      {
+        "args": [
+          [
+            "LRUCache",
+            "put",
+            "put",
+            "get",
+            "put",
+            "get",
+            "put",
+            "get",
+            "get",
+            "get"
+          ],
+          [
+            [
+              2
+            ],
+            [
+              1,
+              1
+            ],
+            [
+              2,
+              2
+            ],
+            [
+              1
+            ],
+            [
+              3,
+              3
+            ],
+            [
+              2
+            ],
+            [
+              4,
+              4
+            ],
+            [
+              1
+            ],
+            [
+              3
+            ],
+            [
+              4
+            ]
+          ]
+        ],
+        "expected": [
+          null,
+          null,
+          null,
+          1,
+          null,
+          -1,
+          null,
+          -1,
+          3,
+          4
+        ]
+      },
+      {
+        "args": [
+          [
+            "LRUCache",
+            "put",
+            "get",
+            "put",
+            "get",
+            "get"
+          ],
+          [
+            [
+              1
+            ],
+            [
+              2,
+              1
+            ],
+            [
+              2
+            ],
+            [
+              3,
+              2
+            ],
+            [
+              2
+            ],
+            [
+              3
+            ]
+          ]
+        ],
+        "expected": [
+          null,
+          null,
+          1,
+          null,
+          -1,
+          2
+        ]
+      },
+      {
+        "args": [
+          [
+            "LRUCache",
+            "put",
+            "put",
+            "put",
+            "get",
+            "get"
+          ],
+          [
+            [
+              2
+            ],
+            [
+              1,
+              1
+            ],
+            [
+              2,
+              2
+            ],
+            [
+              1,
+              10
+            ],
+            [
+              1
+            ],
+            [
+              2
+            ]
+          ]
+        ],
+        "expected": [
+          null,
+          null,
+          null,
+          null,
+          10,
+          2
+        ]
+      }
+    ]
+  }
+]

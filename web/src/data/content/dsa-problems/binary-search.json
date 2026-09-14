@@ -1,0 +1,369 @@
+[
+  {
+    "key": "binary-search",
+    "number": 39,
+    "title": "Binary Search",
+    "difficulty": "Easy",
+    "statement": "Given a sorted array of integers `nums` (sorted in ascending order, all values distinct) and an integer `target`, write a function that returns the index of `target` in `nums`.\n\nIf `target` does not exist in the array, return `-1`.\n\nYou must write an algorithm with `O(log n)` runtime complexity.",
+    "examples": [
+      {
+        "input": "nums = [-1,0,3,5,9,12], target = 9",
+        "output": "4",
+        "explanation": "9 exists in nums and its index is 4."
+      },
+      {
+        "input": "nums = [-1,0,3,5,9,12], target = 2",
+        "output": "-1",
+        "explanation": "2 does not exist in nums, so return -1."
+      }
+    ],
+    "constraints": [
+      "1 <= nums.length <= 10^4",
+      "-10^4 < nums[i], target < 10^4",
+      "All the integers in `nums` are unique, sorted in ascending order."
+    ],
+    "hints": [
+      "A linear scan works but is O(n) — the sorted order is a strong hint that something faster is possible.",
+      "At each step you only need to look at the middle element: it tells you which half of the array the target could possibly be in.",
+      "Maintain `lo` and `hi` pointers. Compare `nums[mid]` to `target`, then discard the half that cannot contain it, repeating until the pointers cross."
+    ],
+    "solution": {
+      "approach": "Classic binary search. Maintain a search window `[lo, hi]` that always contains the target if it exists. Compute `mid` and compare `nums[mid]` to `target`: if equal we're done, if `nums[mid]` is too small the target (if present) must be to the right so move `lo = mid + 1`, otherwise move `hi = mid - 1`. Each comparison halves the search space, so the loop runs at most `O(log n)` times. If `lo` ever passes `hi`, the target isn't present.",
+      "language": "javascript",
+      "code": "function search(nums, target) {\n  let lo = 0;\n  let hi = nums.length - 1;\n\n  while (lo <= hi) {\n    const mid = lo + Math.floor((hi - lo) / 2);\n    if (nums[mid] === target) {\n      return mid;\n    } else if (nums[mid] < target) {\n      lo = mid + 1;\n    } else {\n      hi = mid - 1;\n    }\n  }\n\n  return -1;\n}",
+      "timeComplexity": "O(log n) — the search window halves on every iteration.",
+      "spaceComplexity": "O(1) — only a constant number of pointers are used."
+    },
+    "functionName": "search",
+    "starterCode": "function search(nums, target) {\n  // your code here\n}",
+    "testCases": [
+      {
+        "args": [
+          [
+            -1,
+            0,
+            3,
+            5,
+            9,
+            12
+          ],
+          9
+        ],
+        "expected": 4
+      },
+      {
+        "args": [
+          [
+            -1,
+            0,
+            3,
+            5,
+            9,
+            12
+          ],
+          2
+        ],
+        "expected": -1
+      },
+      {
+        "args": [
+          [
+            5
+          ],
+          5
+        ],
+        "expected": 0
+      },
+      {
+        "args": [
+          [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10
+          ],
+          1
+        ],
+        "expected": 0
+      }
+    ]
+  },
+  {
+    "key": "search-a-2d-matrix",
+    "number": 40,
+    "title": "Search a 2D Matrix",
+    "difficulty": "Medium",
+    "statement": "You are given an `m x n` integer matrix `matrix` with the following two properties:\n\n- Each row is sorted in non-decreasing order.\n- The first integer of each row is greater than the last integer of the previous row.\n\nGiven an integer `target`, return `true` if `target` is in `matrix`, or `false` otherwise.\n\nYou must write a solution in `O(log(m * n))` time complexity.",
+    "examples": [
+      {
+        "input": "matrix = [[1,3,5,7],[10,11,16,20],[23,30,34,60]], target = 3",
+        "output": "true"
+      },
+      {
+        "input": "matrix = [[1,3,5,7],[10,11,16,20],[23,30,34,60]], target = 13",
+        "output": "false"
+      }
+    ],
+    "constraints": [
+      "m == matrix.length",
+      "n == matrix[i].length",
+      "1 <= m, n <= 100",
+      "-10^4 <= matrix[i][j], target <= 10^4"
+    ],
+    "hints": [
+      "Searching row by row is O(m) just to find the right row, then O(log n) inside it — can the whole matrix be searched in one O(log(m*n)) pass instead?",
+      "Because of how the rows are chained (each row starts after the previous one ends), the matrix behaves exactly like one flattened sorted array.",
+      "Binary search over a virtual index range `[0, m*n - 1]`, and convert a virtual index `mid` back into `matrix[Math.floor(mid / n)][mid % n]`."
+    ],
+    "solution": {
+      "approach": "Because every row starts after the previous row ends, the whole matrix is really just one sorted array of length `m * n` laid out row by row. Binary search directly over the virtual indices `0..m*n-1`, converting a virtual index `mid` to real coordinates with `row = Math.floor(mid / n)`, `col = mid % n`. This avoids the two-step 'find the row, then search the row' approach and gets a single `O(log(m*n))` binary search.",
+      "language": "javascript",
+      "code": "function searchMatrix(matrix, target) {\n  const m = matrix.length;\n  const n = matrix[0].length;\n  let lo = 0;\n  let hi = m * n - 1;\n\n  while (lo <= hi) {\n    const mid = lo + Math.floor((hi - lo) / 2);\n    const val = matrix[Math.floor(mid / n)][mid % n];\n    if (val === target) {\n      return true;\n    } else if (val < target) {\n      lo = mid + 1;\n    } else {\n      hi = mid - 1;\n    }\n  }\n\n  return false;\n}",
+      "timeComplexity": "O(log(m * n)) — a single binary search over the flattened matrix.",
+      "spaceComplexity": "O(1) — only pointers and index arithmetic."
+    },
+    "functionName": "searchMatrix",
+    "starterCode": "function searchMatrix(matrix, target) {\n  // your code here\n}",
+    "testCases": [
+      {
+        "args": [
+          [
+            [
+              1,
+              3,
+              5,
+              7
+            ],
+            [
+              10,
+              11,
+              16,
+              20
+            ],
+            [
+              23,
+              30,
+              34,
+              60
+            ]
+          ],
+          3
+        ],
+        "expected": true
+      },
+      {
+        "args": [
+          [
+            [
+              1,
+              3,
+              5,
+              7
+            ],
+            [
+              10,
+              11,
+              16,
+              20
+            ],
+            [
+              23,
+              30,
+              34,
+              60
+            ]
+          ],
+          13
+        ],
+        "expected": false
+      },
+      {
+        "args": [
+          [
+            [
+              1
+            ]
+          ],
+          1
+        ],
+        "expected": true
+      }
+    ]
+  },
+  {
+    "key": "koko-eating-bananas",
+    "number": 41,
+    "title": "Koko Eating Bananas",
+    "difficulty": "Medium",
+    "statement": "Koko loves to eat bananas. There are `n` piles of bananas, the `i`-th pile has `piles[i]` bananas. The guards have gone and will come back in `h` hours.\n\nKoko can decide her bananas-per-hour eating speed of `k`. Each hour, she chooses some pile of bananas and eats `k` bananas from that pile. If the pile has fewer than `k` bananas, she eats all of them instead, and won't eat any more bananas during this hour.\n\nKoko likes to eat slowly but still wants to finish eating all the bananas before the guards return.\n\nReturn the minimum integer `k` such that she can eat all the bananas within `h` hours.",
+    "examples": [
+      {
+        "input": "piles = [3,6,7,11], h = 8",
+        "output": "4"
+      },
+      {
+        "input": "piles = [30,11,23,4,20], h = 5",
+        "output": "30"
+      },
+      {
+        "input": "piles = [30,11,23,4,20], h = 6",
+        "output": "23"
+      }
+    ],
+    "constraints": [
+      "1 <= piles.length <= 10^4",
+      "piles.length <= h <= 10^9",
+      "1 <= piles[i] <= 10^9"
+    ],
+    "hints": [
+      "Trying every possible speed `k` one by one and simulating the hours is too slow when piles and h can be large. But notice: the higher `k` is, the fewer hours it takes — that relationship only moves in one direction.",
+      "Since 'hours needed' decreases monotonically as `k` increases, you can binary search on the answer `k` itself, not on the piles.",
+      "For a candidate speed `k`, the hours needed is `sum(ceil(pile / k))` over all piles. Binary search `k` between 1 and `max(piles)`, shrinking toward the smallest `k` whose hours-needed is `<= h`."
+    ],
+    "solution": {
+      "approach": "This is 'binary search on the answer'. The eating speed `k` ranges from `1` to `max(piles)` (any speed at or above the largest pile finishes every pile in one hour each). For a fixed `k`, the hours needed is monotonically non-increasing as `k` grows, since `sum(ceil(pile/k))` shrinks (or stays the same) as `k` increases. That monotonicity is exactly what binary search needs: binary search over candidate speeds `k`, and for each candidate compute the hours required; if it fits within `h`, try a smaller `k` (moving `hi` down), otherwise `k` is too slow and we need a bigger one (`lo` up). The loop converges on the minimum valid `k`.",
+      "language": "javascript",
+      "code": "function minEatingSpeed(piles, h) {\n  const hoursNeeded = (k) => {\n    let hours = 0;\n    for (const pile of piles) {\n      hours += Math.ceil(pile / k);\n    }\n    return hours;\n  };\n\n  let lo = 1;\n  let hi = Math.max(...piles);\n\n  while (lo < hi) {\n    const mid = lo + Math.floor((hi - lo) / 2);\n    if (hoursNeeded(mid) <= h) {\n      hi = mid;\n    } else {\n      lo = mid + 1;\n    }\n  }\n\n  return lo;\n}",
+      "timeComplexity": "O(n log m) — binary search over speeds up to max(piles) = m, each check scans all n piles.",
+      "spaceComplexity": "O(1) — only pointers and a running sum."
+    },
+    "functionName": "minEatingSpeed",
+    "starterCode": "function minEatingSpeed(piles, h) {\n  // your code here\n}",
+    "testCases": [
+      {
+        "args": [
+          [
+            3,
+            6,
+            7,
+            11
+          ],
+          8
+        ],
+        "expected": 4
+      },
+      {
+        "args": [
+          [
+            30,
+            11,
+            23,
+            4,
+            20
+          ],
+          5
+        ],
+        "expected": 30
+      },
+      {
+        "args": [
+          [
+            30,
+            11,
+            23,
+            4,
+            20
+          ],
+          6
+        ],
+        "expected": 23
+      }
+    ]
+  },
+  {
+    "key": "median-of-two-sorted-arrays",
+    "number": 42,
+    "title": "Median of Two Sorted Arrays",
+    "difficulty": "Hard",
+    "statement": "Given two sorted arrays `nums1` and `nums2` of size `m` and `n` respectively, return **the median** of the two sorted arrays.\n\nThe overall run time complexity should be `O(log(m+n))`.",
+    "examples": [
+      {
+        "input": "nums1 = [1,3], nums2 = [2]",
+        "output": "2.0",
+        "explanation": "merged array = [1,2,3], median is 2."
+      },
+      {
+        "input": "nums1 = [1,2], nums2 = [3,4]",
+        "output": "2.5",
+        "explanation": "merged array = [1,2,3,4], median is (2 + 3) / 2 = 2.5."
+      }
+    ],
+    "constraints": [
+      "nums1.length == m",
+      "nums2.length == n",
+      "0 <= m <= 1000",
+      "0 <= n <= 1000",
+      "1 <= m + n <= 2000",
+      "-10^6 <= nums1[i], nums2[i] <= 10^6"
+    ],
+    "hints": [
+      "Merging the two arrays and taking the middle works but is O(m+n) — the required O(log(m+n)) complexity is a strong hint that you should binary search rather than merge.",
+      "The median splits the combined array into a left half and a right half of (almost) equal size. You don't need to actually merge — you just need to find a partition point in each array such that everything to the left of both partitions is <= everything to the right of both.",
+      "Binary search the partition index in the *smaller* array (call it `i`); the partition index in the other array is then forced: `j = floor((m+n+1)/2) - i`. Adjust `i` based on whether `nums1[i-1] > nums2[j]` or `nums2[j-1] > nums1[i]` until both halves are properly ordered."
+    ],
+    "solution": {
+      "approach": "Rather than merging (O(m+n)), binary search for a partition. We want to split the combined, sorted array into a left half and right half of equal (or off-by-one) size, where every element in the left half is <= every element in the right half — then the median is derivable directly from the four boundary elements. Binary search the partition index `i` in the smaller array (always binary searching the smaller of the two keeps the search space to `O(log(min(m,n)))`); the partition `j` in the other array is then fixed by the target left-half size `half = floor((m+n+1)/2)`, namely `j = half - i`. Compare the boundary elements `nums1[i-1]`, `nums1[i]`, `nums2[j-1]`, `nums2[j]` (treating out-of-range as `-Infinity`/`Infinity`): if `left1 <= right2` and `left2 <= right1`, the partition is valid and the median can be read off directly (max of the left boundaries if total length is odd, otherwise the average of the max-left and min-right boundaries). Otherwise, shift `i` left or right and repeat.",
+      "language": "javascript",
+      "code": "function findMedianSortedArrays(nums1, nums2) {\n  if (nums1.length > nums2.length) {\n    return findMedianSortedArrays(nums2, nums1);\n  }\n\n  const m = nums1.length;\n  const n = nums2.length;\n  const half = Math.floor((m + n + 1) / 2);\n  let lo = 0;\n  let hi = m;\n\n  while (lo <= hi) {\n    const i = lo + Math.floor((hi - lo) / 2);\n    const j = half - i;\n\n    const left1 = i === 0 ? -Infinity : nums1[i - 1];\n    const right1 = i === m ? Infinity : nums1[i];\n    const left2 = j === 0 ? -Infinity : nums2[j - 1];\n    const right2 = j === n ? Infinity : nums2[j];\n\n    if (left1 <= right2 && left2 <= right1) {\n      if ((m + n) % 2 === 1) {\n        return Math.max(left1, left2);\n      }\n      return (Math.max(left1, left2) + Math.min(right1, right2)) / 2;\n    } else if (left1 > right2) {\n      hi = i - 1;\n    } else {\n      lo = i + 1;\n    }\n  }\n\n  throw new Error('Input arrays are not sorted');\n}",
+      "timeComplexity": "O(log(min(m, n))) — binary search runs over the smaller array only.",
+      "spaceComplexity": "O(1) — only a constant number of index variables."
+    },
+    "functionName": "findMedianSortedArrays",
+    "starterCode": "function findMedianSortedArrays(nums1, nums2) {\n  // your code here\n}",
+    "testCases": [
+      {
+        "args": [
+          [
+            1,
+            3
+          ],
+          [
+            2
+          ]
+        ],
+        "expected": 2
+      },
+      {
+        "args": [
+          [
+            1,
+            2
+          ],
+          [
+            3,
+            4
+          ]
+        ],
+        "expected": 2.5
+      },
+      {
+        "args": [
+          [
+            0,
+            0
+          ],
+          [
+            0,
+            0
+          ]
+        ],
+        "expected": 0
+      },
+      {
+        "args": [
+          [],
+          [
+            1
+          ]
+        ],
+        "expected": 1
+      }
+    ]
+  }
+]

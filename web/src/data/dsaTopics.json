@@ -1,0 +1,13 @@
+[
+  { "key": "arrays-strings", "label": "Arrays & Strings" },
+  { "key": "linked-list", "label": "Linked List" },
+  { "key": "stack", "label": "Stack" },
+  { "key": "binary-search", "label": "Binary Search" },
+  { "key": "trees", "label": "Trees" },
+  { "key": "tries", "label": "Tries" },
+  { "key": "heap", "label": "Heap / Priority Queue" },
+  { "key": "backtracking", "label": "Backtracking" },
+  { "key": "graphs", "label": "Graphs" },
+  { "key": "dp", "label": "Dynamic Programming" },
+  { "key": "greedy", "label": "Greedy" }
+]
