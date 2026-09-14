@@ -33,5 +33,262 @@
       ]
     },
     "practicePrompt": "Before reading the solution above: for a product page on an e-commerce site (read constantly, written rarely, but price changes must show up fast), which placement + write strategy + eviction policy would you pick, and why?"
+  },
+  {
+    "key": "scalability-basics",
+    "number": 2,
+    "title": "Scalability Basics",
+    "difficulty": "Easy",
+    "statement": "Scalability is a system's ability to handle growing load — more users, more requests, more data — without a proportional drop in performance. When a single server can no longer keep up, there are two fundamentally different directions to grow in: **vertical scaling** (make the one server bigger) and **horizontal scaling** (add more servers).\n\nThe choice between them shapes almost every other decision in a system's architecture, because horizontal scaling only works cleanly if the application is designed to support it — specifically, if it doesn't depend on state living on any one particular machine.",
+    "requirements": {
+      "functional": [
+        "Handle increasing request volume by adding capacity, not by degrading existing users' experience",
+        "Route incoming requests to whichever server instance can serve them",
+        "Let any server instance handle any request, not just requests from a particular user"
+      ],
+      "nonFunctional": [
+        "Should scale with a bounded, predictable cost per unit of added capacity",
+        "No single point of failure — losing one server shouldn't take down the whole system",
+        "Adding capacity should not require downtime"
+      ]
+    },
+    "hints": [
+      "If you just bought a bigger, faster machine to handle more load, what happens when that machine reaches its physical limit?",
+      "If instead you added a second, identical machine, how would a request 'know' which machine has the data it needs from the user's last request?",
+      "What has to be true about where a server stores session data - like 'is this user logged in' - for either machine to be able to answer the next request?"
+    ],
+    "diagram": "flowchart LR\n  Clients([Clients]) -->|Vertical| One[One Big Server]\n  Clients -->|Horizontal| LB[Load Balancer]\n  LB --> S1[Server 1\\nStateless]\n  LB --> S2[Server 2\\nStateless]\n  LB --> S3[Server 3\\nStateless]\n  S1 --> Store[(Shared Session Store)]\n  S2 --> Store\n  S3 --> Store",
+    "solution": {
+      "approach": "**Vertical scaling** (scaling up) means giving a single machine more resources — more CPU, more RAM, a faster disk. It's the simplest way to get more headroom: no architecture changes, no new failure modes, just a bigger box. But it has a hard ceiling — there's a maximum size of machine you can buy — and it creates a single point of failure: if that one server goes down, the whole system goes down. It also tends to get disproportionately expensive at the top end; the biggest instances cost far more per unit of CPU than a mid-sized one.\n\n**Horizontal scaling** (scaling out) means adding more machines and spreading load across them, typically behind a load balancer. It has no real ceiling — need more capacity, add another box — and it improves fault tolerance, since losing one of ten servers is a capacity dip, not an outage. The cost is architectural complexity: now a request can land on any of N servers, and those servers need to behave consistently regardless of which one handles a given request.\n\nThat requirement is where **statelessness** comes in. A **stateless service** keeps no per-user or per-session data in the process's own memory or disk — every request carries (or looks up) everything needed to handle it, usually via a token plus a shared external store (a database, a distributed cache like Redis). Any server instance can then handle any request, which is exactly what horizontal scaling needs: the load balancer is free to route each request to whichever instance is least busy, without worrying about 'stickiness' to a particular machine.\n\nA **stateful service**, by contrast, keeps state locally — think of a server that stores 'user X's shopping cart' in an in-memory dictionary. That works fine with one server, but breaks the moment there are two: half of user X's requests might land on the server that doesn't have their cart. The usual fixes are either **session affinity** (routing user X's requests to the same server every time, which reintroduces a single point of failure for that user) or, better, pushing state out to a shared store so every server is stateless from the app's point of view.\n\nIn practice, real systems mix both: scale vertically first because it's cheap and simple, and only invest in horizontal scaling (and the statelessness it requires) once vertical scaling hits its ceiling or fault tolerance becomes a hard requirement. Almost every large-scale system eventually needs to go horizontal, which is why 'design for statelessness from day one' is common advice even when running on a single server.",
+      "keyPoints": [
+        "Vertical scaling = bigger machine, simple but has a hard ceiling and a single point of failure.",
+        "Horizontal scaling = more machines, no real ceiling and better fault tolerance, but requires the application to be stateless.",
+        "A stateless service keeps no per-request state locally; any instance can serve any request.",
+        "A stateful service needs either session affinity (a workaround) or externalized state (the real fix) to scale horizontally.",
+        "Most systems scale vertically first, then horizontally once they hit vertical's limits."
+      ]
+    },
+    "practicePrompt": "You have a single web server storing logged-in users' sessions in an in-memory hash map. Traffic is growing and you want to add a second server behind a load balancer. What breaks immediately, and what's the smallest change that fixes it without giving up the ability to add a third or fourth server later?"
+  },
+  {
+    "key": "cap-theorem",
+    "number": 3,
+    "title": "CAP Theorem",
+    "difficulty": "Medium",
+    "statement": "The CAP theorem says that a distributed data system can only guarantee two of three properties at once: **Consistency** (every read sees the most recent write, or an error), **Availability** (every request gets a non-error response, even if it's not the latest data), and **Partition tolerance** (the system keeps working even when network failures split it into groups of nodes that can't talk to each other).\n\nIn practice, the choice isn't really 'pick any two' — because in any distributed system, network partitions **will** happen eventually, partition tolerance isn't optional. So the real question CAP forces you to answer is: **when a partition happens, does the system favor consistency or availability?**",
+    "requirements": {
+      "functional": [
+        "Serve reads and writes from multiple nodes that replicate data between them",
+        "Continue operating in some form when nodes can't reach each other",
+        "Make an explicit, deliberate choice about what happens to a request during a partition"
+      ],
+      "nonFunctional": [
+        "Partition tolerance is assumed — the network can and will fail between nodes",
+        "Consistency guarantees must be documented precisely (strong vs eventual), not left implicit",
+        "Availability during a partition should degrade predictably, not fail silently or corrupt data"
+      ]
+    },
+    "hints": [
+      "During a network partition, two nodes that should agree on a value can't talk to each other. If both still accept writes, what happens to the value they disagree on?",
+      "If instead one side refuses to accept writes until it can confirm with the other side, what does the client sitting on that side experience?",
+      "Outside of an actual partition, most systems are both consistent and available - so which property is CAP really asking you to sacrifice, and only under what specific condition?"
+    ],
+    "diagram": "flowchart TB\n  Client([Client]) --> Node1[Node A]\n  Client --> Node2[Node B]\n  Node1 -->|replicate| Node2\n  Node2 -->|replicate| Node1\n  Partition[Network Partition] -->|isolates| Node1\n  Partition -->|isolates| Node2",
+    "solution": {
+      "approach": "CAP is really a statement about **what happens during a partition**, not a permanent architectural label. Outside of a partition, a well-built system can be both consistent and available — CAP only forces a trade-off in the specific moment when nodes can't communicate. At that moment, a system has exactly two choices:\n\n**Choose Consistency (CP)**: nodes on the minority side of the partition stop accepting writes (or reads) rather than risk returning stale or conflicting data. Clients talking to those nodes get errors or timeouts until the partition heals. This guarantees every successful read reflects the latest write, at the cost of availability for some clients during the outage.\n\n**Choose Availability (AP)**: every node keeps accepting reads and writes, even if it can't confirm the latest state with the rest of the cluster. Clients always get a response, but different nodes may temporarily disagree — a read from one side might not reflect a write that just landed on the other side. The system reconciles the divergence later (once the partition heals), a model called **eventual consistency**.\n\nConcrete examples make this less abstract. **Traditional relational databases configured with synchronous replication**, and systems like **HBase** or **ZooKeeper**, lean CP: ZooKeeper explicitly refuses to serve if it can't maintain a quorum, because it's used for coordination tasks (leader election, distributed locks) where a wrong answer is worse than no answer. On the other side, **Cassandra** and **DynamoDB** lean AP by default: a shopping cart service backed by DynamoDB would rather let you keep adding items during a network hiccup than lock you out, and reconcile any conflicting writes afterward.\n\nThe right choice depends entirely on what the data represents. Money movement, inventory counts that must never oversell, and distributed locks usually demand CP — being wrong is worse than being briefly unavailable. Social media likes, product recommendations, and shopping carts usually favor AP — a stale count or a brief inconsistency is a far smaller cost than telling a user 'service unavailable.' Many real systems are tunable per-operation (e.g. Cassandra's consistency levels), letting you choose CP behavior for critical writes and AP behavior for everything else within the same cluster.",
+      "keyPoints": [
+        "CAP only forces a trade-off during an actual network partition - not in normal operation.",
+        "Partition tolerance is non-negotiable in a real distributed system, so the real choice is CP vs AP.",
+        "CP systems reject requests on the minority side to protect correctness (e.g. ZooKeeper, distributed locks).",
+        "AP systems keep answering everywhere and reconcile divergence later via eventual consistency (e.g. DynamoDB, Cassandra).",
+        "The right choice depends on the cost of being wrong versus the cost of being unavailable for that specific data."
+      ]
+    },
+    "practicePrompt": "You're designing the backend for an airline seat-booking system and a separate 'number of likes' counter on a social post. During a network partition, which should behave as CP and which as AP, and what's the worst-case consequence if you got that choice backwards for each?"
+  },
+  {
+    "key": "load-balancing",
+    "number": 4,
+    "title": "Load Balancing",
+    "difficulty": "Easy",
+    "statement": "A load balancer sits between clients and a pool of backend servers, deciding which server handles each incoming request. Its core job is simple to state — spread traffic so no single server is overwhelmed while others sit idle — but it's the piece that makes horizontal scaling actually work in practice: without it, clients would need to know about and choose between individual servers themselves.\n\nBeyond just distributing load, a good load balancer also improves availability: it can detect an unhealthy server (via health checks) and stop routing traffic to it, so one failing instance doesn't take down the whole service.",
+    "requirements": {
+      "functional": [
+        "Distribute incoming requests across a pool of healthy backend servers",
+        "Detect unhealthy or unresponsive servers and stop routing to them",
+        "Route a given client's requests consistently to the same backend when required (session affinity)"
+      ],
+      "nonFunctional": [
+        "Adding or removing backend servers should not cause a visible disruption",
+        "The load balancer itself should not become a single point of failure or the new bottleneck",
+        "Routing decisions should add negligible latency to each request"
+      ]
+    },
+    "hints": [
+      "If you always send the next request to the next server in a fixed rotation, what goes wrong if one request happens to be far more expensive than the others?",
+      "What if, instead of rotating blindly, the load balancer tracked how many requests each server was currently handling?",
+      "For a stateful use case like a user's shopping cart living only on one server's memory, how would the load balancer make sure that user always lands on the same server?"
+    ],
+    "diagram": "flowchart LR\n  Client([Client]) --> LB[Load Balancer]\n  LB -->|round robin| S1[Server 1]\n  LB -->|round robin| S2[Server 2]\n  LB -->|round robin| S3[Server 3]\n  S1 --> DB[(Database)]\n  S2 --> DB\n  S3 --> DB",
+    "solution": {
+      "approach": "The simplest routing algorithm is **round robin**: requests are handed to servers in a fixed rotation, one after another. It's trivial to implement and works well when servers are identical and requests are roughly uniform in cost. It breaks down when requests vary wildly in cost — round robin has no idea that server 2 is still grinding through a slow request while server 3 sits idle, so it keeps sending server 2 more work anyway.\n\n**Least connections** fixes that by tracking, in real time, how many active requests each server is currently handling, and routing each new request to whichever server has the fewest. This adapts naturally to uneven request costs and slow servers, at the cost of the load balancer having to maintain a bit of live state instead of just a rotating pointer.\n\nBoth of those algorithms assume any server can handle any request statelessly. When that's not true — a server holds something in memory that only it has, like a websocket connection or an in-memory session — the load balancer needs **session affinity** (also called 'sticky sessions'): it routes a given client to the same backend server on every request, typically by hashing a client identifier (IP, cookie, or session token) to consistently pick the same server. **Consistent hashing** is often used here specifically because it minimizes how many clients get reassigned to a different server when the pool of servers changes size — a plain hash-and-modulo would reshuffle almost everyone.\n\nSeparately from the algorithm, load balancers operate at different layers of the network stack. An **L4 (transport layer) load balancer** routes based on IP address and TCP/UDP port alone — it doesn't look at the content of the request, just forwards packets, which makes it extremely fast but unable to make content-aware decisions (e.g. routing `/api/video` differently from `/api/text`). An **L7 (application layer) load balancer** inspects the actual HTTP request — path, headers, cookies — and can route based on that content, terminate TLS, and do things like A/B test routing or path-based routing to different microservices. The trade-off is the usual one: L4 is faster and simpler, L7 is smarter but adds processing overhead.\n\nMost production setups use L7 load balancers (like an ALB, NGINX, or Envoy) for HTTP traffic where content-aware routing is valuable, and reserve L4 for raw TCP workloads or as a layer in front of an L7 tier for extra throughput.",
+      "keyPoints": [
+        "Round robin is simplest but ignores request cost and server load; least connections adapts by tracking active load per server.",
+        "Session affinity (sticky sessions) is needed only when a server holds state a client depends on returning to.",
+        "Consistent hashing is the usual mechanism behind session affinity, since it minimizes reshuffling when the server pool changes.",
+        "L4 load balancing routes on IP/port only - fast but content-blind; L7 inspects the actual request and can route on path, headers, or cookies.",
+        "Health checks let a load balancer stop sending traffic to a server that's down, containing the blast radius of a single failure."
+      ]
+    },
+    "practicePrompt": "Your service has three backend servers, and one of them is on noticeably older, slower hardware. Round robin is currently sending it the same share of traffic as the other two, and it's falling behind. Which load balancing algorithm fixes this without manually reconfiguring traffic weights, and why does it self-correct?"
+  },
+  {
+    "key": "database-sharding-replication",
+    "number": 5,
+    "title": "Database Sharding & Replication",
+    "difficulty": "Medium",
+    "statement": "As a dataset and its query load outgrow a single database server, there are two distinct techniques for scaling it — and they solve different problems. **Replication** copies the same data onto multiple servers, mainly to scale reads and provide failover. **Sharding** (horizontal partitioning) splits the data itself into disjoint subsets spread across multiple servers, mainly to scale storage and write throughput past what one machine can hold or handle.\n\nThey're frequently used together: each shard is itself replicated, so a large system ends up with several groups of servers, each group holding one slice of the data and each slice further copied for redundancy and read scaling.",
+    "requirements": {
+      "functional": [
+        "Route a given read or write to the correct shard based on some key",
+        "Keep replicas of each shard's data in sync with its primary",
+        "Fail over to a replica if a shard's primary becomes unavailable",
+        "Allow the dataset to grow past what a single machine can store"
+      ],
+      "nonFunctional": [
+        "Reads should scale roughly linearly by adding more replicas",
+        "Writes should scale roughly linearly by adding more shards",
+        "Replication lag should stay bounded and monitored, not silently grow",
+        "Resharding (changing the number of shards) should be possible without full downtime"
+      ]
+    },
+    "hints": [
+      "If you just copy the entire database onto three servers, does that help you store more data, or only help you serve more reads?",
+      "If instead you split users A-M onto server 1 and N-Z onto server 2, what determines which server a given query needs to go to?",
+      "If all writes for a shard go to one 'leader' server and get copied to 'follower' servers afterward, what could a client read from a follower a few milliseconds after a write completes on the leader?"
+    ],
+    "diagram": "flowchart TB\n  App[Application] --> Router[Shard Router]\n  Router -->|shard by user_id| Shard1[(Shard 1\\nLeader)]\n  Router -->|shard by user_id| Shard2[(Shard 2\\nLeader)]\n  Shard1 -->|replicate| Follower1[(Shard 1\\nFollower)]\n  Shard2 -->|replicate| Follower2[(Shard 2\\nFollower)]",
+    "solution": {
+      "approach": "**Replication** means keeping multiple copies of the same full dataset on different servers. The most common pattern is **leader-follower (primary-replica) replication**: all writes go to a single leader, which then streams those changes to one or more followers. Followers can serve read traffic, which lets read-heavy workloads scale horizontally just by adding more followers, and gives you failover — if the leader dies, a follower can be promoted. What replication does *not* do is help you store more total data or handle more total writes, since every replica holds the same complete dataset and only the leader accepts writes.\n\n**Sharding** solves the opposite problem: it splits the dataset itself into disjoint pieces (shards), each stored on a different server, so no single machine needs to hold all the data or absorb all the write traffic. A **shard key** determines which shard a given row lives on — for example, sharding a users table by `user_id`. Choosing a good shard key is the crux of sharding: it needs to distribute data and load evenly (avoid a 'hot shard' that gets disproportionate traffic, like sharding by signup date when most active users signed up recently) and, ideally, align with how the data is queried, since a query that needs to hit every shard to find its answer (a 'scatter-gather' query) loses most of the benefit of sharding in the first place.\n\nThe cost of sharding is complexity: cross-shard joins and transactions become hard or impossible to do efficiently, since the data no longer lives on one machine. This is why sharding is usually reached for only after single-server and replication-based scaling are exhausted, and why the shard key is chosen around the application's actual access patterns rather than arbitrarily.\n\n**Replication lag** is the delay between a write landing on the leader and that write becoming visible on a follower. It's usually milliseconds, but under heavy write load or network issues it can grow to seconds or more. This matters because a client that writes data and then immediately reads it back from a follower (rather than the leader) can see stale data — a classic bug is a user submitting a form and not seeing their own update on the next page load. Common mitigations are **read-your-writes consistency** (routing a user's own reads to the leader for a short window after they write), or simply routing all strongly-consistency-sensitive reads to the leader and only using followers for tolerant, less time-critical reads.\n\nIn a large real-world system, both techniques compose: the dataset is sharded across N groups of servers for write and storage scale, and each shard is itself leader-follower replicated for read scale and durability — giving you a grid of (shard x replica) rather than a single line of scaling.",
+      "keyPoints": [
+        "Replication copies the full dataset for read scaling and failover; sharding splits the dataset for storage and write scaling - they solve different problems.",
+        "A shard key determines data placement; a poor choice creates hot shards or forces expensive cross-shard queries.",
+        "Leader-follower replication routes all writes to one leader, which streams changes to followers that can serve reads.",
+        "Replication lag is the delay before a follower reflects the leader's latest write, and can cause stale reads if not accounted for.",
+        "Real systems typically combine both: each shard is itself replicated for redundancy and read scale."
+      ]
+    },
+    "practicePrompt": "You're sharding a multi-tenant SaaS product's database by `tenant_id`. One tenant is 100x larger than every other tenant combined. What breaks with this shard key, and how would you change the sharding scheme to handle that one outlier tenant?"
+  },
+  {
+    "key": "message-queues",
+    "number": 6,
+    "title": "Message Queues",
+    "difficulty": "Medium",
+    "statement": "A message queue sits between a **producer** (something that generates work or events) and one or more **consumers** (something that processes them), storing messages until a consumer is ready to handle them. Instead of a producer calling a consumer directly and waiting for a response, it drops a message on the queue and moves on — the queue takes care of holding it, and a consumer picks it up whenever it's free.\n\nThe main thing a queue buys you is **decoupling**: the producer doesn't need to know how many consumers exist, whether they're currently up, or how long they'll take. This makes systems more resilient to traffic spikes and to a consumer being temporarily slow or down, at the cost of giving up the immediate response a direct API call gives you.",
+    "requirements": {
+      "functional": [
+        "Accept messages from one or more producers and persist them until consumed",
+        "Deliver each message to at least one consumer for processing",
+        "Allow multiple consumers to process messages in parallel to keep up with producer throughput",
+        "Retry or redirect messages that a consumer failed to process"
+      ],
+      "nonFunctional": [
+        "Should absorb a burst of producer traffic without the producer blocking or failing",
+        "Messages should not be silently lost if a consumer crashes mid-processing",
+        "Queue depth and consumer lag should be observable so backpressure is visible before it becomes an outage"
+      ]
+    },
+    "hints": [
+      "If a producer calls a consumer's API directly and the consumer is temporarily down or slow, what happens to the producer?",
+      "If instead the producer just drops a message somewhere and returns immediately, who is responsible for making sure the message actually gets processed - and what happens if that processor crashes halfway through?",
+      "If a consumer crashes after starting to process a message but before confirming it finished, could that same message end up processed twice?"
+    ],
+    "diagram": "flowchart LR\n  Producer[Producer Service] -->|publish| Queue[(Message Queue)]\n  Queue -->|consume| Consumer1[Consumer 1]\n  Queue -->|consume| Consumer2[Consumer 2]\n  Consumer1 --> DB[(Database)]\n  Consumer2 --> DB",
+    "solution": {
+      "approach": "Without a queue, a producer that calls a consumer directly is tightly coupled to it: if the consumer is slow, the producer's request blocks; if the consumer is down, the request fails outright, right when the producer needed it least (often during a traffic spike, which is exactly when the consumer is most likely to be overloaded). A queue breaks that coupling — the producer writes a message and returns immediately, regardless of whether any consumer is currently available, and consumers pull messages at whatever pace they can sustain. This also naturally smooths out bursts: a queue can absorb a sudden spike of messages and let consumers drain it steadily afterward, instead of the spike hitting consumers directly.\n\nThe trade-off is that the producer no longer gets an immediate result — it knows the message was accepted, not that it was successfully processed. Anything that needs a synchronous answer (a user waiting on a page for a response) isn't a good fit for a pure queue-based flow; that's better served by a direct API call, or a queue plus a way to poll or push the eventual result back.\n\n**Delivery guarantees** describe what a queue promises about how many times a message is delivered. **At-most-once** delivery means a message is sent once and never retried — simple, but a lost message during a failure is just gone. **At-least-once** delivery means the queue keeps retrying until a consumer explicitly acknowledges successful processing, which guarantees no message is lost but opens the door to a message being delivered more than once (e.g. the consumer processed it and crashed before sending the acknowledgment, so the queue redelivers it). **Exactly-once** delivery — processed once, no duplicates, no losses — is the ideal but is genuinely hard to guarantee end-to-end in a distributed system; most 'exactly-once' systems actually provide at-least-once delivery plus deduplication, relying on the consumer's processing being **idempotent** (safe to apply more than once with the same net effect, e.g. `set balance = 500` rather than `balance += 50`) to make repeated delivery harmless in practice.\n\nWhen to reach for a queue versus a direct API call comes down to a few questions: Does the caller need an immediate response? Direct call. Can the work be done slightly later, and does decoupling from the consumer's availability matter more than instant feedback? Queue. Is the work bursty, or does it need to survive the consumer being temporarily down or slower than the producer? Queue. A common real pattern is a **hybrid**: the API call returns immediately with 'accepted', the real work happens off a queue, and the client is notified later (via websocket, polling, or a callback) when it's done — e.g. uploading a video that then gets transcoded asynchronously.\n\nQueues also enable **fan-out**, where one message needs to trigger multiple independent consumers (e.g. 'order placed' triggering both an email service and an inventory update) — typically via a pub/sub topic that multiple queues subscribe to, rather than a single queue with one consumer group.",
+      "keyPoints": [
+        "A queue decouples producer and consumer availability - the producer doesn't block on the consumer being up or fast.",
+        "At-most-once can lose messages; at-least-once guarantees delivery but can duplicate; true exactly-once is rare and usually approximated via at-least-once plus idempotent consumers.",
+        "Idempotent processing is what makes at-least-once delivery safe in practice.",
+        "Reach for a queue when work can happen asynchronously, is bursty, or must survive a consumer being temporarily unavailable; use a direct call when the caller needs an immediate answer.",
+        "Queues also enable fan-out, letting one event trigger multiple independent consumers via pub/sub."
+      ]
+    },
+    "practicePrompt": "A user uploads a video that needs to be transcoded into three resolutions, which takes a couple of minutes. Would you make this a direct synchronous API call or route it through a queue, and how would the client find out when the transcoding is actually done?"
+  },
+  {
+    "key": "cdn-edge-caching",
+    "number": 7,
+    "title": "CDN & Edge Caching",
+    "difficulty": "Easy",
+    "statement": "A **Content Delivery Network (CDN)** is a geographically distributed network of servers that cache and serve content from locations physically close to the end user, instead of every request traveling all the way back to a single origin server. Because network latency is bounded by the speed of light and physical distance, serving a user in Mumbai from an edge server in Mumbai instead of an origin server in Virginia can turn a 200ms round trip into a 20ms one.\n\nCDNs were originally built for static assets — images, videos, JS/CSS bundles — but modern CDNs also cache API responses and even run compute at the edge. The core idea stays the same either way: push a copy of the content as close to the requester as possible.",
+    "requirements": {
+      "functional": [
+        "Serve cacheable content from the edge location nearest the requesting user",
+        "Fetch from the origin server on a cache miss at the edge, then cache the result there",
+        "Invalidate or refresh cached content when the origin's content changes",
+        "Fall back gracefully to the origin if no edge location has the content cached"
+      ],
+      "nonFunctional": [
+        "Edge response latency should be dramatically lower than a round trip to the origin",
+        "Origin server load should drop significantly for cacheable content, since most requests never reach it",
+        "Cached content should not be served past its intended freshness window (bounded staleness)"
+      ]
+    },
+    "hints": [
+      "If every user in the world hits the exact same origin server, what part of the latency they experience is pure physical distance, not server processing time?",
+      "If a piece of content is requested from an edge location that doesn't have it cached yet, where does that edge server get it from, and what does it do so the next request doesn't repeat that trip?",
+      "If the origin content changes - say, a product's price - how does every edge location holding a stale cached copy find out?"
+    ],
+    "diagram": "flowchart LR\n  User([User]) --> Edge[Edge Server\\nNearest Location]\n  Edge -->|cache hit| User\n  Edge -->|cache miss| Origin[Origin Server]\n  Origin -->|populate| Edge\n  Origin --> DB[(Database)]",
+    "solution": {
+      "approach": "The core mechanism is the same **cache-aside pattern** used for a database cache, just deployed geographically: an edge server checks its local cache first; on a miss, it fetches from the origin (or from a regional cache tier in between, for very large CDNs), serves the response, and stores it locally for the next request. The win comes purely from physical proximity — an edge cache doesn't need to be faster hardware than the origin, it just needs to be closer, since a huge chunk of latency on a global service is simply the time light takes to travel the wire.\n\nWhat belongs on a CDN is content that's **the same for many users and doesn't change on every request**: images, videos, fonts, JS/CSS bundles, and increasingly, API responses for data that's read far more than it's written (a product catalog page, a public profile, a list of blog posts). What doesn't belong on a CDN is content that's **personalized or highly dynamic per-request** — a user's account balance, a live inventory count during a flash sale, or anything requiring authentication-specific data baked into the response, since caching that risks serving one user's private data to another, or serving numbers that are wrong by the time they're read.\n\n**Cache invalidation** is the hard part — famously one of the two hard problems in computer science. When origin content changes, every edge location that cached the old version needs to stop serving it. There are a few standard approaches: a **TTL (time-to-live)**, where cached content simply expires after a fixed duration and edges refetch from origin afterward — simple, but there's inherently up to a TTL's worth of staleness window; **explicit purge/invalidation**, where the origin actively tells the CDN 'this URL changed, drop it everywhere' the moment it changes — precise, but requires the origin to know and announce every change; and **cache-busting via versioned URLs** (e.g. `app.a1b2c3.js` instead of `app.js`), which sidesteps invalidation entirely for static assets by giving every new version a new, unique URL, so the old cached copy just becomes irrelevant rather than needing to be purged.\n\nIn practice, most systems combine these: versioned filenames for build assets (so they can be cached essentially forever, since a new deploy has a new URL), a short TTL for semi-dynamic content like a homepage or product listing, and explicit invalidation reserved for urgent corrections (like a legal takedown or a critical price error) where you can't wait out a TTL.",
+      "keyPoints": [
+        "A CDN reduces latency mainly through physical proximity to the user, not faster hardware.",
+        "It uses the same cache-aside pattern as an application cache, just deployed at many geographic edge locations.",
+        "Cacheable content is shared and slow-changing (images, static bundles, public read-heavy data); personalized or highly dynamic data usually shouldn't be cached at the edge.",
+        "Invalidation strategies: TTL expiry (simple, bounded staleness), explicit purge (precise, requires origin cooperation), and versioned URLs (sidesteps invalidation for static assets entirely).",
+        "Real systems typically combine all three invalidation strategies depending on the content type."
+      ]
+    },
+    "practicePrompt": "Your e-commerce site has a product image, a product description that changes a few times a year, and a 'X people bought this in the last hour' counter that updates constantly. Which of these would you put behind a CDN, with what invalidation strategy for each, and which would you exclude entirely?"
+  },
+  {
+    "key": "consistent-hashing",
+    "number": 8,
+    "title": "Consistent Hashing",
+    "difficulty": "Medium",
+    "statement": "When you need to distribute keys (cache entries, shards, sessions) across a set of servers, the naive approach is `hash(key) % N` where N is the number of servers. It's simple and distributes evenly — right up until N changes. Add or remove a single server, and `% N` changes for almost every key, meaning almost every key now maps to a different server than before.\n\nFor a cache, that means a near-total cache wipe every time you scale the pool up or down. For a sharded store, it means moving almost all your data every time you resize the cluster. **Consistent hashing** is a technique that solves exactly this problem: when the number of servers changes, only a small, predictable fraction of keys need to move.",
+    "requirements": {
+      "functional": [
+        "Map each key to exactly one server in a deterministic way",
+        "Distribute keys roughly evenly across all available servers",
+        "When a server is added or removed, remap only the keys that must move - not the whole keyspace",
+        "Support looking up which server owns a given key quickly"
+      ],
+      "nonFunctional": [
+        "Minimize data movement and cache invalidation on cluster resize - ideally close to 1/N of keys, not ~100%",
+        "Keep load balanced across servers even as the cluster grows or shrinks",
+        "Lookup of a key's owning server should be fast, not a linear scan"
+      ]
+    },
+    "hints": [
+      "With plain hash(key) % N, if N goes from 4 to 5, does the server that owns most keys actually change, even for keys totally unrelated to whatever caused you to add that 5th server?",
+      "What if, instead of hashing into a fixed range of N buckets, you hashed both the keys and the servers themselves onto the same circular space, and each key just belonged to the nearest server clockwise from it?",
+      "If a server only occupies a single point on that circle, it might end up owning way more or way less of the circle than the others just by chance - what if each server was placed at many points around the circle instead of just one?"
+    ],
+    "diagram": "flowchart LR\n  Key1([Key: user123]) --> Ring[Hash Ring]\n  Key2([Key: user456]) --> Ring\n  Ring -->|nearest clockwise| NodeA[Node A\\nplus virtual nodes]\n  Ring -->|nearest clockwise| NodeB[Node B\\nplus virtual nodes]\n  Ring -->|nearest clockwise| NodeC[Node C\\nplus virtual nodes]",
+    "solution": {
+      "approach": "Plain `hash(key) % N` fails because N is baked directly into the formula: change N and the modulo operation redistributes essentially every key, not just the ones that logically need to move to accommodate the new or removed server. For a cache, this shows up as a **cache stampede** — every key suddenly 'misses' on whatever server it now maps to, and the origin database gets hit with the full traffic all at once.\n\n**Consistent hashing** fixes this by hashing both the servers and the keys onto the same circular space — commonly visualized as a ring spanning from 0 to some large maximum hash value, wrapping back to 0. Each server is placed at one or more points on this ring (by hashing its ID or address). To find which server owns a given key, you hash the key to get its position on the ring, then walk clockwise until you hit the first server. That server owns the key.\n\nThe payoff shows up when the server set changes. If a server is removed, only the keys that were mapped to it need to move — and they move to the *next* server clockwise on the ring, not to a random new server. Every other key, owned by every other server, is completely unaffected. If a server is added, it claims a contiguous slice of the ring from its neighbor, and only the keys in that slice move to it. In both cases, on average only about `1/N` of the keys are affected by a single node change, instead of nearly all of them.\n\nOne problem remains: with each server occupying just a single point on the ring, the slices between servers can be wildly uneven purely by chance — one server might end up owning a huge arc of the ring while another owns almost nothing, especially with a small number of servers. **Virtual nodes** solve this: instead of placing each physical server at one point on the ring, you place it at many points (dozens to hundreds), each an independently-hashed 'virtual' replica of that server. With enough virtual nodes spread around the ring, each physical server ends up owning many small, scattered slices whose total size averages out close to `1/N` of the ring, regardless of hashing luck. Virtual nodes also help rebalancing after a node change: because a single physical server's virtual points are scattered all over the ring instead of concentrated in one arc, the keys it sheds (or gains) when the cluster resizes are spread across many other servers rather than dumped entirely onto its one ring-neighbor.\n\nConsistent hashing shows up anywhere a keyspace needs to survive a changing pool of servers: distributed caches (Memcached client libraries), sharded databases (Cassandra and DynamoDB use it internally for partitioning), CDNs, and load balancers implementing session affinity — anywhere the cost of 'almost everything moves when the pool resizes' would otherwise be too disruptive.",
+      "keyPoints": [
+        "Plain hash % N remaps nearly all keys when N changes - consistent hashing remaps only about 1/N of them.",
+        "Both servers and keys are hashed onto the same ring; a key belongs to the first server found walking clockwise from it.",
+        "Adding or removing a server only affects the keys in its adjacent slice of the ring, not the whole keyspace.",
+        "A single point per server can cause uneven load distribution purely by chance.",
+        "Virtual nodes place each server at many ring positions, smoothing out load balance and spreading rebalancing impact across many servers instead of just one neighbor."
+      ]
+    },
+    "practicePrompt": "You run a 4-node Memcached cluster using plain hash(key) % 4, and you need to add a 5th node to handle growth. Roughly what fraction of your cache would go cold with the modulo approach versus with consistent hashing, and why does the difference matter for your database's load during the transition?"
   }
 ]
