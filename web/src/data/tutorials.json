@@ -54,6 +54,15 @@
     "to": "/dsa-practice"
   },
   {
+    "key": "system-design",
+    "title": "System Design Practice",
+    "description": "Fundamentals plus classic design problems, each with an architecture diagram and full walkthrough.",
+    "accent": "linear-gradient(135deg, #0d1117, #123047)",
+    "language": "javascript",
+    "code": "// Client -> LB -> API -> Cache -> DB\n// scale reads with a cache-aside layer",
+    "to": "/system-design"
+  },
+  {
     "key": "hr",
     "title": "HR Question",
     "description": "Prepare for HR interviews with top questions and answers.",

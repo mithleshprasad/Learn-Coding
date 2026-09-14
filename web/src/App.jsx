@@ -27,6 +27,7 @@ const LinearRegressionVisualizer = lazy(() => import('./pages/LinearRegressionVi
 
 const CodeEditorPage = lazy(() => import('./pages/CodeEditorPage.jsx'));
 const DsaPractice = lazy(() => import('./pages/DsaPractice.jsx'));
+const SystemDesign = lazy(() => import('./pages/SystemDesign.jsx'));
 
 function RouteFallback() {
   return (
@@ -65,6 +66,7 @@ export default function App() {
 
         <Route path="/code-editor" element={<CodeEditorPage />} />
         <Route path="/dsa-practice" element={<DsaPractice />} />
+        <Route path="/system-design" element={<SystemDesign />} />
 
         <Route path="*" element={<Home />} />
       </Routes>

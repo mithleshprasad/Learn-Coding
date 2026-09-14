@@ -1,0 +1,22 @@
+.mermaid-diagram {
+  margin: 16px 0;
+  padding: 16px;
+  border-radius: 8px;
+  border: 1px solid #30363d;
+  background: #161b22;
+  overflow-x: auto;
+  display: flex;
+  justify-content: center;
+}
+
+.mermaid-diagram svg {
+  max-width: 100%;
+  height: auto;
+}
+
+.mermaid-diagram-error {
+  color: #ff7b72;
+  font-size: 13px;
+  font-family: Menlo, Monaco, Consolas, monospace;
+  display: block;
+}

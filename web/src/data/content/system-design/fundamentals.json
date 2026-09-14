@@ -1,0 +1,37 @@
+[
+  {
+    "key": "caching-strategies",
+    "number": 1,
+    "title": "Caching Strategies",
+    "difficulty": "Easy",
+    "statement": "A cache is a small, fast layer that sits in front of a slower system (usually a database) and stores copies of frequently-accessed data. The goal is to serve repeat reads from memory instead of re-computing or re-fetching them, which cuts latency and takes load off the backing store.\n\nThe hard part isn't storing data in a cache — it's deciding **when to populate it, when to evict it, and how to keep it from serving stale data**.",
+    "requirements": {
+      "functional": [
+        "Serve a read from cache when the data is present (a \"cache hit\")",
+        "Fall back to the source of truth on a \"cache miss\", then populate the cache",
+        "Keep cached data reasonably fresh when the source changes"
+      ],
+      "nonFunctional": [
+        "Cache reads should be an order of magnitude faster than hitting the database",
+        "Bounded memory — the cache can't just grow forever",
+        "Should survive a cache-node restart without taking down the whole system (just slower, not broken)"
+      ]
+    },
+    "hints": [
+      "Where does the cache live relative to your application code — inside the app process, or as a separate service your app calls?",
+      "When a write happens, do you update the cache immediately, or just let it expire and get refetched?",
+      "When the cache is full, which entry do you evict to make room for a new one?"
+    ],
+    "diagram": "flowchart LR\n  Client([Client]) --> App[Application Server]\n  App -->|1: check cache| Cache[(Cache\\ne.g. Redis)]\n  Cache -->|hit| App\n  App -->|2: miss -> query| DB[(Database)]\n  DB -->|3: populate| Cache\n  App --> Client",
+    "solution": {
+      "approach": "Three things define a caching strategy: **placement** (where the cache sits), **population** (when data enters it), and **eviction** (when data leaves it).\n\n**Placement — cache-aside (lazy loading) is the default.** The app checks the cache first; on a miss, it reads from the database and writes the result into the cache before returning. This is simple and only caches data that's actually requested, but the first request for any key is always slow (a \"cold\" miss), and there's a brief window where cache and DB can disagree.\n\n**Write strategy** — pick one deliberately:\n- **Write-through**: every write goes to the cache and the DB together, synchronously. Cache is always consistent, but writes are slower (two systems to update).\n- **Write-back (write-behind)**: writes go to the cache immediately and are flushed to the DB asynchronously later. Fast writes, but risks data loss if the cache node crashes before flushing.\n- **Write-around**: writes go straight to the DB, bypassing the cache; the cache only fills on reads. Good when written data isn't re-read soon after (avoids cluttering the cache with write-once data).\n\n**Eviction policy** — when the cache is full:\n- **LRU (Least Recently Used)**: evict whatever hasn't been touched in the longest time. The default choice for most read-heavy workloads, since \"recently used\" is a good proxy for \"will be used again soon.\"\n- **LFU (Least Frequently Used)**: evict the least-requested item overall — better when access frequency matters more than recency (e.g. a few items are always hot, most are rarely touched).\n- **TTL (Time To Live)**: every entry expires after a fixed duration regardless of usage — simplest way to bound staleness, often combined with LRU.\n\nFor most systems: cache-aside + LRU + a short TTL is the pragmatic default. Reach for write-through only when correctness matters more than write latency (e.g. financial data), and write-back only when you can tolerate a small risk of data loss for a big write-latency win.",
+      "keyPoints": [
+        "Cache-aside (lazy load on miss) is the simplest and most common placement strategy.",
+        "Write-through = consistent but slower writes; write-back = fast writes but risk of loss; write-around = keeps write-once data out of the cache.",
+        "LRU is the default eviction policy for read-heavy workloads; LFU suits highly skewed access patterns; TTL bounds staleness regardless of usage.",
+        "A cache should always be treated as disposable — the system must still function (just slower) if the cache is wiped."
+      ]
+    },
+    "practicePrompt": "Before reading the solution above: for a product page on an e-commerce site (read constantly, written rarely, but price changes must show up fast), which placement + write strategy + eviction policy would you pick, and why?"
+  }
+]

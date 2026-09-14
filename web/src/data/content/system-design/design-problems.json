@@ -1,0 +1,38 @@
+[
+  {
+    "key": "url-shortener",
+    "number": 1,
+    "title": "Design a URL Shortener",
+    "difficulty": "Medium",
+    "statement": "Design a service like bit.ly: given a long URL, generate a short alias that redirects to it. This is one of the most common opening system design questions because it's small enough to finish in 45 minutes but touches ID generation, caching, and read/write-skewed data access — three ideas that show up in almost every other design question.",
+    "requirements": {
+      "functional": [
+        "Given a long URL, return a short URL (e.g. `short.ly/aZ9k2`)",
+        "Visiting the short URL redirects (HTTP 302) to the original long URL",
+        "Optionally support a custom alias and an expiration date"
+      ],
+      "nonFunctional": [
+        "100M new short URLs created per day",
+        "~100:1 read:write ratio (redirects vastly outnumber creations)",
+        "Redirect latency should feel instant (well under 100ms)",
+        "Short URLs must be unique and not guessable in sequence"
+      ]
+    },
+    "hints": [
+      "You need a mapping from a short code to a long URL. What's actually hard is generating the short code itself — how do you avoid two users getting the same code?",
+      "A short code is just a number in a different textual representation. What if you had a strictly increasing counter and encoded it in a larger alphabet than base-10?",
+      "Base62 (a-z, A-Z, 0-9) encoding of an auto-incrementing ID gives you unique, compact, unguessable-in-practice codes without any coordination between servers — as long as the ID source itself is coordinated (e.g. a dedicated ID-generation service or a database sequence)."
+    ],
+    "diagram": "flowchart TB\n  Client([Client]) --> LB[Load Balancer]\n  LB --> API1[API Server]\n  LB --> API2[API Server]\n  API1 --> IDGen[ID Generator\\nbase62 counter]\n  API1 --> Cache[(Redis Cache\\nshort -> long URL)]\n  API1 --> DB[(Database\\nshort_url, long_url, created_at)]\n  Cache -.miss.-> DB\n  API2 --> Cache\n  API2 --> DB",
+    "solution": {
+      "approach": "**ID generation is the core design decision.** Two viable approaches:\n\n1. **Auto-increment counter + base62 encode.** A single source of truth (a dedicated counter service, or a database `AUTO_INCREMENT` sequence) hands out strictly increasing integers. Encode each integer in base62 (62 characters: a-z, A-Z, 0-9) instead of base10 — this is what turns ID `125` into something like `cb`, giving you a short, URL-safe string. 7 base62 characters give you 62^7 ≈ 3.5 trillion unique codes, comfortably enough. The tricky part is making the counter itself not a single point of failure/bottleneck at 100M writes/day (~1,150 writes/sec average, with spikes) — solved by handing out counter *ranges* to each API server in batches (server A gets IDs 1,000,000-1,000,999, server B gets the next batch), so servers mint IDs locally without a network round-trip per request.\n\n2. **Hash the long URL** (e.g. MD5, take the first 7 characters) and check for collisions, retrying with a different hash segment or salt if the short code is already taken. Simpler to reason about (no shared counter), but requires a uniqueness check against the database on every write, and collision handling adds complexity as the table grows.\n\nThe counter+base62 approach is generally preferred in interviews because it guarantees no collisions by construction, and the range-based ID allocation solves the scaling concern cleanly.\n\n**Data model** is a single table: `short_code (PK), long_url, created_at, expires_at (nullable), custom_alias (bool)`. No joins needed — this is about as simple as a schema gets, which is exactly why the interesting parts of this question are elsewhere.\n\n**Read path (the hot path, 100:1 over writes):** cache-aside with Redis in front of the database, keyed by `short_code`. Since short codes are immutable once created (a given code always maps to the same long URL), there's no cache-invalidation problem to solve — cached entries never go stale, so you can cache aggressively with a long TTL (or no TTL at all, relying on LRU eviction).\n\n**Redirect mechanic:** use HTTP 302 (temporary redirect), not 301 (permanent) — 301 responses get cached by browsers themselves, which means your analytics (click counts, etc.) would stop seeing repeat visits after the first one, and you'd lose the ability to change the mapping or add expiration later.\n\n**Scaling the redirect path further:** since reads dominate 100:1, this is a great candidate for read replicas of the database (in case of a cache miss) and horizontally scaling API servers behind the load balancer — the service is stateless once you've solved ID generation, so scaling out is just adding more API instances.",
+      "keyPoints": [
+        "Counter + base62 encoding gives collision-free, compact short codes; hand out ID ranges per server to avoid a shared-counter bottleneck.",
+        "The data model is a single flat table — the complexity here is in ID generation and read scaling, not the schema.",
+        "Short-code -> long-URL mappings never change, so caching is simple: no invalidation problem, cache aggressively.",
+        "Use HTTP 302 (temporary), not 301, so you keep control over analytics and the ability to change/expire mappings."
+      ]
+    },
+    "practicePrompt": "Before reading the solution above: sketch your own high-level design. In particular, think through what happens if two API servers try to create a short URL at the exact same moment — how does your ID-generation approach avoid them colliding?"
+  }
+]

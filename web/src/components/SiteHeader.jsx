@@ -31,6 +31,7 @@ const staticLinks = [
   { key: 'testimonials', label: 'Testimonials', to: '/#testimonials' },
   { key: 'code-editor', label: 'Code Editor', to: '/code-editor' },
   { key: 'dsa-practice', label: 'DSA Practice', to: '/dsa-practice' },
+  { key: 'system-design', label: 'System Design', to: '/system-design' },
 ];
 
 export default function SiteHeader() {
