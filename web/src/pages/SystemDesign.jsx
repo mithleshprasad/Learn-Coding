@@ -4,6 +4,7 @@ import { Button, Progress, Segmented, Tag, Typography } from 'antd';
 import { BookOutlined, DownOutlined, RightOutlined } from '@ant-design/icons';
 import PageLayout from '../components/PageLayout.jsx';
 import MermaidDiagram from '../components/MermaidDiagram.jsx';
+import CapacityCalculator from '../components/CapacityCalculator.jsx';
 import AskAi from '../components/AskAi.jsx';
 import topics from '../data/systemDesignTopics.json';
 import fundamentals from '../data/content/system-design/fundamentals.json';
@@ -18,6 +19,11 @@ const PROBLEMS_BY_TOPIC = {
 };
 
 const FUNDAMENTALS_BY_KEY = Object.fromEntries(fundamentals.map((f) => [f.key, f]));
+
+// Parking Lot is an OOP-design question (its own content says so explicitly)
+// and Web Crawler's traffic isn't driven by users making requests - the
+// DAU/requests-per-user model this calculator uses doesn't fit either one.
+const CAPACITY_CALC_EXCLUDED = new Set(['parking-lot-system', 'web-crawler']);
 
 const PROGRESS_KEY = 'systemDesign.progress';
 const NOTES_KEY_PREFIX = 'systemDesign.notes.';
@@ -236,6 +242,10 @@ export default function SystemDesign() {
               </ul>
             </div>
           </div>
+
+          {selected.topicKey === 'design-problems' && !CAPACITY_CALC_EXCLUDED.has(selected.key) ? (
+            <CapacityCalculator key={selected.key} />
+          ) : null}
 
           <Title level={4}>Architecture</Title>
           <MermaidDiagram definition={selected.diagram} />
