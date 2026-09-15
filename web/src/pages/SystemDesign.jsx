@@ -5,6 +5,7 @@ import { BookOutlined, DownOutlined, RightOutlined } from '@ant-design/icons';
 import PageLayout from '../components/PageLayout.jsx';
 import MermaidDiagram from '../components/MermaidDiagram.jsx';
 import CapacityCalculator from '../components/CapacityCalculator.jsx';
+import TradeoffTable from '../components/TradeoffTable.jsx';
 import AskAi from '../components/AskAi.jsx';
 import topics from '../data/systemDesignTopics.json';
 import fundamentals from '../data/content/system-design/fundamentals.json';
@@ -246,6 +247,8 @@ export default function SystemDesign() {
           {selected.topicKey === 'design-problems' && !CAPACITY_CALC_EXCLUDED.has(selected.key) ? (
             <CapacityCalculator key={selected.key} />
           ) : null}
+
+          <TradeoffTable tradeoffs={selected.tradeoffs} />
 
           <Title level={4}>Architecture</Title>
           <MermaidDiagram definition={selected.diagram} />

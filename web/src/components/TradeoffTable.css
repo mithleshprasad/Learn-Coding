@@ -1,0 +1,54 @@
+.sd-tradeoff {
+  margin: 16px 0 24px;
+}
+
+.sd-tradeoff-question {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 600;
+  color: #e6edf3;
+  margin-bottom: 10px;
+}
+
+.sd-tradeoff-table-wrap {
+  overflow-x: auto;
+}
+
+.sd-tradeoff-table {
+  width: 100%;
+  min-width: 480px;
+  border-collapse: collapse;
+}
+
+.sd-tradeoff-table th {
+  text-align: left;
+  padding: 8px 12px;
+  background: #1c2128;
+  color: #e6edf3;
+  border: 1px solid #30363d;
+  font-size: 13px;
+}
+
+.sd-tradeoff-table td {
+  padding: 8px 12px;
+  border: 1px solid #30363d;
+  color: #c9d1d9;
+  font-size: 13px;
+  vertical-align: top;
+}
+
+.sd-tradeoff-row-chosen td:first-child {
+  color: #4ecb70;
+  font-weight: 600;
+}
+
+.sd-tradeoff-chosen-badge {
+  margin-left: 8px;
+  padding: 1px 8px;
+  border-radius: 10px;
+  background: rgba(47, 141, 70, 0.15);
+  color: #4ecb70;
+  font-size: 11px;
+  font-weight: 700;
+}

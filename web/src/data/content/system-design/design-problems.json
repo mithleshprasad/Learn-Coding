@@ -5,6 +5,14 @@
     "title": "Design a URL Shortener",
     "difficulty": "Medium",
     "relatedFundamentals": ["caching-strategies", "scalability-basics"],
+    "tradeoffs": {
+      "question": "Which HTTP redirect status code?",
+      "options": [
+        { "name": "301 (Permanent)", "pros": "Browsers cache it, saving a round trip to your server on repeat visits", "cons": "You lose control - once cached, you can't change or expire the mapping, and can't count each redirect for analytics" },
+        { "name": "302 (Temporary)", "pros": "Every visit hits your server, so you keep analytics and the ability to change or expire the mapping later", "cons": "No browser caching, so slightly more load on your redirect service" }
+      ],
+      "chosen": "302 (Temporary)"
+    },
     "statement": "Design a service like bit.ly: given a long URL, generate a short alias that redirects to it. This is one of the most common opening system design questions because it's small enough to finish in 45 minutes but touches ID generation, caching, and read/write-skewed data access — three ideas that show up in almost every other design question.",
     "requirements": {
       "functional": [
@@ -42,6 +50,15 @@
     "title": "Design a Rate Limiter",
     "difficulty": "Medium",
     "relatedFundamentals": ["scalability-basics"],
+    "tradeoffs": {
+      "question": "Which rate-limiting algorithm?",
+      "options": [
+        { "name": "Fixed Window Counter", "pros": "Simplest to implement and reason about", "cons": "Edge-burst problem - up to 2x the limit can slip through right at a window boundary" },
+        { "name": "Sliding Window", "pros": "Fixes the edge-burst problem the fixed window has", "cons": "More computation and state to track per client" },
+        { "name": "Token Bucket", "pros": "Allows short bursts cleanly while still enforcing a steady average rate", "cons": "Requires tracking a token count plus a last-refill timestamp per client" }
+      ],
+      "chosen": "Token Bucket"
+    },
     "statement": "Design a rate limiter that protects an API from being overwhelmed by any single client — whether that's an abusive script, a buggy retry loop, or a legitimate client that's simply making too many requests. Given a client identifier (API key, user ID, or IP) and a request, the limiter must decide, very quickly, whether to allow or reject it.\n\nThis question is asked because it's a compact way to probe whether you can reason about algorithmic trade-offs (which counting scheme is both memory-efficient and fair) alongside a very common distributed-systems problem: how do multiple stateless servers share and atomically update a single piece of state without racing each other.",
     "requirements": {
       "functional": [
@@ -83,6 +100,14 @@
     "title": "Design a Chat Application (WhatsApp)",
     "difficulty": "Hard",
     "relatedFundamentals": ["message-queues", "load-balancing"],
+    "tradeoffs": {
+      "question": "How does the client receive new messages?",
+      "options": [
+        { "name": "Long-Polling", "pros": "Works everywhere, including behind old proxies/firewalls that block persistent connections", "cons": "Higher latency and more request overhead - the client keeps re-requesting" },
+        { "name": "WebSockets", "pros": "True server push over a single persistent connection - low latency, low overhead", "cons": "Needs a connection registry (which server holds which user's socket) and doesn't work in every restrictive network" }
+      ],
+      "chosen": "WebSockets, with long-polling as the fallback"
+    },
     "statement": "Design the backend for a real-time messaging app like WhatsApp: users can message each other one-on-one or in groups, messages should arrive within a fraction of a second when both parties are online, and no message should ever be silently lost — including when the recipient is offline and comes back hours later.\n\nThis question is asked because it forces you to move past request/response HTTP thinking into server-initiated, stateful communication, and it touches message ordering, delivery guarantees, and the operational reality of holding millions of persistent connections open at once — concepts that generalize to almost any real-time system.",
     "requirements": {
       "functional": [
@@ -126,6 +151,15 @@
     "title": "Design a Twitter-like News Feed",
     "difficulty": "Hard",
     "relatedFundamentals": ["caching-strategies", "message-queues"],
+    "tradeoffs": {
+      "question": "How is the feed assembled - at post time or at read time?",
+      "options": [
+        { "name": "Fan-out on Write", "pros": "Reads are fast - a user's feed is already precomputed and waiting", "cons": "A celebrity with millions of followers turns one post into millions of writes" },
+        { "name": "Fan-out on Read", "pros": "Writes are cheap regardless of follower count", "cons": "Reads are expensive - merging posts from everyone a user follows, on every feed load" },
+        { "name": "Hybrid", "pros": "Push for normal users (fast reads), pull-and-merge only for celebrity accounts - avoids both failure modes", "cons": "More implementation complexity - two code paths instead of one" }
+      ],
+      "chosen": "Hybrid"
+    },
     "statement": "Design the backend that powers a user's home timeline on a platform like Twitter: users follow other users, post short updates, and expect their feed to show recent posts from the people they follow without a noticeable delay when they open the app.\n\nThis question is asked because the obvious, naive solution — query posts from everyone a user follows, every time they open the feed — falls apart at scale in a very specific and instructive way: a small number of extremely popular accounts break the assumptions that make the simple version work, and reasoning through that failure and its fix is the entire point of the exercise.",
     "requirements": {
       "functional": [
@@ -210,6 +244,14 @@
     "title": "Design a Distributed Cache",
     "difficulty": "Medium",
     "relatedFundamentals": ["consistent-hashing", "caching-strategies", "database-sharding-replication"],
+    "tradeoffs": {
+      "question": "Which eviction policy under memory pressure?",
+      "options": [
+        { "name": "LRU (Least Recently Used)", "pros": "Cheap to implement (a linked list + hash map) and matches most real access patterns well", "cons": "A single burst of one-time scans can evict genuinely hot keys" },
+        { "name": "LFU (Least Frequently Used)", "pros": "Resistant to that scan-burst problem - true frequency matters more than recency", "cons": "More bookkeeping per key, and slow to adapt when access patterns shift" }
+      ],
+      "chosen": "LRU"
+    },
     "statement": "Design a distributed in-memory cache — a simplified version of a Redis or Memcached cluster — that stores key-value pairs across many machines, so no single machine needs to hold the entire dataset in memory, and the cache keeps serving traffic even if an individual node fails.\n\nThis question is asked because it isolates a handful of distributed-systems fundamentals — data partitioning, replication, and eviction under resource pressure — from the comparatively easier question of what's actually being cached, letting the interviewer see how you reason about them directly.",
     "requirements": {
       "functional": [
@@ -249,6 +291,14 @@
     "number": 7,
     "title": "Design an E-commerce Checkout and Order System",
     "difficulty": "Hard",
+    "tradeoffs": {
+      "question": "How do the saga's steps coordinate?",
+      "options": [
+        { "name": "Choreography", "pros": "No single coordinator - services react to each other's events directly, less central infrastructure", "cons": "The overall flow is implicit and scattered across services - hard to see or reason about the whole saga in one place" },
+        { "name": "Orchestration", "pros": "One place owns the flow and its state machine - easy to reason about, resume, and debug", "cons": "The orchestrator is a new central component, and every service must integrate with it" }
+      ],
+      "chosen": "Orchestration"
+    },
     "statement": "Design the backend for an e-commerce checkout flow: a customer has items in their cart, clicks 'place order,' and the system needs to confirm the items are actually in stock, charge their payment method, and create a confirmed order — with none of those three things happening in isolation from the others going wrong.\n\nThis question is asked because it's the canonical example of a business transaction that spans multiple independently-owned services and databases, where you can't reach for a single database transaction to make the whole thing atomic, and getting the failure-handling wrong has directly visible consequences: overselling a product, or charging a customer's card twice.",
     "requirements": {
       "functional": [
@@ -455,6 +505,14 @@
     "title": "Design a Key-Value Store (like DynamoDB)",
     "difficulty": "Hard",
     "relatedFundamentals": ["consistent-hashing", "cap-theorem", "database-sharding-replication"],
+    "tradeoffs": {
+      "question": "Under a network partition, what gives?",
+      "options": [
+        { "name": "CP (Consistency over Availability)", "pros": "Every read reflects the latest acknowledged write - no conflicting versions to resolve", "cons": "Some nodes must reject requests during a partition, hurting availability" },
+        { "name": "AP (Availability over Consistency)", "pros": "Keeps accepting reads and writes through a partition", "cons": "Concurrent writes during the partition can produce conflicting versions of a key that must be resolved later" }
+      ],
+      "chosen": "AP"
+    },
     "statement": "Design a distributed key-value store — a simplified version of Amazon DynamoDB — that stores arbitrary key-value pairs across a cluster of commodity machines, stays available and accepts writes even during network partitions or node failures, and lets clients tune the consistency/latency trade-off per request.\n\nThis question is asked because it's the deepest dive in this set into the CAP theorem in practice: rather than discussing consistency vs. availability abstractly, you have to design the actual mechanism — quorums, versioning, conflict resolution — that makes 'available, eventually consistent, occasionally conflicting' a concrete, implementable system rather than a buzzword.",
     "requirements": {
       "functional": [
