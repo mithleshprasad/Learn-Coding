@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { Alert, Button, Card, Col, Input, Row, Select, Space, Tabs, Tag, Typography } from 'antd';
 import { PlayCircleOutlined, ReloadOutlined, StepForwardOutlined } from '@ant-design/icons';
 import PageLayout from '../components/PageLayout.jsx';
@@ -154,7 +154,7 @@ function ArrayBars({ array, target, step, getVisual }) {
                   left: '50%',
                   transform: 'translateX(-50%)',
                   fontSize: 12,
-                  color: '#333',
+                  color: '#e6edf3',
                   whiteSpace: 'nowrap',
                 }}
               >
@@ -187,10 +187,26 @@ function ComplexityTable({ rows }) {
     <table style={{ width: '100%', borderCollapse: 'collapse', marginTop: 15 }}>
       <thead>
         <tr>
-          <th style={{ border: '1px solid #ddd', padding: 8, textAlign: 'center', background: '#f2f2f2' }}>
+          <th
+            style={{
+              border: '1px solid #30363d',
+              padding: 8,
+              textAlign: 'center',
+              background: '#1c2128',
+              color: '#e6edf3',
+            }}
+          >
             Case
           </th>
-          <th style={{ border: '1px solid #ddd', padding: 8, textAlign: 'center', background: '#f2f2f2' }}>
+          <th
+            style={{
+              border: '1px solid #30363d',
+              padding: 8,
+              textAlign: 'center',
+              background: '#1c2128',
+              color: '#e6edf3',
+            }}
+          >
             Time Complexity
           </th>
         </tr>
@@ -198,8 +214,12 @@ function ComplexityTable({ rows }) {
       <tbody>
         {rows.map(([caseName, complexity]) => (
           <tr key={caseName}>
-            <td style={{ border: '1px solid #ddd', padding: 8, textAlign: 'center' }}>{caseName}</td>
-            <td style={{ border: '1px solid #ddd', padding: 8, textAlign: 'center' }}>{complexity}</td>
+            <td style={{ border: '1px solid #30363d', padding: 8, textAlign: 'center', color: '#c9d1d9' }}>
+              {caseName}
+            </td>
+            <td style={{ border: '1px solid #30363d', padding: 8, textAlign: 'center', color: '#c9d1d9' }}>
+              {complexity}
+            </td>
           </tr>
         ))}
       </tbody>
@@ -227,6 +247,8 @@ function drawComparisonCurve(ctx, points, color, scaleX, scaleY) {
 
 function drawComparisonGraph(ctx, canvasWidth, canvasHeight, currentN) {
   ctx.clearRect(0, 0, canvasWidth, canvasHeight);
+  ctx.fillStyle = '#0d1117';
+  ctx.fillRect(0, 0, canvasWidth, canvasHeight);
 
   const padding = 40;
   const graphWidth = canvasWidth - padding * 2;
@@ -236,12 +258,12 @@ function drawComparisonGraph(ctx, canvasWidth, canvasHeight, currentN) {
   ctx.moveTo(padding, padding);
   ctx.lineTo(padding, padding + graphHeight);
   ctx.lineTo(padding + graphWidth, padding + graphHeight);
-  ctx.strokeStyle = '#333';
+  ctx.strokeStyle = '#9198a1';
   ctx.lineWidth = 2;
   ctx.stroke();
 
   ctx.font = '14px Arial';
-  ctx.fillStyle = '#333';
+  ctx.fillStyle = '#e6edf3';
   ctx.textAlign = 'center';
   ctx.fillText('Input Size (n)', padding + graphWidth / 2, canvasHeight - 5);
 
@@ -264,7 +286,8 @@ function drawComparisonGraph(ctx, canvasWidth, canvasHeight, currentN) {
   const scaleX = (x) => padding + (x / maxN) * graphWidth;
   const scaleY = (y) => padding + graphHeight - (y / maxY) * graphHeight;
 
-  ctx.strokeStyle = '#ddd';
+  ctx.strokeStyle = '#30363d';
+  ctx.fillStyle = '#9198a1';
   ctx.lineWidth = 1;
 
   for (let n = 0; n <= maxN; n += 10) {
@@ -300,7 +323,7 @@ function drawComparisonGraph(ctx, canvasWidth, canvasHeight, currentN) {
   legendItems.forEach((item, index) => {
     ctx.fillStyle = item.color;
     ctx.fillRect(legendX, legendY + index * 25, 15, 15);
-    ctx.fillStyle = '#333';
+    ctx.fillStyle = '#e6edf3';
     ctx.font = '12px Arial';
     ctx.textAlign = 'left';
     ctx.fillText(item.label, legendX + 20, legendY + 12 + index * 25);
@@ -334,7 +357,7 @@ function drawComparisonGraph(ctx, canvasWidth, canvasHeight, currentN) {
     ctx.arc(xPos, logY, 5, 0, Math.PI * 2);
     ctx.fill();
 
-    ctx.fillStyle = '#333';
+    ctx.fillStyle = '#e6edf3';
     ctx.font = '14px Arial';
     ctx.textAlign = 'left';
     ctx.fillText(`For ${currentN} elements:`, padding + 10, padding + 30);
@@ -380,6 +403,20 @@ export default function BinarySearchVisualizer() {
   const targetRef = useRef(target);
   const speedRef = useRef(parseInt(DEFAULT_SPEED_TEXT, 10));
   const canvasRef = useRef(null);
+
+  // antd's Tabs remounts a pane's content the first time it's activated, so
+  // the plain useEffect below (keyed on activeTab) can fire just before that
+  // remount settles - the draw lands on a canvas node that gets replaced
+  // right after, leaving it blank until the tab is switched away and back.
+  // A callback ref fires exactly when a canvas node attaches (remounts
+  // included), so drawing there is what actually makes the first activation
+  // reliable.
+  const setCanvasRef = useCallback((node) => {
+    canvasRef.current = node;
+    if (node) {
+      drawComparisonGraph(node.getContext('2d'), CANVAS_WIDTH, CANVAS_HEIGHT, arrayRef.current.length);
+    }
+  }, []);
 
   function resetBinaryEngine(arr, invalid) {
     const eng = binaryEngineRef.current;
@@ -684,7 +721,7 @@ export default function BinarySearchVisualizer() {
   const comparisonContent = (
     <Card title="Algorithm Comparison">
       <div style={{ overflowX: 'auto' }}>
-        <canvas ref={canvasRef} width={CANVAS_WIDTH} height={CANVAS_HEIGHT} style={{ display: 'block' }} />
+        <canvas ref={setCanvasRef} width={CANVAS_WIDTH} height={CANVAS_HEIGHT} style={{ display: 'block' }} />
       </div>
     </Card>
   );

@@ -1,0 +1,22 @@
+.progress-hero-card {
+  text-align: center;
+}
+
+.progress-topic-list {
+  margin-top: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.progress-topic-row-label {
+  display: flex;
+  justify-content: space-between;
+  font-size: 13px;
+  margin-bottom: 4px;
+}
+
+.progress-bookmark-count {
+  display: block;
+  margin-top: 10px;
+}
