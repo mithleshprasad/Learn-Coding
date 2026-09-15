@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
+import { Link, useSearchParams } from 'react-router-dom';
 import { Button, Progress, Segmented, Tag, Typography } from 'antd';
-import { DownOutlined, RightOutlined } from '@ant-design/icons';
+import { BookOutlined, DownOutlined, RightOutlined } from '@ant-design/icons';
 import PageLayout from '../components/PageLayout.jsx';
 import MermaidDiagram from '../components/MermaidDiagram.jsx';
 import AskAi from '../components/AskAi.jsx';
@@ -15,6 +16,8 @@ const PROBLEMS_BY_TOPIC = {
   fundamentals,
   'design-problems': designProblems,
 };
+
+const FUNDAMENTALS_BY_KEY = Object.fromEntries(fundamentals.map((f) => [f.key, f]));
 
 const PROGRESS_KEY = 'systemDesign.progress';
 const NOTES_KEY_PREFIX = 'systemDesign.notes.';
@@ -54,14 +57,37 @@ export default function SystemDesign() {
     [],
   );
 
-  const [expandedTopic, setExpandedTopic] = useState(topics[0].key);
-  const [selectedKey, setSelectedKey] = useState(allProblems[0]?.key);
+  // Supports deep links like /system-design?q=caching-strategies (used by
+  // the "Related Fundamentals" cross-links on design problems) so landing
+  // here opens straight to the right topic instead of always the first one.
+  const [searchParams] = useSearchParams();
+  const deepLinkKey = searchParams.get('q');
+  const deepLinkProblem = deepLinkKey ? allProblems.find((p) => p.key === deepLinkKey) : undefined;
+  const initialProblem = deepLinkProblem ?? allProblems[0];
+
+  const [expandedTopic, setExpandedTopic] = useState(initialProblem?.topicKey ?? topics[0].key);
+  const [selectedKey, setSelectedKey] = useState(initialProblem?.key);
   const [progress, setProgress] = useState(() => loadJson(PROGRESS_KEY, {}));
   const [revealedHints, setRevealedHints] = useState(0);
   const [showSolution, setShowSolution] = useState(false);
   const [notes, setNotes] = useState('');
 
   const selected = allProblems.find((p) => p.key === selectedKey) ?? allProblems[0];
+
+  // The useState initializers above only run on first mount - clicking a
+  // "Related Fundamentals" link while already on this page changes the URL
+  // but doesn't remount the component, so the initial selection would
+  // otherwise never update. This keeps it in sync on every ?q= change.
+  useEffect(() => {
+    const key = searchParams.get('q');
+    if (!key || key === selectedKey) return;
+    const problem = allProblems.find((p) => p.key === key);
+    if (!problem) return;
+    setSelectedKey(problem.key);
+    setExpandedTopic(problem.topicKey);
+    setRevealedHints(0);
+    setShowSolution(false);
+  }, [searchParams, allProblems, selectedKey]);
 
   useEffect(() => {
     localStorage.setItem(PROGRESS_KEY, JSON.stringify(progress));
@@ -177,6 +203,17 @@ export default function SystemDesign() {
             value={STATUS_TO_LABEL[progress[selected.key]] ?? 'Not Started'}
             onChange={(label) => setStatus(selected.key, LABEL_TO_STATUS[label])}
           />
+
+          {selected.relatedFundamentals?.length ? (
+            <div className="sd-fundamentals-callout">
+              <BookOutlined /> Related fundamentals:
+              {selected.relatedFundamentals.map((key) => (
+                <Link key={key} to={`/system-design?q=${key}`} className="sd-fundamentals-link">
+                  {FUNDAMENTALS_BY_KEY[key]?.title ?? key}
+                </Link>
+              ))}
+            </div>
+          ) : null}
 
           {renderRichText(selected.statement)}
 
