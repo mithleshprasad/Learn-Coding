@@ -1,0 +1,75 @@
+.mock-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+.mock-timer {
+  font-size: 16px;
+  font-weight: 700;
+  padding: 4px 12px;
+}
+
+.mock-question-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 16px;
+}
+
+.mock-example {
+  margin: 14px 0;
+  padding: 12px 16px;
+  border-radius: 8px;
+  border: 1px solid #30363d;
+  background: #161b22;
+}
+
+.mock-example-row {
+  display: flex;
+  gap: 8px;
+  font-size: 13px;
+  margin-top: 4px;
+  color: #9198a1;
+}
+
+.mock-example-row code {
+  color: #e6edf3;
+  background: #0d1117;
+  padding: 1px 6px;
+  border-radius: 4px;
+}
+
+.mock-hr-answer {
+  width: 100%;
+  padding: 12px;
+  border-radius: 8px;
+  border: 1px solid #30363d;
+  background: #0d1117;
+  color: #e6edf3;
+  font-family: inherit;
+  font-size: 14px;
+  resize: vertical;
+}
+
+.mock-results-list {
+  margin-top: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.mock-results-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 0;
+  border-bottom: 1px solid #21262d;
+}
+
+.mock-results-title {
+  flex: 1;
+}

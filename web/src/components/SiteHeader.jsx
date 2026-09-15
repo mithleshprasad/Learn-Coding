@@ -33,6 +33,7 @@ const staticLinks = [
   { key: 'dsa-practice', label: 'DSA Practice', to: '/dsa-practice' },
   { key: 'system-design', label: 'System Design', to: '/system-design' },
   { key: 'progress', label: 'My Progress', to: '/progress' },
+  { key: 'mock-interview', label: 'Mock Interview', to: '/mock-interview' },
 ];
 
 export default function SiteHeader() {
