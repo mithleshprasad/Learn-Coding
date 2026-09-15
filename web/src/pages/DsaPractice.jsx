@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { Button, Progress, Segmented, Tag, Typography } from 'antd';
-import { DownOutlined, RightOutlined } from '@ant-design/icons';
+import { DownOutlined, PlayCircleOutlined, RightOutlined } from '@ant-design/icons';
 import PageLayout from '../components/PageLayout.jsx';
 import CodeBlock from '../components/CodeBlock.jsx';
 import DsaCodeRunner from '../components/DsaCodeRunner.jsx';
@@ -190,6 +191,12 @@ export default function DsaPractice() {
             value={STATUS_TO_LABEL[progress[selected.key]] ?? 'Not Started'}
             onChange={(label) => setStatus(selected.key, LABEL_TO_STATUS[label])}
           />
+
+          {selected.relatedVisualizer ? (
+            <Link to={selected.relatedVisualizer.to} className="dsa-visualizer-callout">
+              <PlayCircleOutlined /> See {selected.relatedVisualizer.label} animated step-by-step
+            </Link>
+          ) : null}
 
           {renderRichText(selected.statement)}
 

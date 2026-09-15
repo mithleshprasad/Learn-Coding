@@ -24,6 +24,8 @@ export default function TutorialThumb({ code, language = 'javascript', accent })
           fontSize: 12,
           lineHeight: 1.6,
           overflow: 'hidden',
+          whiteSpace: 'pre-wrap',
+          wordBreak: 'break-word',
         }}
       >
         {code}

@@ -472,6 +472,7 @@
     "number": 7,
     "title": "Find Minimum in Rotated Sorted Array",
     "difficulty": "Medium",
+    "relatedVisualizer": { "label": "Binary Search", "to": "/visualizers/binary-search" },
     "statement": "Suppose an array of length n sorted in ascending order is **rotated** between 1 and n times. For example, the array `nums = [0,1,2,4,5,6,7]` might become `[4,5,6,7,0,1,2]` if rotated 4 times.\n\nGiven the rotated sorted array `nums`, which contains **no duplicate values**, return the minimum element of the array.\n\nYou must write an algorithm that runs in O(log n) time.",
     "examples": [
       {
@@ -556,6 +557,7 @@
     "number": 8,
     "title": "Search in Rotated Sorted Array",
     "difficulty": "Medium",
+    "relatedVisualizer": { "label": "Binary Search", "to": "/visualizers/binary-search" },
     "statement": "There is an integer array `nums` sorted in ascending order (with **distinct** values), possibly rotated at an unknown pivot. Given the rotated array `nums` and an integer `target`, return the index of `target` if it is in `nums`, or `-1` if it is not.\n\nYou must write an algorithm with O(log n) runtime complexity.",
     "examples": [
       {
